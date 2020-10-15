@@ -467,6 +467,7 @@ export default function ProfilePage() {
                                         <th className="px-6 py-3 font-medium">شناسه فاکتور</th>
                                         <th className="px-6 py-3 font-medium">مبلغ</th>
                                         <th className="px-6 py-3 font-medium">وضعیت پرداخت</th>
+                                        <th className="px-6 py-3 font-medium">شماره کارت مقصد</th>
                                         <th className="px-6 py-3 font-medium">زمان پرداخت</th>
                                         <th className="px-6 py-3 font-medium">اطلاعات پرداخت‌کننده</th>
                                     </tr>
@@ -485,6 +486,10 @@ export default function ProfilePage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <StatusBadge type="payment" status={payment.status} />
+                                                </td>
+
+                                                <td className="px-6 py-4 font-mono text-xs text-gray-600" dir="ltr">
+                                                    {payment.cardNumber ? toPersianDigits(payment.cardNumber) : '-'}
                                                 </td>
 
                                                 <td className="px-6 py-4 text-gray-600">

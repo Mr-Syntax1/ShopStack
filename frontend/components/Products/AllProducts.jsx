@@ -23,7 +23,7 @@ export default function AllProducts({
     const searchParamsRef = useRef(searchParams);
 
     useEffect(() => {
-        searchParamsRef.current = searchParams;
+        searchParamsRef.current = searchParams;// چون ref همیشه آخرین مقدار رو داره
     }, [searchParams]);// ذخیره‌ی آخرین مقدار searchParams در یک متغیر
 
     const [allProducts, setAllProducts] = useState(initialProducts);
@@ -42,7 +42,6 @@ export default function AllProducts({
 
     const ppg = 20;
 
-    // // دریافت همه محصولات از API (فقط زمانی که initialProducts خالی باشد)
     const fetchProducts = useCallback(() => {
         setLoading(true);
         setError(null);
@@ -53,7 +52,7 @@ export default function AllProducts({
                 return res.json();
             })
             .then(data => {
-                setAllProducts(data);
+                setAllProducts(data.products || []);
                 setLoading(false);
             })
             .catch(err => {
@@ -66,7 +65,8 @@ export default function AllProducts({
     // // اگر محصولات اولیه از سرور نیامده باشند، از API بگیر
     useEffect(() => {
         if (initialProducts.length === 0) {
-            fetchProducts();
+            // اجرا را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+            queueMicrotask(() => fetchProducts());
         }
     }, [initialProducts.length, fetchProducts]);
 
@@ -80,16 +80,19 @@ export default function AllProducts({
 
     // // هماهنگ کردن state با URL params (برای پشتیبانی از دکمه‌های عقب/جلو مرورگر)
     useEffect(() => {
-        const categoryParam = searchParams.get('category') || 'همه';
-        const pageParam = parseInt(searchParams.get('page')) || 1;
+        // اجرا را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        queueMicrotask(() => {
+            const categoryParam = searchParams.get('category') || 'همه';
+            const pageParam = parseInt(searchParams.get('page')) || 1;
 
-        // // فقط در صورت تغییر واقعی، state را آپدیت کن (جلوگیری از لوپ)
-        if (categoryParam !== selectedCategory) {
-            setSelectedCategory(categoryParam);
-        }
-        if (pageParam !== page) {
-            setPage(pageParam);
-        }
+            // // فقط در صورت تغییر واقعی، state را آپدیت کن (جلوگیری از لوپ)
+            if (categoryParam !== selectedCategory) {
+                setSelectedCategory(categoryParam);
+            }
+            if (pageParam !== page) {
+                setPage(pageParam);
+            }
+        });
     }, [searchParams]); // // این افکت فقط وقتی searchParams تغییر می‌کند اجرا می‌شود
 
     // // اسکرول به بالا هنگام تغییر صفحه یا فیلتر
@@ -170,9 +173,12 @@ export default function AllProducts({
 
     // کنترل page ها
     useEffect(() => {
-        if (!loading && page > totalPages && totalPages > 0) {
-            setPage(totalPages);
-        }
+        // اجرا را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        queueMicrotask(() => {
+            if (!loading && page > totalPages && totalPages > 0) {
+                setPage(totalPages);
+            }
+        });
     }, [totalPages, page, loading]);
 
     // //  بدست اوردن محصولات صفحه فعلی (با اعتبارسنجی محدوده)

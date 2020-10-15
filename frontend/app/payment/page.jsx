@@ -141,27 +141,30 @@ function PaymentCallbackContent() {
     // بارگذاری از کش
     // ==============================
     useEffect(() => {
-        setIsClient(true);
+        // اجرا را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        queueMicrotask(() => {
+            setIsClient(true);
 
-        if (!invoiceId) {
-            setStatus('NO_INVOICE');
-            setLoading(false);
-            return;
-        }
-
-        try {
-            const raw = sessionStorage.getItem(`payment_${invoiceId}`);
-            if (raw) {
-                const cache = JSON.parse(raw);
-                if (cache && FINAL_STATES.includes(cache.status)) {
-                    setStatus(cache.status);
-                    setData(cache.data || null);
-                    setError(cache.error || null);
-                    setLoading(false);
-                }
-                attemptsRef.current = cache?.attempts || 0;
+            if (!invoiceId) {
+                setStatus('NO_INVOICE');
+                setLoading(false);
+                return;
             }
-        } catch (e) { /* ignore */ }
+
+            try {
+                const raw = sessionStorage.getItem(`payment_${invoiceId}`);
+                if (raw) {
+                    const cache = JSON.parse(raw);
+                    if (cache && FINAL_STATES.includes(cache.status)) {
+                        setStatus(cache.status);
+                        setData(cache.data || null);
+                        setError(cache.error || null);
+                        setLoading(false);
+                    }
+                    attemptsRef.current = cache?.attempts || 0;
+                }
+            } catch (e) { /* ignore */ }
+        });
     }, [invoiceId]);
 
     // ==============================
@@ -231,7 +234,7 @@ function PaymentCallbackContent() {
             return;
         }
 
-        fetchStatus();// اولین بار زود وصل شو و صبر نکن
+        queueMicrotask(() => { fetchStatus(); });// اولین بار زود وصل شو و صبر نکن
         pollingRef.current = setInterval(fetchStatus, 3000);
 
         return stopPolling;
@@ -397,6 +400,12 @@ function PaymentCallbackContent() {
                                 <span className="text-gray-400">پرداخت‌کننده</span>
                                 <span className="font-medium text-gray-700">{data.payer.name}</span>
                             </div>
+                            {data.payer.card && (
+                                <div className="flex items-center justify-between mt-1.5">
+                                    <span className="text-gray-400">کارت پرداخت‌کننده</span>
+                                    <span className="font-mono font-medium text-gray-700" dir="ltr">{toPersianDigits(data.payer.card)}</span>
+                                </div>
+                            )}
                             {data.payer.bankName && (
                                 <div className="flex items-center justify-between mt-1.5">
                                     <span className="text-gray-400">بانک</span>

@@ -10,16 +10,19 @@ export function CartProvider({ children }) {
 
     // خوندن localstorage از سمت کلاینت
     useEffect(() => {
-        try {
-            const savedCart = localStorage.getItem('cart')
-            if (savedCart) {
-                setCart(JSON.parse(savedCart))
+        // اجرا را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        queueMicrotask(() => {
+            try {
+                const savedCart = localStorage.getItem('cart')
+                if (savedCart) {
+                    setCart(JSON.parse(savedCart))
+                }
+            } catch (e) {
+                console.error('خطا در خواندن سبد خرید:', e)
+            } finally {
+                setIsMounted(true)
             }
-        } catch (e) {
-            console.error('خطا در خواندن سبد خرید:', e)
-        } finally {
-            setIsMounted(true)
-        }
+        });
     }, [])
 
     useEffect(() => {

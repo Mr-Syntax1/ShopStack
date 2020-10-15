@@ -1,4 +1,3 @@
-// components/LatestProducts.jsx
 import Link from 'next/link';
 import Productlist from './ProductList';
 import LatestProductsError from './LatestProductsError';
@@ -9,7 +8,7 @@ export default async function LatestProducts() {
     let products = [];
 
     try {
-        const res = await fetch(`${API_URL}/api/products`, {
+        const res = await fetch(`${API_URL}/api/products/top?limit=8`, {
             next: { revalidate: 60 }
         });
 
@@ -17,8 +16,8 @@ export default async function LatestProducts() {
             throw new Error(`خطا در دریافت محصولات: ${res.status}`);
         }
 
-        const allProducts = await res.json();
-        products = allProducts.slice(0, 8);
+        const data = await res.json();
+        products = data.products || [];
     } catch (error) {
         console.error('Error in LatestProducts:', error);
         return <LatestProductsError />;

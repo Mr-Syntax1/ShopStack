@@ -104,8 +104,11 @@ export async function POST(req) {
         // اگر ساخت فاکتور شکست خورد، سفارش یتیم باقی نماند → حذف می‌کنیم
         let invoice;
         try {
-            invoice = await createInvoice({ amount: totalPrice });
-        } catch (err) {
+            const envCardNumber = process.env.BLU_CARD_NUMBER || null;
+            const requestedCard = deliveryUser?.cardNumber || envCardNumber || null;
+            invoice = await createInvoice(requestedCard ? { amount: totalPrice, cardNumber: requestedCard } : { amount: totalPrice });
+        }
+        catch (err) {
             await Order.findByIdAndDelete(order._id).catch(() => { });
             // تا فاکتور یتیم ن مونه
             return NextResponse.json(
@@ -116,6 +119,7 @@ export async function POST(req) {
 
         // ---- ذخیره تراکنش پرداخت ----
         const invoiceId = Number(invoice.invoice_id);
+
         if (!invoiceId || Number.isNaN(invoiceId)) {
             await Order.findByIdAndDelete(order._id).catch(() => { });
             return NextResponse.json(
@@ -124,6 +128,7 @@ export async function POST(req) {
             );
         }
 
+        const resolvedCardNumber = String(invoice.card_number ?? invoice.cardNumber ?? invoice.card ?? '');
         const payment = new Payment({
             userId: decoded.userId,
             orderId: order._id,
@@ -133,7 +138,7 @@ export async function POST(req) {
             status: invoice.status,                 // معمولاً PENDING
             mode: invoice.mode || getBlupalMode(),
             paymentLink: invoice.payment_link,
-            cardNumber: invoice.card_number || '',
+            cardNumber: resolvedCardNumber,
             expiresAt: invoice.expires_at ? new Date(invoice.expires_at) : null,
         });
         await payment.save();
@@ -143,7 +148,7 @@ export async function POST(req) {
             invoiceId,
             status: invoice.status,
             mode: payment.mode,
-            cardNumber: invoice.card_number || payment.cardNumber || '', // شماره کارت مقصد
+            cardNumber: resolvedCardNumber, // شماره کارت مقصد
         };
         await order.save();
 
@@ -154,6 +159,7 @@ export async function POST(req) {
             orderId: String(order._id),
             mode: payment.mode,
             finalAmount: invoice.final_amount,
+            cardNumber: payment.cardNumber || null,
         }, { status: 200 });
 
     } catch (error) {

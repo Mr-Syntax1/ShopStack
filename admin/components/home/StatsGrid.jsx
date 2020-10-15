@@ -8,14 +8,14 @@ function formatValue(value, suffix) {
   return `${formatted}${suffix ?? ""}`;
 }
 
-export default function StatsGrid({ range, onRangeChange }) {
+export default function StatsGrid({ range, refreshKey = 0, onRangeChange }) {
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = useCallback(async (selectedRange = range) => {
+  const fetchData = useCallback(async (selectedRange = range, forceRefresh = refreshKey > 0) => {
     try {
       setLoading(true);   // 👈 موقع لود مجدد، اسکلتون
-      const data = await getDashboardData(selectedRange);   // 👈 range پاس بده
+      const data = await getDashboardData(selectedRange, forceRefresh);   // 👈 range پاس بده
       const apiStats = data?.stats || {};
       setStats([
         {
@@ -61,12 +61,17 @@ export default function StatsGrid({ range, onRangeChange }) {
     } finally {
       setLoading(false);
     }
-  }, [range, onRangeChange]);
+  }, [range, refreshKey, onRangeChange]);
 
   // وقتی کاربر روی یکی از دکمه‌های بازه کلیک می‌کند، داده‌ها را با بازه جدید دریافت می‌کند.
   useEffect(() => {
-    fetchData(range);
-  }, [range, fetchData]);
+    // اجرای فچ را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+    let active = true;
+    queueMicrotask(() => {
+      if (active) fetchData(range, refreshKey > 0);
+    });
+    return () => { active = false; };
+  }, [range, refreshKey, fetchData]);
 
   if (loading) {
     return (

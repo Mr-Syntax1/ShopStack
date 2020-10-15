@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import { getDashboardData } from "@/lib/dashboard-api";
 
-export default function LiveTicker() {
+export default function LiveTicker({ range = '7days', refreshKey = 0 }) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDashboardData();
+        const data = await getDashboardData(range, refreshKey > 0);
         const events = data?.liveEvents || [];
         const reversedEvents = [...events].reverse();
         setItems([...reversedEvents, ...reversedEvents]);
@@ -18,7 +18,7 @@ export default function LiveTicker() {
       }
     };
     fetchData();
-  }, []);
+  }, [range, refreshKey]);
 
   return (
     <div className="flex items-center gap-3 overflow-hidden rounded-full border border-line bg-surface pl-4 pr-1 py-1.5">

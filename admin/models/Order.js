@@ -97,7 +97,8 @@ const OrderSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned'],
-        default: 'pending'
+        default: 'pending',
+        index: true
     },
 
     // =============================================================
@@ -120,7 +121,7 @@ const OrderSchema = new mongoose.Schema({
         paidAt: { type: Date, default: null },
     },
 
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now, index: true }
 
 }, {
     timestamps: true // اضافه کردن createdAt و updatedAt

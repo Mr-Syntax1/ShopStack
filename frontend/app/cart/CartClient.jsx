@@ -123,7 +123,7 @@ export default function CartClient() {
             if (res.ok && response.paymentLink) {
                 clearCart();
                 reset();
-                window.location.href = response.paymentLink;
+                window.location.assign(response.paymentLink);
             } else {
                 showErrorToast(response.error || 'خطا در آغاز پرداخت');
             }

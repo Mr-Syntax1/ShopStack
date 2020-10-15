@@ -19,14 +19,33 @@ const statusLabels = {
   "لغو شده": "لغو شده",
 };
 
-export default function RecentOrders() {
+
+const AVATAR_GRADIENTS = [
+  'from-indigo-500 to-purple-600',
+  'from-emerald-500 to-teal-600',
+  'from-amber-500 to-orange-600',
+  'from-rose-500 to-pink-600',
+  'from-cyan-500 to-blue-600',
+  'from-violet-500 to-fuchsia-600',
+];
+
+function getAvatarGradient(name) {
+  let hash = 0;
+  for (let i = 0; i < (name || '').length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+}
+
+
+export default function RecentOrders({ range = '7days', refreshKey = 0 }) {
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDashboardData();
+        const data = await getDashboardData(range, refreshKey > 0);
         setRecentOrders(data?.recentOrders || []);
       } catch (error) {
         console.error('Error fetching recent orders:', error);
@@ -35,7 +54,7 @@ export default function RecentOrders() {
       }
     };
     fetchData();
-  }, []);
+  }, [range, refreshKey]);
 
   // محاسبه مجموع برای نمایش
   const totalAmount = recentOrders.reduce((sum, order) => sum + (order.amount || 0), 0);
@@ -59,7 +78,7 @@ export default function RecentOrders() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-bold text-[15px] text-gray-800">
-            سفارشات اخیر
+            {recentOrders.length} سفارش اخیر
           </h2>
           <p className="mt-0.5 text-[12.5px] text-gray-500">
             آخرین فعالیت‌های فروشگاه شما
@@ -80,10 +99,6 @@ export default function RecentOrders() {
       <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
         <span>
           مجموع: <span className="font-semibold text-gray-700">{totalAmount.toLocaleString("fa-IR")} تومان</span>
-        </span>
-        <span className="w-px h-4 bg-gray-200" />
-        <span>
-          تعداد: <span className="font-semibold text-gray-700">{recentOrders.length}</span>
         </span>
       </div>
 
@@ -106,45 +121,50 @@ export default function RecentOrders() {
             </tr>
           </thead>
           <tbody>
-            {recentOrders.map((order) => (
-              <tr
-                key={order.id}
-                className="border-b border-gray-100/50 last:border-0 hover:bg-gray-50/50 transition-colors"
-              >
-                <td className="py-3 pl-4">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-50 font-bold text-[11px] text-indigo-700">
-                      {initials(order.customer)}
-                    </span>
-                    <div>
-                      <p className="text-[13.5px] font-medium text-gray-800">
-                        {order.customer}
-                      </p>
-                      <p className="text-[11.5px] text-gray-400">
-                        {order.location}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-3 pl-4">
-                  <p className="text-[13px] text-gray-600">
-                    {order.product}
-                  </p>
-                  <p className="text-[11.5px] text-gray-400">{order.id}</p>
-                </td>
-                <td className="py-3 pl-4">
-                  <span
-                    className={`inline-flex rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${statusStyles[order.status] || "bg-gray-100 text-gray-600"
-                      }`}
+            {
+              recentOrders.map((order) => {
+                const avatarGradient = getAvatarGradient(order.customer);
+
+                return (
+                  <tr
+                    key={order.id}
+                    className="border-b border-gray-100/50 last:border-0 hover:bg-gray-50/50 transition-colors"
                   >
-                    {statusLabels[order.status] || order.status}
-                  </span>
-                </td>
-                <td className="py-3 text-right font-semibold text-[13.5px] text-gray-800">
-                  {order.amount.toLocaleString("fa-IR")} تومان
-                </td>
-              </tr>
-            ))}
+                    <td className="py-3 pl-4">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`flex bg-linear-to-br ${avatarGradient} text-white h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-50 font-bold text-[11px]`}>
+                          {initials(order.customer)}
+                        </span>
+                        <div>
+                          <p className="text-[13.5px] font-medium text-gray-800">
+                            {order.customer}
+                          </p>
+                          <p className="text-[11.5px] text-gray-400">
+                            {order.location}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 pl-4">
+                      <p className="text-[13px] text-gray-600">
+                        {order.product}
+                      </p>
+                      <p className="text-[11.5px] text-gray-400">{order.id}</p>
+                    </td>
+                    <td className="py-3 pl-4">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${statusStyles[order.status] || "bg-gray-100 text-gray-600"
+                          }`}
+                      >
+                        {statusLabels[order.status] || order.status}
+                      </span>
+                    </td>
+                    <td className="py-3 text-right font-semibold text-[13.5px] text-gray-800">
+                      {order.amount.toLocaleString("fa-IR")} تومان
+                    </td>
+                  </tr>
+                )
+              })}
           </tbody>
         </table>
       </div>

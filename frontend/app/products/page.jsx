@@ -10,12 +10,13 @@ export default async function ProductsPage({ searchParams }) {
     // منتظر ماندن برای searchParams
     const params = await searchParams;
     const category = params?.category || 'همه';
-    const page = params?.page || 1;
+    const page = params?.page || 1;// برای پرش نکردن
 
     // const url = new URL('api/products');
     const url = new URL(`${API_URL}/api/products`);
 
-    // دریافت محصولات با مدیریت خطا
+    // دریافت محصولات با مدیریت خطا (بدون ساختن JSX داخل try/catch)
+    let safeProducts = [];
     try {
         const res = await fetch(url, {
             cache: 'no-store',
@@ -30,25 +31,18 @@ export default async function ProductsPage({ searchParams }) {
         const products = await res.json();
 
         // اطمینان از اینکه products آرایه است
-        const safeProducts = Array.isArray(products) ? products : [];
-
-        return (
-            <AllProducts
-                initialProducts={safeProducts}
-                initialCategory={category}
-                initialPage={page}
-            />
-        );
+        safeProducts = Array.isArray(products) ? products : [];
     } catch (error) {
         console.error('Error fetching products:', error);
-
-        // در صورت خطا، یک آرایه خالی برگردان
-        return (
-            <AllProducts
-                initialProducts={[]}
-                initialCategory={category}
-                initialPage={page}
-            />
-        );
+        // در صورت خطا، آرایه خالی استفاده می‌شود
+        safeProducts = [];
     }
+
+    return (
+        <AllProducts
+            initialProducts={safeProducts}
+            initialCategory={category}
+            initialPage={page}
+        />
+    );
 }
