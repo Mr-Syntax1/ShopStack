@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image";
 import Link from "next/link";
-import image from './icons/logo.png'
+import image from './icons/logo2.png'
 
 export default function Footer() {
 
@@ -21,7 +21,7 @@ export default function Footer() {
     ]
 
     return (
-        <footer className="relative bg-linear-to-b from-blue-950 via-blue-900 to-blue-800 border-t border-blue-700/50">
+        <footer className="relative bg-linear-to-b from-violet-950 via-indigo-900 to-blue-900 border-t border-violet-700/50">
             {/* blur effects*/}
             <div className="absolute inset-0 bg-linear-to-br from-white/30 via-white/10 to-transparent backdrop-blur-md pointer-events-none" />
 
@@ -37,8 +37,8 @@ export default function Footer() {
                                     <Image
                                         src={image}
                                         alt="لوگو"
-                                        width={60}
-                                        height={60}
+                                        width={96}
+                                        height={96}
                                         className="object-contain w-auto h-auto"
                                     />
                                     <div className="absolute inset-0 rounded-xl ring-2 ring-blue-500/0 group-hover:ring-blue-500/50 transition-all duration-500" />
