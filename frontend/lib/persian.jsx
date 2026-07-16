@@ -6,3 +6,5 @@ export function formatPrice(price) {
 }
 
 //   قیمت: {formatPrice(price)} تومان
+
+// ۱ - ۲ - ۳ - ۴ - ۵ - ۶ - ۷ - ۸ - ۹ - ۱۰

@@ -1,29 +1,34 @@
 'use client'
 import Image from "next/image";
 import { useEffect } from "react";
-import img from '../public/images/2.jpg'
+import img from '../public/images/4.jpg'
 
 const HeroSection = () => {
 
+
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined') { //چک میکنه که کد در مرورگر (کلاینت) اجرا میشه، نه در سرور.
+
             import('typeit').then((module) => {
                 new module.default('.typewriter', {
                     strings: ['معتبر', 'حرفه‌ای', 'مدرن', 'اقتصادی'],
-                    speed: 120,
-                    deleteSpeed: 80,
-                    loop: true,
-                    nextStringDelay: 4000,
-                    deleteDelay: 500,
-                    breakLines: false,
-                    cursor: true,
-                    cursorChar: '|',
+                    speed: 120,              // سرعت تایپ
+                    deleteSpeed: 80,         // سرعت حذف
+                    loop: true,              // چرخه بی‌نهایت
+                    nextStringDelay: 4000,    // مکث قبل از شروع کلمه بعدی
+                    deleteDelay: 500,        // مکث قبل از شروع حذف
+                    breakLines: false,       // عدم رفتن به خط جدید
+                    cursor: true,            // نمایش نشانگر
+                    cursorChar: '|',         // شکل نشانگر
                 }).go();
             }).catch(err => {
                 console.error('TypeIt loading error:', err);
             });
         }
     }, []);
+
+
+
 
     return (
         <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 pt-12">
@@ -113,8 +118,8 @@ const HeroSection = () => {
                                 <Image
                                     src={img}
                                     alt="محصولات فروشگاهی"
-                                    width={500}
-                                    height={500}
+                                    width={600}
+                                    height={600}
                                     className="w-full h-auto object-cover"
                                     priority
                                 />
