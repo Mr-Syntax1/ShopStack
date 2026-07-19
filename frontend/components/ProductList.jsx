@@ -17,12 +17,12 @@ export default function ProductList({ products }) {
         <div>
             {/* Products */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-                {products.map((product) => (
-                    <div
-                        key={product.id}
-                        className=""
-                    >
-                        <ProductBox product={product} />
+                {products.map((product, index) => (
+                    <div key={product.id}>
+                        <ProductBox
+                            product={product}
+                            priority={index < 4}  // ۴ محصول اول با priority
+                        />
                     </div>
                 ))}
             </div>
