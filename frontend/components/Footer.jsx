@@ -44,7 +44,7 @@ export default function Footer() {
                                     <div className="absolute inset-0 rounded-xl ring-2 ring-blue-500/0 group-hover:ring-blue-500/50 transition-all duration-500" />
                                 </div>
                                 <span className="text-xl font-bold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                    فروشگاه من
+                                    Online Shop
                                 </span>
                             </div>
                         </Link>

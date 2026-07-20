@@ -19,7 +19,7 @@ export default function Header() {
                         alt="logo"
                         width={96}
                         height={96}
-                        className="object-contain w-auto h-auto"
+                        className="object-contain"
                         priority
                     />
                 </Link>

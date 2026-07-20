@@ -21,14 +21,14 @@ export default function ProductList({ products }) {
                     <div key={product.id}>
                         <ProductBox
                             product={product}
-                            priority={index < 4}  // ۴ محصول اول با priority
+                            priority={index < 5}  // ۴ محصول اول با priority
                         />
                     </div>
                 ))}
             </div>
 
             {/* دکمه مشاهده همه - طراحی جدید */}
-            {products.length > 4 && (
+            {products.length > 5 && (
                 <div className="mt-10 text-center">
                     <Link
                         href="/products"
