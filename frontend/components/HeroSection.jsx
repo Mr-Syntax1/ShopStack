@@ -40,16 +40,16 @@ const HeroSection = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
                     <div className="text-center lg:text-right">
-                        <h1 className="text-6xl xl:text-7xl font-bold text-gray-800 leading-20 xl:leading-24 mb-8">
-                            <span className="block bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        <h1 className="text-6xl xl:text-7xl font-bold text-gray-800 leading-20 xl:leading-24 mb-8 ">
+                            <span className="block bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent vazir-medium">
                                 فروشگاه
                             </span>
-                            <span className="block text-gray-700">
+                            <span className="block text-gray-700 ">
                                 Online Shop
                             </span>
-                            <span className="relative inline-block mt-1">
+                            <span className="relative inline-block mt-1 ">
                                 <span className="absolute -bottom-2 left-0 w-full h-3 bg-blue-500/20 -skew-x-12" />
-                                <span className="typewriter"></span>
+                                <span className="typewriter vazir-medium"></span>
                             </span>
                         </h1>
 
@@ -108,6 +108,7 @@ const HeroSection = () => {
                                     className="w-full h-auto object-cover"
                                     priority
                                 />
+
 
                                 <div className="absolute inset-0 bg-linear-to-tr from-blue-900/10 via-transparent to-purple-900/10" />
 

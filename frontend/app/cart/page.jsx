@@ -9,6 +9,7 @@ const cartItems = [
     { id: 3, title: 'ساعت هوشمند اپل', price: 1500000, image: '/images/3.jpg', quantity: 1 },
 ];
 
+
 export default function CartPage() {
     const [items, setItems] = useState(cartItems);
     const [formData, setFormData] = useState({

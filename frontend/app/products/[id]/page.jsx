@@ -4,8 +4,6 @@ import { notFound } from 'next/navigation';
 import { formatPrice } from '../../../lib/persian';
 
 
-
-
 // تابع کمکی برای شافل کردن آرایه (تصادفی‌سازی)
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -130,26 +128,35 @@ export default async function ProductDetail({ params }) {
                             </div>
 
                             {/* قیمت */}
-                            <div className="flex flex-wrap items-end gap-2 sm:gap-3 mb-4 sm:mb-6">
+                            <div className="flex flex-col items-start gap-1 sm:gap-2 mb-4 sm:mb-6">
                                 {product.discount > 0 ? (
                                     <>
-                                        <span className="text-xs sm:text-sm text-gray-400 mb-1">تومان</span>
-                                        <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
-                                            {formatPrice(discountedPrice)}
-                                        </span>
-                                        <span className="text-base sm:text-lg pr-3 text-gray-400 line-through">
-                                            {formatPrice(product.price)}
-                                        </span>
-                                        <span className="text-xs sm:text-sm font-bold text-green-600 bg-green-50 px-2 py-0.5 sm:py-1 rounded-full">
-                                            -{Math.round((product.price - discountedPrice) / product.price * 100)}%
-                                        </span>
+                                        {/* قیمت اصلی با خط خورده + درصد تخفیف */}
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm sm:text-base text-gray-400 line-through">
+                                                {formatPrice(product.price)}
+                                            </span>
+                                            <span className="text-xs sm:text-sm font-bold text-green-600 bg-green-50 px-2 py-0.5 sm:py-1 rounded-full">
+                                                -{Math.round((product.price - discountedPrice) / product.price * 100)}%
+                                            </span>
+                                        </div>
+
+                                        {/* قیمت با تخفیف */}
+                                        <div className="flex items-end gap-2">
+                                            <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
+                                                {formatPrice(discountedPrice)}
+                                            </span>
+                                            <span className="text-xs sm:text-sm text-gray-400 mb-1">تومان</span>
+                                        </div>
                                     </>
                                 ) : (
-                                    <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
-                                        {formatPrice(product.price)}
-                                    </span>
+                                    <div className="flex items-end gap-2">
+                                        <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
+                                            {formatPrice(product.price)}
+                                        </span>
+                                        <span className="text-xs sm:text-sm text-gray-400 mb-1">تومان</span>
+                                    </div>
                                 )}
-
                             </div>
 
                             {/* توضیحات */}

@@ -9,7 +9,7 @@ export default function Header() {
     const [isOpenHamburger, setIsOpenHamburger] = useState(false)
 
     return (
-        <header className="bg-white/30 backdrop-blur-2xl text-black shadow-lg fixed w-full top-0 z-50 font-sans text-sm border-b border-white/20">
+        <header className="bg-white/30 backdrop-blur-xl text-black shadow-lg fixed w-full top-0 z-50 font-sans text-sm border-b border-white/20">
             <div className="container mx-auto px-4 py-2 flex items-center justify-between">
 
                 {/* logo */}

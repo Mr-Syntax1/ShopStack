@@ -23,5 +23,4 @@ export async function connectedToDatabase() {
         console.error(error)
         throw error
     }
-
 }

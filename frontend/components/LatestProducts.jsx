@@ -1,17 +1,21 @@
+// components/LatestProducts.jsx
 import Link from 'next/link';
-import Image from 'next/image';
 import Productlist from './ProductList';
 
-
 export default async function LatestProducts() {
-
     const res = await fetch('http://localhost:3000/api/products')
-    const products = await res.json()
+
+    if (!res.ok) {
+        throw new Error('خطا در دریافت محصولات');
+    }
+
+    const allProducts = await res.json();
+    const products = allProducts.slice(0, 8); // فقط ۸ محصول اول
 
     return (
         <section className="py-12 sm:py-16 lg:py-20 bg-linear-to-b from-blue-50/30 via-white to-indigo-50/20">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-14">
-                {/* هدر بخش با طراحی جدید */}
+                {/* هدر بخش */}
                 <div className="relative mb-12 sm:mb-16">
                     <div className="text-center">
                         <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 bg-blue-100/70 px-5 py-2 rounded-full mb-4 backdrop-blur-sm border border-blue-200/50">
@@ -22,9 +26,9 @@ export default async function LatestProducts() {
                             جدیدترین محصولات
                         </span>
 
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-3">
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-3 vazir-medium">
                             محصولات
-                            <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> پر فروش</span>
+                            <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent vazir-medium"> پر فروش</span>
                         </h2>
 
                         <p className="text-gray-500 max-w-2xl mx-auto text-sm sm:text-base">
@@ -32,7 +36,7 @@ export default async function LatestProducts() {
                         </p>
                     </div>
 
-                    {/* دکمه مشاهده همه - در هدر */}
+                    {/* دکمه مشاهده همه */}
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 hidden lg:block">
                         <Link
                             href="/products"
@@ -49,7 +53,7 @@ export default async function LatestProducts() {
                 {/* لیست محصولات */}
                 <Productlist products={products} />
 
-                {/* آمار فروشگاه - فقط ۳ کارت ساده */}
+                {/* آمار فروشگاه
                 <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                     <div className="group bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/50">
                         <div className="w-14 h-14 mx-auto bg-blue-100/50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-100 transition-colors duration-300 mb-3">
@@ -74,7 +78,8 @@ export default async function LatestProducts() {
                         <p className="text-2xl font-bold text-purple-600">۲۴ ساعته</p>
                         <p className="text-sm text-gray-500">ارسال سریع</p>
                     </div>
-                </div>
+                </div> */}
+
             </div>
         </section>
     );

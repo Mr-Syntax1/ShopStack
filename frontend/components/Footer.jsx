@@ -21,7 +21,7 @@ export default function Footer() {
     ]
 
     return (
-        <footer className="relative bg-linear-to-b from-violet-950 via-indigo-900 to-blue-900 border-t border-violet-700/50">
+        <footer className="relative bg-linear-to-b from-violet-950 via-indigo-900 to-blue-900 border-t border-violet-700/50 mt-7">
             {/* blur effects*/}
             <div className="absolute inset-0 bg-linear-to-br from-white/30 via-white/10 to-transparent backdrop-blur-md pointer-events-none" />
 
