@@ -12,7 +12,7 @@ export default function ProductBox({ product, priority = false }) {
         <div className="group relative bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden border border-gray-100/80 hover:border-blue-200/50 max-w-[320px] mx-auto w-full">
 
             {/* تصویر محصول - ارتفاع کمتر */}
-            <Link href={`/products/${product.id}`} className="block relative overflow-hidden bg-white w-full" style={{ height: '250px' }}>
+            <Link href={`/products/${product.slug}`} className="block relative overflow-hidden bg-white w-full" style={{ height: '250px' }}>
                 <Image
                     src={product.image}  // ← تغییر: استفاده از product.image
                     alt={product.title}
@@ -40,7 +40,7 @@ export default function ProductBox({ product, priority = false }) {
             {/* اطلاعات محصول */}
             <div className="p-3 sm:p-4 space-y-2">
                 {/* عنوان */}
-                <Link href={`/products/${product.id}`}>
+                <Link href={`/products/${product.slug}`}>
                     <h3 className="font-bold text-gray-800 text-xs sm:text-sm leading-tight hover:text-blue-600 transition-colors line-clamp-2 min-h-[2.2rem]">
                         {product.title}
                     </h3>

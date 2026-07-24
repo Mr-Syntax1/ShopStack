@@ -1,29 +1,28 @@
-// app/products/page.js
 'use client'
 import { useState, useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation'; // برای pagination
+import { useRouter, useSearchParams } from 'next/navigation';
 import ProductBox from '../../components/ProductBox';
 
-export default function ProductsPage() {
-    const router = useRouter(); // برا تغییر ادرس
-    const searchParams = useSearchParams(); // برای دریافت مقدار page از ادرس
+export default function ProductsPage({ params }) {
 
-    const initialPage = parseInt(searchParams.get('page')) || 1;
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const page = parseInt(searchParams.get('page')) || 1;
 
-    const [products, setProducts] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('همه');
     const [sortBy, setSortBy] = useState('default');
-    const [currentPage, setCurrentPage] = useState(initialPage);
-    const productsPerPage = 20;
+
+    const ppg = 20; // محصولات هر صفحه
 
     // گرفتن دیتا
     useEffect(() => {
         fetch('/api/products')
             .then(res => res.json())
             .then(data => {
-                setProducts(data);
+                setAllProducts(data);
                 setLoading(false);
             })
             .catch(error => {
@@ -32,33 +31,29 @@ export default function ProductsPage() {
             });
     }, []);
 
-    // استخراج دسته‌بندی‌ها
+    // دسته‌بندی‌ها
     const categories = useMemo(() => {
-        const cats = ['همه', ...new Set(products.map(p => p.category))];
-        return cats;
-    }, [products]);
+        return ['همه', ...new Set(allProducts.map(p => p.category))];
+    }, [allProducts]);
 
-    // فیلتر و جستجو
+    // فیلتر و مرتب‌سازی
     const filteredProducts = useMemo(() => {
-        let result = products;
+        let result = allProducts;
 
-        // فیلتر بر اساس جستجو
         if (searchTerm.trim()) {
             const term = searchTerm.trim().toLowerCase();
             result = result.filter(p =>
                 p.title.toLowerCase().includes(term) ||
                 p.brand.toLowerCase().includes(term) ||
                 p.category.toLowerCase().includes(term) ||
-                p.tags.some(tag => tag.toLowerCase().includes(term))
+                p.tags?.some(tag => tag.toLowerCase().includes(term))
             );
         }
 
-        // فیلتر بر اساس دسته‌بندی
         if (selectedCategory !== 'همه') {
             result = result.filter(p => p.category === selectedCategory);
         }
 
-        // مرتب‌سازی
         switch (sortBy) {
             case 'price-asc':
                 result = [...result].sort((a, b) => a.price - b.price);
@@ -77,39 +72,34 @@ export default function ProductsPage() {
         }
 
         return result;
-    }, [products, searchTerm, selectedCategory, sortBy]);
-
-    // محاسبه تعداد صفحات
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    }, [allProducts, searchTerm, selectedCategory, sortBy]);
 
     // محصولات صفحه فعلی
-    const currentProducts = useMemo(() => {
-        const startIndex = (currentPage - 1) * productsPerPage;
-        const endIndex = startIndex + productsPerPage;
-        return filteredProducts.slice(startIndex, endIndex);
-    }, [filteredProducts, currentPage]);
+    const firstIndex = (page - 1) * ppg;
+    const endIndex = firstIndex + ppg;
+    const currentProducts = filteredProducts.slice(firstIndex, endIndex);
+
+    // تعداد کل صفحات
+    const totalPages = Math.ceil(filteredProducts.length / ppg);
 
     // تغییر صفحه
-    const goToPage = (page) => {
-        const validPage = Math.max(1, Math.min(page, totalPages));
-        setCurrentPage(validPage);
+    const goToPage = (newPage) => {
         const params = new URLSearchParams(searchParams);
-        params.set('page', validPage);
+        params.set('page', newPage);
         router.push(`/products?${params.toString()}`);
         setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
     };
 
-    // وقتی فیلترها تغییر میکنن، صفحه رو ریست کن
+    // وقتی فیلتر عوض میشه، برو صفحه اول
     useEffect(() => {
         if (searchTerm || selectedCategory !== 'همه' || sortBy !== 'default') {
-            setCurrentPage(1);
             const params = new URLSearchParams(searchParams);
             params.delete('page');
             router.push(`/products?${params.toString()}`);
         }
     }, [searchTerm, selectedCategory, sortBy]);
 
-    // لودینگ
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -131,14 +121,13 @@ export default function ProductsPage() {
                         همه محصولات
                     </h1>
                     <p className="text-gray-500 mt-2">
-                        {filteredProducts.length} محصول از {products.length} محصول موجود
+                        {filteredProducts.length} محصول از {allProducts.length} محصول موجود
                     </p>
                 </div>
 
                 {/* نوار جستجو و فیلتر */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8">
                     <div className="flex flex-col md:flex-row gap-4">
-                        {/* جستجو */}
                         <div className="flex-1">
                             <div className="relative">
                                 <input
@@ -154,7 +143,6 @@ export default function ProductsPage() {
                             </div>
                         </div>
 
-                        {/* فیلتر دسته‌بندی */}
                         <div className="flex flex-wrap gap-2">
                             <select
                                 value={selectedCategory}
@@ -166,7 +154,6 @@ export default function ProductsPage() {
                                 ))}
                             </select>
 
-                            {/* مرتب‌سازی */}
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
@@ -182,11 +169,11 @@ export default function ProductsPage() {
                     </div>
                 </div>
 
-                {/* لیست محصولات - بدون دکمه مشاهده همه */}
+                {/* لیست محصولات */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                     {currentProducts.map((product, index) => (
                         <ProductBox
-                            key={product.id}
+                            key={product._id}
                             product={product}
                             priority={index < 4}
                         />
@@ -218,12 +205,9 @@ export default function ProductsPage() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-2 mt-16">
-                        {/* دکمه اولین */}
                         <button
-                            onClick={() => {
-                                goToPage(1);
-                            }}
-                            disabled={currentPage === 1}
+                            onClick={() => goToPage(1)}
+                            disabled={page === 1}
                             className="flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-blue-300 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-sm"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,12 +216,9 @@ export default function ProductsPage() {
                             اولین
                         </button>
 
-                        {/* دکمه قبلی */}
                         <button
-                            onClick={() => {
-                                goToPage(currentPage - 1);
-                            }}
-                            disabled={currentPage === 1}
+                            onClick={() => goToPage(page - 1)}
+                            disabled={page === 1}
                             className="flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-blue-300 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-sm"
                         >
                             قبلی
@@ -246,37 +227,31 @@ export default function ProductsPage() {
                             </svg>
                         </button>
 
-                        {/* شماره صفحات */}
                         <div className="flex items-center gap-1 mx-2">
                             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                                 let pageNum;
-
                                 if (totalPages <= 5) {
-                                    pageNum = i + 1; // 1 until ...
+                                    pageNum = i + 1;
                                 }
 
-                                else if (currentPage <= 3) {
-                                    pageNum = i + 1; // 1 until 5
+                                else if (page <= 3) {
+                                    pageNum = i + 1;
                                 }
 
-                                else if (currentPage >= totalPages - 2) {
-                                    pageNum = totalPages - 4 + i; // اخرین 5 صفحه
+                                else if (page >= totalPages - 2) {
+                                    pageNum = totalPages - 4 + i;
                                 }
 
                                 else {
-                                    pageNum = currentPage - 2 + i; //غیر از این: صفحه فعلی رو در وسط قرار بده و ۲ صفحه قبل و ۲ صفحه بعد رو نشون بده.
+                                    pageNum = page - 2 + i;
                                 }
-
                                 return (
                                     <button
                                         key={pageNum}
-                                        onClick={() => {
-                                            goToPage(pageNum);
-                                        }}
-                                        className={`w-9 h-9 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer
-                                             ${currentPage === pageNum
-                                                ? 'bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25 scale-105'
-                                                : 'bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 border border-gray-200'
+                                        onClick={() => goToPage(pageNum)}
+                                        className={`w-9 h-9 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${page === pageNum
+                                            ? 'bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25 scale-105'
+                                            : 'bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 border border-gray-200'
                                             }`}
                                     >
                                         {pageNum}
@@ -285,12 +260,9 @@ export default function ProductsPage() {
                             })}
                         </div>
 
-                        {/* دکمه بعدی */}
                         <button
-                            onClick={() => {
-                                goToPage(currentPage + 1);
-                            }}
-                            disabled={currentPage === totalPages}
+                            onClick={() => goToPage(page + 1)}
+                            disabled={page === totalPages}
                             className="flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-blue-300 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-sm"
                         >
                             بعدی
@@ -299,12 +271,9 @@ export default function ProductsPage() {
                             </svg>
                         </button>
 
-                        {/* دکمه آخرین */}
                         <button
-                            onClick={() => {
-                                goToPage(totalPages);
-                            }}
-                            disabled={currentPage === totalPages}
+                            onClick={() => goToPage(totalPages)}
+                            disabled={page === totalPages}
                             className="flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-blue-300 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer text-sm"
                         >
                             آخرین
@@ -312,7 +281,8 @@ export default function ProductsPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                             </svg>
                         </button>
-                    </div>)}
+                    </div>
+                )}
             </div>
         </div>
     );

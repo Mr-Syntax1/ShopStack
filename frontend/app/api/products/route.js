@@ -1,3 +1,4 @@
+// ALL PRODUCTS
 import { NextResponse } from "next/server";
 import { connectedToDatabase } from "../../../lib/mongodb";
 import Product from "../../../models/Product";

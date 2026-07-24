@@ -14,7 +14,7 @@ export default async function LatestProducts() {
 
     return (
         <section className="py-12 sm:py-16 lg:py-20 bg-linear-to-b from-blue-50/30 via-white to-indigo-50/20">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-14">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-10">
                 {/* هدر بخش */}
                 <div className="relative mb-12 sm:mb-16">
                     <div className="text-center">
@@ -52,33 +52,6 @@ export default async function LatestProducts() {
 
                 {/* لیست محصولات */}
                 <Productlist products={products} />
-
-                {/* آمار فروشگاه
-                <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                    <div className="group bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/50">
-                        <div className="w-14 h-14 mx-auto bg-blue-100/50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-blue-100 transition-colors duration-300 mb-3">
-                            📦
-                        </div>
-                        <p className="text-2xl font-bold text-gray-800">{products.length}</p>
-                        <p className="text-sm text-gray-500">محصولات موجود</p>
-                    </div>
-
-                    <div className="group bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/50">
-                        <div className="w-14 h-14 mx-auto bg-green-100/50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-green-100 transition-colors duration-300 mb-3">
-                            ✅
-                        </div>
-                        <p className="text-2xl font-bold text-green-600">۱۰۰%</p>
-                        <p className="text-sm text-gray-500">کیفیت تضمینی</p>
-                    </div>
-
-                    <div className="group bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/50">
-                        <div className="w-14 h-14 mx-auto bg-purple-100/50 rounded-2xl flex items-center justify-center text-2xl group-hover:bg-purple-100 transition-colors duration-300 mb-3">
-                            🚀
-                        </div>
-                        <p className="text-2xl font-bold text-purple-600">۲۴ ساعته</p>
-                        <p className="text-sm text-gray-500">ارسال سریع</p>
-                    </div>
-                </div> */}
 
             </div>
         </section>
