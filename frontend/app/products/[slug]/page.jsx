@@ -42,14 +42,25 @@ export default async function ProductDetail({ params }) {
                 {/* مسیر (Breadcrumb) */}
                 <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6 sm:mb-8">
                     <Link href="/" className="hover:text-blue-600 transition-colors">خانه</Link>
+
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
+
                     <Link href="/products" className="hover:text-blue-600 transition-colors">محصولات</Link>
+
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
+
+                    <Link href={`/products?category=${product.category}`} className="hover:text-blue-400 transition-colors">{product.category}</Link>
+
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+
                     <span className="text-gray-700 font-medium truncate">{product.title}</span>
+
                 </nav>
 
                 {/* کارت اصلی محصول */}
@@ -91,12 +102,19 @@ export default async function ProductDetail({ params }) {
                         <div className="flex flex-col">
                             {/* برند و دسته‌بندی */}
                             <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
-                                <span className="inline-block text-xs sm:text-sm font-medium text-blue-600 bg-blue-50 px-2.5 sm:px-3 py-1 rounded-full">
+                                {/* <span className="inline-block text-xs sm:text-sm font-medium text-blue-600 bg-blue-50 px-2.5 sm:px-3 py-1 rounded-full">
                                     {product.brand}
-                                </span>
-                                <span className="inline-block text-xs sm:text-sm font-medium text-gray-600 bg-gray-100 px-2.5 sm:px-3 py-1 rounded-full">
+                                </span> */}
+
+                                <Link
+                                    href={`/products?category=${product.category}`}
+                                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-indigo-700 bg-indigo-50/80 backdrop-blur-sm px-3 sm:px-4 py-1.5 rounded-full border border-indigo-200/50 hover:bg-indigo-100 hover:border-indigo-300 transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                                    <svg className="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
                                     {product.category}
-                                </span>
+                                </Link>
+
                                 {product.discount > 0 && (
                                     <span className="inline-block text-xs sm:text-sm font-bold text-green-600 bg-green-50 px-2.5 sm:px-3 py-1 rounded-full">
                                         {Math.round((product.price - discountedPrice) / product.price * 100)}% تخفیف
@@ -117,11 +135,26 @@ export default async function ProductDetail({ params }) {
                                         </svg>
                                     ))}
                                 </div>
-                                <span className="text-xs sm:text-sm text-gray-500">{product.rating} از 5</span>
-                                <span className="text-xs sm:text-sm text-gray-400 hidden xs:inline">|</span>
-                                <span className="text-xs sm:text-sm text-gray-500 hidden xs:inline">{product.reviews} نظر</span>
-                                <span className="text-xs sm:text-sm text-gray-400 hidden sm:inline">|</span>
-                                <span className="text-xs sm:text-sm text-green-600 font-medium hidden sm:inline">موجودی: {product.stock} عدد</span>
+
+                                <span className="text-xs sm:text-sm text-gray-500">
+                                    {product.rating} از 5
+                                </span>
+
+                                <span className="text-xs sm:text-sm text-gray-400 hidden xs:inline">
+                                    |
+                                </span>
+
+                                <span className="text-xs sm:text-sm text-gray-500 hidden xs:inline">
+                                    {product.reviews} نظر
+                                </span>
+
+                                <span className="text-xs sm:text-sm text-gray-400 hidden sm:inline">
+                                    |
+                                </span>
+
+                                <span className="text-xs sm:text-sm text-green-600 font-medium hidden sm:inline"
+                                >موجودی: {product.stock} عدد
+                                </span>
                             </div>
 
                             {/* قیمت */}
@@ -132,15 +165,18 @@ export default async function ProductDetail({ params }) {
                                             <span className="text-sm sm:text-base text-gray-400 line-through">
                                                 {formatPrice(product.price)}
                                             </span>
+
                                             <span className="text-xs sm:text-sm font-bold text-green-600 bg-green-50 px-2 py-0.5 sm:py-1 rounded-full">
                                                 -{Math.round((product.price - discountedPrice) / product.price * 100)}%
                                             </span>
+
                                         </div>
 
                                         <div className="flex items-end gap-2">
                                             <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
                                                 {formatPrice(discountedPrice)}
                                             </span>
+
                                             <span className="text-xs sm:text-sm text-gray-400 mb-1">تومان</span>
                                         </div>
                                     </>
@@ -149,6 +185,7 @@ export default async function ProductDetail({ params }) {
                                         <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
                                             {formatPrice(product.price)}
                                         </span>
+
                                         <span className="text-xs sm:text-sm text-gray-400 mb-1">تومان</span>
                                     </div>
                                 )}
@@ -205,6 +242,7 @@ export default async function ProductDetail({ params }) {
                         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">
                             محصولات مرتبط
                         </h2>
+
                         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                             {relatedProducts.map((item, index) => (
                                 <Link
@@ -226,6 +264,7 @@ export default async function ProductDetail({ params }) {
                                             </span>
                                         )}
                                     </div>
+
                                     <div className="p-3 sm:p-4">
                                         <h3 className="font-bold text-gray-800 group-hover:text-blue-600 transition text-sm line-clamp-2">
                                             {item.title}

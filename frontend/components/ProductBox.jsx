@@ -23,12 +23,14 @@ export default function ProductBox({ product, priority = false }) {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
 
                 />
+
                 {/* برچسب تخفیف */}
                 {product.discount > 0 && (
                     <span className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg z-10">
                         {product.discount}٪ تخفیف
                     </span>
                 )}
+
                 {/* برچسب موجودی */}
                 {product.stock === 0 && (
                     <span className="absolute bottom-3 right-3 bg-gray-800/90 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg z-10 backdrop-blur-sm">
@@ -49,8 +51,9 @@ export default function ProductBox({ product, priority = false }) {
                 {/* برند و امتیاز */}
                 <div className="flex items-center justify-between">
                     <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-                        {product.brand}
+                        {product.category}
                     </span>
+
                     <div className="flex items-center gap-1">
                         <span className="text-xs text-yellow-500">⭐</span>
                         <span className="text-xs font-semibold text-gray-700">{product.rating}</span>

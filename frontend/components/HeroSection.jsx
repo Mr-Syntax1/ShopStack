@@ -28,7 +28,7 @@ const HeroSection = () => {
 
 
     return (
-        <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 pt-12 lg:pt-32">
+        <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 pt-12 lg:pt-32 ">
             <div className="absolute top-20 right-20 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
             <div className="absolute bottom-20 left-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-300/10 rounded-full blur-3xl" />
@@ -39,7 +39,7 @@ const HeroSection = () => {
             <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-0">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-                    <div className="text-center lg:text-right">
+                    <div className="text-center lg:text-right animate-right-slow">
                         <h1 className="text-6xl xl:text-7xl font-bold text-gray-800 leading-20 xl:leading-24 mb-8 ">
                             <span className="block bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent vazir-medium">
                                 فروشگاه
@@ -49,7 +49,7 @@ const HeroSection = () => {
                             </span>
                             <span className="relative inline-block mt-1 ">
                                 <span className="absolute -bottom-2 left-0 w-full h-3 bg-blue-500/20 -skew-x-12" />
-                                <span className="typewriter vazir-medium"></span>
+                                <span className="typewriter"></span>
                             </span>
                         </h1>
 
@@ -99,19 +99,16 @@ const HeroSection = () => {
                             <div className="absolute -top-4 -right-4 w-full h-full border-2 border-blue-500/20 rounded-3xl -rotate-3" />
                             <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-purple-500/20 rounded-3xl rotate-3" />
 
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:shadow-blue-500/30 hover:scale-[1.02]">
+                            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:shadow-blue-500/30 hover:scale-[1.02] ">
                                 <Image
                                     src={img}
                                     alt="محصولات فروشگاهی"
                                     width={600}
                                     height={600}
-                                    className="w-full h-auto object-cover"
+                                    className="w-full h-auto object-cover animate-ups-slow"
                                     priority
                                 />
-
-
                                 <div className="absolute inset-0 bg-linear-to-tr from-blue-900/10 via-transparent to-purple-900/10" />
-
                                 <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
                                     <p className="text-sm font-semibold text-gray-900">تخفیف ویژه</p>
                                     <p className="text-xs text-gray-500">۲۰٪ تا پایان هفته</p>
@@ -133,21 +130,6 @@ const HeroSection = () => {
                     </div>
                 </div>
             </div>
-
-            <style jsx>{`
-                @keyframes bounce-slow {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-10px); }
-                }
-                
-                .animate-bounce-slow {
-                    animation: bounce-slow 3s ease-in-out infinite;
-                }
-
-                .delay-1000 {
-                    animation-delay: 1s;
-                }
-            `}</style>
         </section>
     );
 }

@@ -38,4 +38,61 @@
 /* یا فقط برای متن‌های فارسی */
 body {
   font-family: 'Vazir-light', sans-serif;
+  opacity: 100;
 }
+
+/* ==== Animations ==== */
+
+@keyframes bounce-slow {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 3s ease-in-out infinite;
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+@keyframes right-slow {
+  0% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-right-slow {
+  animation: right-slow 1s ease-in-out forwards;
+}
+
+@keyframes ups-slow {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-ups-slow {
+  animation: ups-slow 1s ease-in-out forwards;
+}
+
+/* ==== Animations ==== */
