@@ -1,6 +1,8 @@
+import { CartProvider } from "@/context/CartContext";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Online Shop",
@@ -15,11 +17,27 @@ export default function RootLayout({ children }) {
       className={`h-full antialiased `}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <Header />
-        <main className="">
-          {children}
-        </main>
-        <Footer />
+        <CartProvider>
+          <Header />
+          <Toaster
+            position="bottom-center"
+            reverseOrder={false}
+            gutter={8}
+            containerClassName=""
+            containerStyle={{}}
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+            }}
+          />
+          <main className="">
+            {children}
+          </main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

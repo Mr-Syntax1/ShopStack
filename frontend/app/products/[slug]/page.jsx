@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from 'next/navigation';
 import { formatPrice } from '../../../lib/persian';
+import AddToCartButton from "@/components/AddToCartButton";
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -34,6 +35,7 @@ export default async function ProductDetail({ params }) {
     const discountedPrice = product.discount > 0
         ? Math.round(product.price * (1 - product.discount / 100))
         : product.price;
+
 
     return (
         <div className="min-h-screen bg-linear-to-b from-white to-gray-50/50 py-8 sm:py-12 lg:py-16">
@@ -209,21 +211,8 @@ export default async function ProductDetail({ params }) {
 
                             {/* دکمه‌ها */}
                             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-auto pt-4 sm:pt-6 border-t border-gray-100">
-                                {product.stock > 0 ? (
-                                    <button className="w-full sm:flex-1 py-3 sm:py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base">
-                                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                        </svg>
-                                        <span>افزودن به سبد خرید</span>
-                                    </button>
-                                ) : (
-                                    <button disabled className="w-full sm:flex-1 py-3 sm:py-3.5 bg-gray-300 text-gray-500 font-semibold rounded-2xl cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base">
-                                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                        </svg>
-                                        <span>ناموجود</span>
-                                    </button>
-                                )}
+                                <AddToCartButton product={product} />
+
                                 <button className="w-full sm:flex-1 py-3 sm:py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base">
                                     <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -232,6 +221,7 @@ export default async function ProductDetail({ params }) {
                                     <span>علاقه‌مندی</span>
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 </div>

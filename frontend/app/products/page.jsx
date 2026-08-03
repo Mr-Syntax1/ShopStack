@@ -8,12 +8,16 @@ export default async function ProductsPage({ searchParams }) {
 
     const url = new URL('http://localhost:3000/api/products');
 
+    // FIXME: استفاده از URL مطلق localhost باعث خرابی در دیپلوی میشه
+    // باید از URL نسبی `/api/products` استفاده می‌شد
+    // در Next.js 16 App Router، کامپوننت‌های سروری می‌تونن fetch با URL نسبی انجام بدن
+
     // دریافت محصولات با مدیریت خطا
     try {
         const res = await fetch(url, {
             cache: 'no-store',
             // افزودن timeout برای جلوگیری از هنگ کردن
-            signal: AbortSignal.timeout(10000) // 10 ثانیه تایم‌اوت
+            signal: AbortSignal // 10 ثانیه تایم‌اوت
         });
 
         if (!res.ok) {
