@@ -133,6 +133,7 @@ export function CartProvider({ children }) {
     return (
         <CartContext.Provider value={{
             cart,                    // لیست محصولات سبد خرید
+            setCart,
             cartCount,               // تعداد کل آیتم‌ها
             cartTotal,               // قیمت کل (با تخفیف)
             shippingCost,            // هزینه ارسال

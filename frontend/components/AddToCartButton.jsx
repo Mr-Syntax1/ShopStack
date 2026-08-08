@@ -3,7 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { showSuccessToast } from "./CustomToast";
+import { showAddToCartToast } from "./CustomToast";
 
 export default function AddToCartButton({ product }) {
     const { addToCart } = useCart();
@@ -18,7 +18,7 @@ export default function AddToCartButton({ product }) {
         setIsAdding(true);
         try {
             addToCart(product);
-            showSuccessToast(product); // 👈 همین یک خط کافیه
+            showAddToCartToast(product); // 👈 همین یک خط کافیه
         } catch (error) {
             toast.error('خطا در افزودن به سبد خرید. لطفاً دوباره تلاش کنید.');
         } finally {

@@ -1,10 +1,13 @@
-// import Link from "next/link";
+import { homeMetadata } from "@/metadata/home";
 import HeroSection from "@/components/HeroSection";
 import LatestProducts from "@/components/LatestProducts";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import Container from "@/components/shared/Container";
 import { testimonialsData } from "@/data/homeData";
+import png from '../components/icons/logo2.png'
+
+export const metadata = homeMetadata;
 
 export default function Home() {
   return (

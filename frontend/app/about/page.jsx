@@ -133,7 +133,7 @@ export default function AboutPage() {
                         <span className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4 border border-purple-100/50">
                             آشنایی با ما
                         </span>
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-3 sm:mb-4">
+                        <h1 className="text-5xl lg:text-6xl font-bold text-gray-800 mb-3 sm:mb-4">
                             درباره <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">OnlineShop</span>
                         </h1>
                         <p className="text-sm sm:text-base md:text-lg text-gray-500 max-w-2xl mx-auto px-4">

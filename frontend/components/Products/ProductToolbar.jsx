@@ -28,12 +28,12 @@ export default function ProductToolbar({
                 </div>
 
                 {/* فیلترها */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex justify-around flex-wrap gap-2">
                     <select
                         value={selectedCategory}
                         onChange={(e) => onCategoryChange(e.target.value)}
                         aria-label="فیلتر دسته‌بندی"
-                        className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white min-w-[140px]"
+                        className="px-1 md:px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white min-w-[140px]"
                     >
                         {categories.map(cat => (
                             <option key={cat} value={cat}>{cat}</option>
@@ -44,7 +44,7 @@ export default function ProductToolbar({
                         value={sortBy}
                         onChange={(e) => onSortChange(e.target.value)}
                         aria-label="مرتب‌سازی"
-                        className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white min-w-[140px]"
+                        className="px-1 md:px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white min-w-[140px]"
                     >
                         <option value="default">پیش‌فرض</option>
                         <option value="price-asc">قیمت: کم به زیاد</option>

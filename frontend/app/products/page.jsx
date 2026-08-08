@@ -1,4 +1,7 @@
+import { productsMetadata } from "@/metadata/products";
 import AllProducts from "@/components/Products/AllProducts";
+
+export const metadata = productsMetadata;
 
 export default async function ProductsPage({ searchParams }) {
     // منتظر ماندن برای searchParams
@@ -6,11 +9,8 @@ export default async function ProductsPage({ searchParams }) {
     const category = params?.category || 'همه';
     const page = params?.page || 1;
 
+    // const url = new URL('api/products');
     const url = new URL('http://localhost:3000/api/products');
-
-    // FIXME: استفاده از URL مطلق localhost باعث خرابی در دیپلوی میشه
-    // باید از URL نسبی `/api/products` استفاده می‌شد
-    // در Next.js 16 App Router، کامپوننت‌های سروری می‌تونن fetch با URL نسبی انجام بدن
 
     // دریافت محصولات با مدیریت خطا
     try {

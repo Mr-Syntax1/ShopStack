@@ -4,6 +4,11 @@ import { notFound } from 'next/navigation';
 import { formatPrice } from '../../../lib/persian';
 import AddToCartButton from "@/components/AddToCartButton";
 
+export const metadata = {
+    title: "صفحه جزعیات | OnlineShop",
+    description: "محصول و کالا های جزعیات OnlineShop",
+};
+
 function shuffleArray(array) {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {

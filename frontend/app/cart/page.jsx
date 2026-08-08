@@ -1,11 +1,19 @@
 'use client'
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { formatPrice } from '../../lib/persian';
 import { useCart } from "@/context/CartContext";
+import Error from "@/components/Error";
+import { showOrderSuccessToast, showErrorToast } from "@/components/CustomToast";
+import { orderSchema } from "@/lib/validations";
+
 
 export default function CartPage() {
+    const [error, setError] = useState(null);
+
     const {
         cart: items,
         removeFromCart,
@@ -16,31 +24,84 @@ export default function CartPage() {
         shippingCost,
     } = useCart();
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        city: '',
-        postalCode: '',
-        address: '',
-        country: 'ایران',
+
+    // ============================================
+    // تنظیمات React Hook Form + Yup
+    // ============================================
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm({
+        resolver: yupResolver(orderSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            phone: '',
+            city: '',
+            postalCode: '',
+            address: '',
+            country: 'ایران',
+        },
     });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    // ============================================
+    // ثبت سفارش
+    // ============================================
+    const onSubmit = async (data) => {
         if (items.length === 0) {
-            alert('سبد خرید شما خالی است!');
+            showErrorToast('سبد خرید شما خالی است!');
             return;
         }
-        // // در حال حاضر هیچ API خارجی استفاده نمی‌شود
-        // //逻辑 ارسال به سرور در اینجا قابل اضافه کردن است
-        alert('درخواست پرداخت شما ثبت شد!');
+
+        const cartWithProductId = items.map(item => ({
+            productId: item._id || item.id,
+            title: item.title,
+            slug: item.slug,
+            price: item.price,
+            discount: item.discount || 0,
+            quantity: item.quantity,
+            image: item.image
+        }));
+
+        const orderData = {
+            user: data,
+            cart: cartWithProductId,
+            totalPrice: total
+        };
+
+        try {
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+
+            const response = await res.json();
+
+            if (res.ok) {
+                showOrderSuccessToast();
+                clearCart();
+                reset();
+            } else {
+                showErrorToast(response.error || 'خطا در ثبت سفارش');
+            }
+        } catch (error) {
+            console.error('خطا در ثبت سفارش:', error);
+            showErrorToast('مشکلی در ارتباط با سرور پیش آمد.');
+        }
     };
 
+    // نمایش خطا
+    if (error) {
+        return <Error error={error} onRetry={() => window.location.reload()} />;
+    }
+
+
+    // ============================================
+    // سبد خالی
+    // ============================================
     if (items.length === 0) {
         return (
             <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16">
@@ -68,6 +129,9 @@ export default function CartPage() {
         );
     }
 
+    // ============================================
+    //  نمایش سبد خرید
+    // ============================================
     return (
         <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
@@ -92,7 +156,7 @@ export default function CartPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    {/* ستون چپ: لیست محصولات */}
+                    {/* ===== ستون چپ: لیست محصولات ===== */}
                     <div className="lg:col-span-2 space-y-4">
                         {items.map((item) => (
                             <div
@@ -101,7 +165,7 @@ export default function CartPage() {
                             >
                                 <div className="flex flex-col sm:flex-row gap-4 p-4">
                                     {/* تصویر */}
-                                    <div className="relative w-full sm:w-28 h-40 sm:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                                    <div className="relative w-full sm:w-28 h-72 sm:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                                         <Image
                                             src={item.image}
                                             alt={item.title}
@@ -164,7 +228,7 @@ export default function CartPage() {
                                         {/* دکمه حذف */}
                                         <button
                                             onClick={() => removeFromCart(item._id || item.id)}
-                                            className="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+                                            className="absolute left-3 bottom-3 sm:relative sm:left-0 sm:bottom-0 text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all duration-200 cursor-pointer"
                                             aria-label="حذف"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,7 +268,7 @@ export default function CartPage() {
                         </div>
                     </div>
 
-                    {/* ستون راست: اطلاعات و پرداخت */}
+                    {/* ====== ستون راست: اطلاعات و پرداخت ====== */}
                     <div className="lg:col-span-1">
                         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100/50 p-6 sticky top-24">
 
@@ -247,8 +311,8 @@ export default function CartPage() {
                                 </div>
                             </div>
 
-                            {/* فرم اطلاعات */}
-                            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                            {/* ====== فرم اطلاعات ====== */}
+                            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
                                 <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -256,74 +320,89 @@ export default function CartPage() {
                                     اطلاعات شما
                                 </h3>
 
+                                {/* ===== نام ===== */}
                                 <div>
                                     <input
                                         type="text"
-                                        name="name"
                                         placeholder="نام و نام خانوادگی"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-sm bg-white/50 focus:bg-white"
-                                        required
+                                        {...register('name')}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
                                     />
+                                    {errors.name && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+                                    )}
                                 </div>
 
+                                {/* ===== ایمیل ===== */}
                                 <div>
                                     <input
                                         type="email"
-                                        name="email"
                                         placeholder="ایمیل"
-                                        value={formData.email}
-                                        onChange={handleInputChange}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-sm bg-white/50 focus:bg-white"
-                                        required
+                                        {...register('email')}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.email ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
                                     />
+                                    {errors.email && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                                    )}
                                 </div>
 
+                                {/* ===== تلفن ===== */}
+                                <div>
+                                    <input
+                                        type="tel"
+                                        placeholder="شماره تماس"
+                                        {...register('phone')}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
+                                    />
+                                    {errors.phone && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
+                                    )}
+                                </div>
+
+                                {/* ===== شهر و کد پستی ===== */}
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
                                         <input
                                             type="text"
-                                            name="city"
                                             placeholder="شهر"
-                                            value={formData.city}
-                                            onChange={handleInputChange}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-sm bg-white/50 focus:bg-white"
-                                            required
+                                            {...register('city')}
+                                            className={`w-full px-4 py-3 rounded-xl border ${errors.city ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
                                         />
+                                        {errors.city && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>
+                                        )}
                                     </div>
                                     <div>
                                         <input
                                             type="text"
-                                            name="postalCode"
                                             placeholder="کد پستی"
-                                            value={formData.postalCode}
-                                            onChange={handleInputChange}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-sm bg-white/50 focus:bg-white"
-                                            required
+                                            {...register('postalCode')}
+                                            className={`w-full px-4 py-3 rounded-xl border ${errors.postalCode ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
                                         />
+                                        {errors.postalCode && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.postalCode.message}</p>
+                                        )}
                                     </div>
                                 </div>
 
+                                {/* ===== آدرس ===== */}
                                 <div>
                                     <input
                                         type="text"
-                                        name="address"
                                         placeholder="آدرس کامل"
-                                        value={formData.address}
-                                        onChange={handleInputChange}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-sm bg-white/50 focus:bg-white"
-                                        required
+                                        {...register('address')}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.address ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
                                     />
+                                    {errors.address && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>
+                                    )}
                                 </div>
 
+                                {/* ===== کشور ===== */}
                                 <div>
                                     <select
-                                        name="country"
-                                        value={formData.country}
-                                        onChange={handleInputChange}
+                                        {...register('country')}
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-sm bg-white/50 focus:bg-white cursor-pointer"
-                                        required
                                     >
                                         <option value="ایران">🇮🇷 ایران</option>
                                         <option value="افغانستان">🇦🇫 افغانستان</option>
@@ -332,30 +411,32 @@ export default function CartPage() {
                                     </select>
                                 </div>
 
+                                {/* ===== دکمه پرداخت ===== */}
                                 <button
                                     type="submit"
-                                    className="w-full py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+                                    disabled={isSubmitting}
+                                    className="w-full py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                    </svg>
-                                    پرداخت آنلاین
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            در حال پردازش...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg>
+                                            پرداخت آنلاین
+                                        </>
+                                    )}
                                 </button>
                             </form>
+
                         </div>
                     </div>
                 </div>
             </div>
-
-            <style jsx>{`
-                @keyframes bounce-slow {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-10px); }
-                }
-                .animate-bounce-slow {
-                    animation: bounce-slow 3s ease-in-out infinite;
-                }
-            `}</style>
         </div>
     );
 }

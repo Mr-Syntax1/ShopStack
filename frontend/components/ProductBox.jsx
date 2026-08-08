@@ -3,7 +3,7 @@ import Link from "next/link";
 import { formatPrice } from '../lib/persian';
 import { useCart } from "@/context/CartContext";
 import toast from 'react-hot-toast';
-import { showSuccessToast } from './CustomToast';
+import { showAddToCartToast } from './CustomToast';
 
 export default function ProductBox({ product, priority = false }) {
     const { addToCart, getDiscountedPrice } = useCart();
@@ -16,7 +16,7 @@ export default function ProductBox({ product, priority = false }) {
         }
 
         addToCart(product);
-        showSuccessToast(product);
+        showAddToCartToast(product);
     };
 
     return (

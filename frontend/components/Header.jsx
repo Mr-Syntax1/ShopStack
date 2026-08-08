@@ -2,13 +2,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import logo from './icons/logo2.png'
 import { formatPrice } from "../lib/persian";
 import { useCart } from "@/context/CartContext";
 
 export default function Header() {
     const [isOpenHamburger, setIsOpenHamburger] = useState(false)
-    const { cartCount } = useCart()
+    const { cart } = useCart()
 
     return (
         <header className="bg-white/30 backdrop-blur-xl text-black shadow-lg fixed w-full top-0 z-50 font-sans text-sm border-b border-white/20">
@@ -17,7 +16,7 @@ export default function Header() {
                 {/* logo */}
                 <Link href="/" className="shrink-0">
                     <Image
-                        src={logo}
+                        src={'/images/logo.png'}
                         alt="logo"
                         width={96}
                         height={96}
@@ -76,7 +75,7 @@ export default function Header() {
 
                         {/* counter */}
                         <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                            {formatPrice(cartCount)}
+                            {formatPrice(cart.length)}
                         </span>
                     </Link>
 

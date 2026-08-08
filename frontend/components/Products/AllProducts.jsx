@@ -2,23 +2,27 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link'; // اضافه کردن import Link
 import ProductToolbar from './ProductToolbar';
 import ProductsGrid from './ProductsGrid';
 import Pagination from './Pagination';
 import EmptyState from './EmptyState';
+import Error from '../Error';
+import Loading from '../Loading';
 
 export default function AllProducts({
     initialProducts = [],
     initialCategory = 'همه',
     initialPage = 1
 }) {
-    const router = useRouter();
-    const searchParams = useSearchParams();
+    const router = useRouter();// تغییر مسیر و دریافت اطلاعات مسیر
+    const searchParams = useSearchParams();// برای دریافت پارامترهای جستجوی URL
 
-    // // استفاده از رفرنس برای جلوگیری از بازنشانی غیرضروری توابع در هر رندر
-    // // چون searchParams در هر رندر یک شیء جدید است، از رفرنس برای دسترسی به آخرین مقدار استفاده می‌کنیم
     const searchParamsRef = useRef(searchParams);
-    searchParamsRef.current = searchParams;
+
+    useEffect(() => {
+        searchParamsRef.current = searchParams;
+    }, [searchParams]);// ذخیره‌ی آخرین مقدار searchParams در یک متغیر
 
     const [allProducts, setAllProducts] = useState(initialProducts);
     const [loading, setLoading] = useState(initialProducts.length === 0);
@@ -39,6 +43,7 @@ export default function AllProducts({
     const fetchProducts = useCallback(() => {
         setLoading(true);
         setError(null);
+
         fetch('/api/products')
             .then(res => {
                 if (!res.ok) throw new Error('خطا در دریافت اطلاعات');
@@ -204,27 +209,34 @@ export default function AllProducts({
         handleCategoryChange('همه');
     }, [handleCategoryChange]);
 
-    // // نمایش لودینگ
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                    <p className="mt-4 text-gray-600">در حال بارگذاری ...</p>
-                </div>
-            </div>
-        );
+    useEffect(() => {
+        if (!loading) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [loading]);
+
+    // نمایش خطا
+    if (error) {
+        return <Error error={error} onRetry={fetchProducts} />;
     }
 
-    // // نمایش خطا
-    if (error) {
+    // نمایش لودینگ
+    if (loading) {
+        return <Loading />;
+    }
+
+
+    // اگر هیچ محصولی وجود نداره و خطا هم نیست ولی loading تموم شده
+    if (!loading && !error && allProducts.length === 0) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <p className="text-gray-600 mb-4">{error}</p>
+                    <div className="text-6xl mb-4">📦</div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">محصولی یافت نشد</h3>
+                    <p className="text-gray-500">هیچ محصولی در سیستم ثبت نشده است.</p>
                     <button
                         onClick={fetchProducts}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-xl transition-all hover:bg-indigo-700 cursor-pointer"
+                        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
                         تلاش مجدد
                     </button>
@@ -235,17 +247,37 @@ export default function AllProducts({
 
     // // رندر اصلی
     return (
-        <div className="min-h-screen bg-gray-50/50 py-8 sm:py-12 lg:py-16">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="min-h-screen bg-gray-50/50">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 overflow-hidden">
 
                 {/* عنوان */}
-                <div className="mb-8 sm:mb-12 text-center">
-                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 ">
-                        {selectedCategory !== 'همه' ? `محصولات ${selectedCategory}` : 'همه محصولات'}
-                    </h1>
-                    <p className="text-gray-500 mt-2">
-                        {filteredProducts.length} محصول از {allProducts.length} محصول موجود
-                    </p>
+                <div className="relative text-center mb-12 sm:mb-16">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-64 h-64 sm:w-96 sm:h-96 bg-purple-200/20 rounded-full blur-3xl" />
+                        <div className="w-48 h-48 sm:w-64 sm:h-64 bg-indigo-200/20 rounded-full blur-3xl -ml-20" />
+                    </div>
+
+                    <div className="relative">
+                        <span className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-2 sm:mb-3 border border-purple-100/50">
+                            {selectedCategory !== 'همه' ? `دسته‌بندی ${selectedCategory}` : 'همه محصولات'}
+                        </span>
+                        <h1 className="text-5xl lg:text-6xl font-bold text-gray-800 mb-2 sm:mb-3">
+                            {selectedCategory !== 'همه' ? (
+                                <>
+                                    محصولات <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{selectedCategory}</span>
+                                </>
+                            ) : (
+                                <>
+                                    همه <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">محصولات</span>
+                                </>
+                            )}
+                        </h1>
+                        <p className="text-sm md:text-base text-gray-500">
+                            <span className="font-semibold text-gray-800">{filteredProducts.length}</span> محصول از {' '}
+                            <span className="font-semibold text-gray-800">{allProducts.length}</span> محصول موجود
+                        </p>
+                        <div className="w-16 sm:w-20 md:w-24 h-1 bg-linear-to-r from-purple-600 to-indigo-600 mx-auto rounded-full mt-3 sm:mt-4" />
+                    </div>
                 </div>
 
                 {/* نوار ابزار */}

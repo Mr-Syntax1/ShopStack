@@ -20,14 +20,23 @@ export async function GET(req, { params }) {
             );
         }
 
+        // ============================================
         // ۲. محصولات مرتبط از همان دسته (حداکثر ۴ تا)
+        // نکته مهم: _id و id رو هم باید انتخاب کنی
+        // چون در صفحه جزئیات محصول، دکمه "افزودن به سبد خرید"
+        // نیاز به این شناسه‌ها داره تا CartContext بتونه آیتم رو مدیریت کنه
+        // و در نهایت وقتی سفارش ثبت میشه، productId لازم هست
+        // قبلا فقط title slug image price discount انتخاب میشد
+        // که باعث می‌شد _id وجود نداشته باشه و سفارش با خطای
+        // "productId is required" مواجه بشه
+        // ============================================
         const relatedProducts = await Product.find({
-            category: product.category,// same category
-            slug: { $ne: decodedSlug } // غیر از خودش
+            category: product.category,
+            slug: { $ne: decodedSlug }
         })
             .limit(4)
-            .select('title slug image price discount') // فقط فیلدهای لازم
-            .lean(); // تبدیل به Object ساده برای سرعت بیشتر
+            .select('title slug image price discount _id id')
+            .lean();
 
         return NextResponse.json(relatedProducts, { status: 200 });
 

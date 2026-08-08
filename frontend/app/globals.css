@@ -159,3 +159,90 @@ body {
 }
 
 /* ==== Toast ==== */
+
+
+/* ==== loading animations ==== */
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-slow-reverse {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes dot-1 {
+
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes dot-2 {
+
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.4;
+  }
+
+  33% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes dot-3 {
+
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.4;
+  }
+
+  66% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-slow-reverse 4s linear infinite;
+}
+
+.animate-dot-1 {
+  animation: dot-1 1.2s ease-in-out infinite;
+}
+
+.animate-dot-2 {
+  animation: dot-2 1.2s ease-in-out infinite;
+}
+
+.animate-dot-3 {
+  animation: dot-3 1.2s ease-in-out infinite;
+}
+
+/* ==== loading animations ==== */
