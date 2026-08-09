@@ -1,13 +1,9 @@
+import { generateProductMetadata } from "@/metadata/products";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from 'next/navigation';
 import { formatPrice } from '../../../lib/persian';
 import AddToCartButton from "@/components/AddToCartButton";
-
-export const metadata = {
-    title: "صفحه جزعیات | OnlineShop",
-    description: "محصول و کالا های جزعیات OnlineShop",
-};
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -16,6 +12,34 @@ function shuffleArray(array) {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
+}
+
+// برای ارسال دیتای اسلاگ به generateProductMetadata
+export async function generateMetadata({ params }) {
+    const { slug } = await params;
+    const decodedSlug = decodeURIComponent(slug);
+
+    try {
+        const res = await fetch(`http://localhost:3000/api/products/${decodedSlug}`, {
+            cache: 'no-store'
+        });
+
+        if (!res.ok) {
+            return {
+                title: "محصول یافت نشد | OnlineShop",
+                description: "محصول مورد نظر شما یافت نشد.",
+            };
+        }
+
+        const product = await res.json();
+        return generateProductMetadata(product); // استفاده از تابع ایمپورت شده
+
+    } catch (error) {
+        return {
+            title: "خطا | OnlineShop",
+            description: "مشکلی در دریافت اطلاعات محصول پیش آمده است.",
+        };
+    }
 }
 
 export default async function ProductDetail({ params }) {

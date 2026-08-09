@@ -121,6 +121,15 @@ export function CartProvider({ children }) {
         return product.price
     }
 
+    // تخفیف محصولات 
+    const discountAmount = cart.reduce((total, item) => {
+        if (item.discount > 0) {
+            const discountedPrice = Math.round(item.price * (1 - item.discount / 100));
+            return total + ((item.price - discountedPrice) * item.quantity);
+        }
+        return total;
+    }, 0);
+
 
     // دریافت قیمت کل یک محصول (با تعداد)
     function getItemTotal(product) {
@@ -128,12 +137,18 @@ export function CartProvider({ children }) {
         return discountedPrice * product.quantity
     }
 
+    // قیمت کل بدون تخفیف
+    const subtotal = useMemo(() => {
+        return cart.reduce((total, item) => {
+            return total + (item.price * item.quantity)
+        }, 0)
+    }, [cart])
+
 
     // مقادیر ارائه شده به Context
     return (
         <CartContext.Provider value={{
             cart,                    // لیست محصولات سبد خرید
-            setCart,
             cartCount,               // تعداد کل آیتم‌ها
             cartTotal,               // قیمت کل (با تخفیف)
             shippingCost,            // هزینه ارسال
@@ -144,6 +159,8 @@ export function CartProvider({ children }) {
             clearCart,               // خالی کردن سبد
             getDiscountedPrice,      // دریافت قیمت با تخفیف
             getItemTotal,            // دریافت قیمت کل یک محصول
+            subtotal,                // قیمت کل بدون تخفیف
+            discountAmount,           //  تخفیف محصولات 
         }}>
             {children}
         </CartContext.Provider>
@@ -151,7 +168,6 @@ export function CartProvider({ children }) {
 }
 export function useCart() {
     const context = useContext(CartContext)
-    // اگر خارج از Provider استفاده شود، خطا بده
     if (!context) {
         throw new Error('useCart باید داخل CartProvider استفاده شود')
     }

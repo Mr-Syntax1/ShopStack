@@ -5,7 +5,6 @@ import FeaturesSection from "@/components/home/FeaturesSection";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import Container from "@/components/shared/Container";
 import { testimonialsData } from "@/data/homeData";
-import png from '../components/icons/logo2.png'
 
 export const metadata = homeMetadata;
 

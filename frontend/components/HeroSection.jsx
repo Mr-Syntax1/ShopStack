@@ -115,17 +115,23 @@ const HeroSection = () => {
                                 </div>
                             </div>
 
-                            <div className="absolute -bottom-6 -left-6 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20 animate-bounce-slow">
+                            <div className="absolute -bottom-6 -left-2 md:-left-6 bg-white rounded-2xl px-8 py-4 shadow-xl shadow-blue-500/30 border border-blue-100/50 animate-bounce-slow">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-green-400 to-emerald-500 flex items-center justify-center text-2xl">
-                                        🛒
+                                    <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
                                     </div>
+
                                     <div>
-                                        <p className="text-sm font-semibold text-gray-900">ارسال رایگان</p>
-                                        <p className="text-xs text-gray-500">سفارش‌های بالای ۵۰۰ هزار</p>
+                                        <p className="text-sm font-bold text-gray-800 flex flex-row gap-1">   <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                        </svg> ارسال رایگان</p>
+                                        <p className="text-[10px] text-gray-400">سفارش‌های بالای ۵۰۰ هزار</p>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

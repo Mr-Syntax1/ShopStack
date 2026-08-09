@@ -27,6 +27,7 @@ export default function FeaturesSection() {
                             className="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg shadow-gray-100/50 border border-gray-100/80 hover:shadow-2xl hover:shadow-blue-100/50 hover:-translate-y-2 transition-all duration-500"
                         >
                             <div className={`absolute inset-0 bg-linear-to-br ${feature.linear} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`} />
+
                             <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${feature.linear} flex items-center justify-center mb-5 shadow-lg shadow-blue-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
                                 {feature.svg}
                             </div>
