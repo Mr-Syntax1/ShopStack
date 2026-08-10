@@ -22,7 +22,7 @@ const menuItems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
       </svg>
     ),
-    href: "/dashboard/orders"
+    href: "/orders"
   },
   {
     label: "محصولات",
@@ -31,7 +31,7 @@ const menuItems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
     ),
-    href: "/dashboard/products"
+    href: "/products"
   },
   {
     label: "مشتریان",
@@ -40,7 +40,7 @@ const menuItems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
       </svg>
     ),
-    href: "/dashboard/customers"
+    href: "/customers"
   },
   {
     label: "تحلیل",
@@ -49,7 +49,7 @@ const menuItems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
       </svg>
     ),
-    href: "/dashboard/analytics"
+    href: "/analytics"
   },
   {
     label: "تنظیمات",
@@ -59,7 +59,7 @@ const menuItems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
-    href: "/dashboard/settings"
+    href: "/settings"
   },
 ];
 
@@ -115,7 +115,8 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* منو */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-1">
           {menuItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href));
+            const isActive = pathname === item.href ||
+              (item.href !== "/" && pathname?.startsWith(item.href) && pathname?.length > item.href.length);
             return (
               <Link
                 key={item.label}

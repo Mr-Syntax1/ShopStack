@@ -1,4 +1,5 @@
 import "./globals.css";
+import SidebarWrapper from "@/components/SidebarWrapper";
 
 export const metadata = {
   title: "پنل مدیریت | OnlineShop",
@@ -8,13 +9,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="fa" dir="rtl">
-      <body className="bg-gray-50/50 min-h-screen">
-        <div className="flex">
-          {/* سایدبار (بعداً اضافه میشه) */}
-          <main className="flex-1 overflow-hidden">
+      <body className="min-h-screen bg-gray-50/50">
+        <SidebarWrapper />
+        <main className="lg:mr-64 min-h-screen">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             {children}
-          </main>
-        </div>
+          </div>
+        </main>
       </body>
     </html>
   );
