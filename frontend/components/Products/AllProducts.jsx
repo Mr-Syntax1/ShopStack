@@ -35,7 +35,7 @@ export default function AllProducts({
     const [page, setPage] = useState(
         searchParams.get('page') ? parseInt(searchParams.get('page')) : initialPage
     );
-    const [sortBy, setSortBy] = useState('default');
+    const [sortBy, setSortBy] = useState('newest');
 
     const ppg = 20;
 
@@ -105,6 +105,8 @@ export default function AllProducts({
         return ['همه', ...categorySet];
     }, [allProducts]);
 
+
+
     // // فیلتر، جستجو و مرتب‌سازی محصولات
     const filteredProducts = useMemo(() => {
         let result = allProducts;
@@ -127,6 +129,21 @@ export default function AllProducts({
 
         // // مرتب‌سازی
         switch (sortBy) {
+            case 'newest':
+                result = [...result].sort((a, b) => {
+                    // اولویت با updatedAt (برای محصولات جدیدتر)
+                    if (a.updatedAt && b.updatedAt) {
+                        return new Date(b.updatedAt) - new Date(a.updatedAt);
+                    }
+                    // اگر updatedAt نداشت، از createdAt استفاده کن
+                    if (a.createdAt && b.createdAt) {
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    }
+                    // در غیر این صورت از id استفاده کن
+                    return (b.id || 0) - (a.id || 0);
+                });
+                break;
+
             case 'price-asc':
                 result = [...result].sort((a, b) => (a.price || 0) - (b.price || 0));
                 break;

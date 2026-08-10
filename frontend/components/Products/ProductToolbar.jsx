@@ -39,14 +39,13 @@ export default function ProductToolbar({
                             <option key={cat} value={cat}>{cat}</option>
                         ))}
                     </select>
-
                     <select
                         value={sortBy}
                         onChange={(e) => onSortChange(e.target.value)}
                         aria-label="مرتب‌سازی"
                         className="px-1 md:px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white min-w-[140px]"
                     >
-                        <option value="default">پیش‌فرض</option>
+                        <option value="newest">جدیدترین</option>  {/* این رو عوض کنید */}
                         <option value="price-asc">قیمت: کم به زیاد</option>
                         <option value="price-desc">قیمت: زیاد به کم</option>
                         <option value="rating">امتیاز</option>

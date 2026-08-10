@@ -127,14 +127,14 @@ export default function ProductTable({ products, onDelete }) {
                                     >
                                         <EditIcon />
                                     </Link>
-                                    {/* <Link
-                                        href={`/products/${product.slug}`}
+                                    <Link
+                                        href={`http://localhost:3000/products/${product.slug}`}
                                         target="_blank"
                                         className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                                         title="مشاهده در سایت"
                                     >
                                         <ViewIcon />
-                                    </Link> */}
+                                    </Link>
                                     <DeleteButton
                                         productSlug={product.slug}
                                         productTitle={product.title}

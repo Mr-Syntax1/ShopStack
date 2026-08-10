@@ -13,11 +13,6 @@ function generateSlug(title) {
 }
 
 const ProductSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true // مقدار این باید یکتا و منحصر به فرد باشه
-    },
     title: {
         type: String,
         required: true,
@@ -39,11 +34,6 @@ const ProductSchema = new mongoose.Schema({
         trim: true
     },
     category: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    subCategory: {
         type: String,
         required: true,
         trim: true
@@ -89,8 +79,16 @@ const ProductSchema = new mongoose.Schema({
     timestamps: true // اضافه کردن createdAt و updatedAt به صورت خودکار
 });
 
+// ============================================================
+// === FIX: در Mongoose 6+ (اینجا نسخه 9.x) پارامتر next() از
+// === میدلورها حذف شده و دیگر پاس داده نمی‌شود. فراخوانی next()
+// === باعث خطای "next is not a function" می‌شد و ذخیره‌سازی
+// === (POST محصول) با 500 شکست می‌خورد.
+// === راه حل: حذف پارامتر next و فراخوانی next() و استفاده از
+// === async/await برای مدیریت خطاها.
+// ============================================================
 // میدلور قبل از ذخیره: slug رو خودکار بساز
-ProductSchema.pre('save', async function (next) {
+ProductSchema.pre('save', async function () {
     // اگر slug وجود نداره یا title تغییر کرده، slug رو بساز
     if (!this.slug || this.isModified('title')) {
         let baseSlug = generateSlug(this.title);
@@ -108,11 +106,14 @@ ProductSchema.pre('save', async function (next) {
 
         this.slug = slug;
     }
-    next();
 });
 
+// ============================================================
+// === FIX: همان مشکل next() در میدلور آپدیت (برای جلوگیری از
+// === خطای مشابه هنگام ویرایش محصول).
+// ============================================================
 // میدلور قبل از آپدیت: اگر title تغییر کرده، slug رو به‌روز کن
-ProductSchema.pre('findOneAndUpdate', async function (next) {
+ProductSchema.pre('findOneAndUpdate', async function () {
     const update = this.getUpdate();
     if (update.title) {
         const Product = this.model;
@@ -130,8 +131,15 @@ ProductSchema.pre('findOneAndUpdate', async function (next) {
             this.set({ slug });
         }
     }
-    next();
 });
+
+// ============================================================
+// === در حالت توسعه مدل کش‌شده رو پاک می‌کنیم تا تغییرات schema
+// === (مثل اصلاح میدلورها) بدون ری‌استارت سرور اعمال بشه.
+// ============================================================
+if (process.env.NODE_ENV === 'development') {
+    delete mongoose.models.Product;
+}
 
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);
 
