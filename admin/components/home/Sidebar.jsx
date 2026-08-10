@@ -122,12 +122,12 @@ export default function Sidebar({ isOpen, onClose }) {
                 key={item.label}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13.5px] font-medium transition-all duration-200 ${isActive
+                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13.5px] font-semibold transition-all duration-200 ${isActive
                   ? "bg-indigo-50 text-indigo-700 shadow-sm"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                   }`}
               >
-                <span className={`w-5 h-5 ${isActive ? "text-indigo-600" : "text-gray-400"}`}>
+                <span className={`w-5 h-5 ${isActive ? "text-indigo-600 " : "text-gray-400"}`}>
                   {item.icon}
                 </span>
                 {item.label}

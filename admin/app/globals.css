@@ -85,26 +85,50 @@
     background: linear-gradient(to bottom, #4338ca, #4f46e5);
 }
 
+/* تعریف فونت وزیر */
+@font-face {
+    font-family: 'Vazirmedium';
+    src: url('../fonts/Vazir-Medium.eot') format('eot');
+    src: url('../fonts/Vazir-Medium.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/Vazir-Medium.woff2') format('woff2'),
+        url('../fonts/Vazir-Medium.woff') format('woff'),
+        url('../fonts/Vazir-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* thin */
+@font-face {
+    font-family: 'Vazir-light';
+    src: url('../fonts/Vazir-Light-FD-WOL.eot') format('eot');
+    src: url('../fonts/Vazir-Light-FD-WOL.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/Vazir-Light-FD-WOL.woff') format('woff2'),
+        url('../fonts/Vazir-Light-FD-WOL.woff') format('woff'),
+        url('../fonts/Vazir-Light-FD-WOL.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+.vazir-medium {
+    font-family: 'Vazirmedium', sans-serif;
+}
+
+
 /* Firefox */
 * {
     scrollbar-width: thin;
     scrollbar-color: #4f46e5 #f1f5f9;
+    font-family: 'Vazir-light', sans-serif;
 }
 
 
 body {
     background: var(--color-canvas);
     color: var(--color-ink);
-    font-family: var(--font-body);
-}
-
-.font-display {
-    font-family: var(--font-display);
-}
-
-.font-num {
-    font-family: var(--font-num);
-    font-variant-numeric: tabular-nums;
+    font-family: 'Vazir-light', sans-serif;
+    opacity: 100;
 }
 
 /* subtle scrollbar for horizontal ticker */
