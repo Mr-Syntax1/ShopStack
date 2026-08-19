@@ -1,4 +1,3 @@
-// app/api/products/route.js
 import { connectedToDatabase } from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { NextResponse } from "next/server";
@@ -12,15 +11,16 @@ export async function GET(request) {
         const category = searchParams.get('category') || '';
         const sort = searchParams.get('sort') || 'newest';
         const page = parseInt(searchParams.get('page')) || 1;
-        const limit = parseInt(searchParams.get('limit')) || 10;
+        const limit = parseInt(searchParams.get('limit')) || 15;
         const skip = (page - 1) * limit;
 
         // ساخت فیلتر
         const filter = {};
         if (category) filter.category = category;
         if (search) {
-            filter.$or = [
+            filter.$or = [ // یا
                 { title: { $regex: search, $options: 'i' } },
+                // عبارت منظم و حساس نبودن به حروف بزرگ/کوچک     
                 { description: { $regex: search, $options: 'i' } },
                 { brand: { $regex: search, $options: 'i' } },
             ];
@@ -33,28 +33,28 @@ export async function GET(request) {
                 sortOption = { updatedAt: -1 };
                 break;
             case 'price-asc':
-                sortOption = { price: 1 };
+                sortOption = { price: 1 }; // کم به زیاد 
                 break;
             case 'price-desc':
-                sortOption = { price: -1 };
+                sortOption = { price: -1 }; // قیمت زیاد به کم
                 break;
             case 'stock-asc':
-                sortOption = { stock: 1 };
+                sortOption = { stock: 1 }; // موجودی کمترین
                 break;
             case 'stock-desc':
-                sortOption = { stock: -1 };
+                sortOption = { stock: -1 }; // موجودی بیشترین
                 break;
             case 'popular':
-                sortOption = { reviews: -1 };
+                sortOption = { reviews: -1 }; // محبوب‌ترین
                 break;
             case 'rating':
-                sortOption = { rating: -1 };
+                sortOption = { rating: -1 }; // بالاترین امتیاز
                 break;
             default:
                 sortOption = { updatedAt: -1 };
         }
 
-        // دریافت محصولات با populate اگر نیاز باشد
+        // دریافت محصولات 
         const products = await Product.find(filter)
             .sort(sortOption)
             .skip(skip)
@@ -69,7 +69,7 @@ export async function GET(request) {
             total,
             page,
             limit,
-            totalPages: Math.ceil(total / limit),
+            totalPages: Math.ceil(total / limit), // برای عدد کامل کردنش
         }, { status: 200 });
 
     } catch (error) {
@@ -82,13 +82,10 @@ export async function GET(request) {
 }
 
 
-// app/api/products/route.js
 export async function POST(req) {
     try {
         await connectedToDatabase();
         const data = await req.json();
-
-        console.log('📦 Data received:', data); // لاگ کامل داده
 
         // بررسی فیلدهای ضروری
         const requiredFields = ['title', 'price', 'description', 'category', 'image', 'brand', 'stock'];
@@ -103,14 +100,6 @@ export async function POST(req) {
                 },
                 { status: 400 }
             );
-        }
-
-        // اگر id در مدل هست و باید ارسال بشه
-        if (!data.id && data.id !== 0) {
-            // می‌تونید خودکار id بسازید یا خطا بدید
-            // راه حل: خودکار id بسازید (آخرین id + 1)
-            const lastProduct = await Product.findOne().sort({ id: -1 });
-            data.id = lastProduct ? lastProduct.id + 1 : 1;
         }
 
         const newProduct = new Product(data);

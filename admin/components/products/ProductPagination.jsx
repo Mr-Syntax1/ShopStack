@@ -36,6 +36,7 @@ export default function ProductPagination({
                 نمایش {((currentPage - 1) * limit) + 1} تا{' '}
                 {Math.min(currentPage * limit, totalProducts)} از {totalProducts} محصول
             </div>
+
             <div className="flex items-center gap-1">
                 {/* دکمه اولین صفحه */}
                 <button
@@ -62,11 +63,14 @@ export default function ProductPagination({
                     let pageNum;
                     if (totalPages <= 5) {
                         pageNum = i + 1;
-                    } else if (currentPage <= 3) {
+                    }
+                    else if (currentPage <= 3) {
                         pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
+                    }
+                    else if (currentPage >= totalPages - 2) {
                         pageNum = totalPages - 4 + i;
-                    } else {
+                    }
+                    else {
                         pageNum = currentPage - 2 + i;
                     }
                     return (
@@ -74,8 +78,8 @@ export default function ProductPagination({
                             key={pageNum}
                             onClick={() => onPageChange(pageNum)}
                             className={`min-w-[36px] h-9 px-3 rounded-lg text-sm transition-colors cursor-pointer ${currentPage === pageNum
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'border border-gray-300 hover:bg-gray-50'
+                                ? 'bg-indigo-600 text-white'
+                                : 'border border-gray-300 hover:bg-gray-50'
                                 }`}
                         >
                             {pageNum}

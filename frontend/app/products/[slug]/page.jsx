@@ -14,13 +14,15 @@ function shuffleArray(array) {
     return shuffled;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
 // برای ارسال دیتای اسلاگ به generateProductMetadata
 export async function generateMetadata({ params }) {
     const { slug } = await params;
     const decodedSlug = decodeURIComponent(slug);
 
     try {
-        const res = await fetch(`http://localhost:3000/api/products/${decodedSlug}`, {
+        const res = await fetch(`${API_URL}/api/products/${decodedSlug}`, {
             cache: 'no-store'
         });
 
@@ -46,7 +48,7 @@ export default async function ProductDetail({ params }) {
     const { slug } = await params;
     const decodedSlug = decodeURIComponent(slug);
 
-    const res = await fetch(`http://localhost:3000/api/products/${decodedSlug}`, {
+    const res = await fetch(`${API_URL}/api/products/${decodedSlug}`, {
         cache: 'no-store'
     });
 
@@ -56,7 +58,7 @@ export default async function ProductDetail({ params }) {
 
     const product = await res.json();
 
-    const relatedRes = await fetch(`http://localhost:3000/api/products/related/${decodedSlug}`, {
+    const relatedRes = await fetch(`${API_URL}/api/products/related/${decodedSlug}`, {
         cache: 'no-store'
     });
     const relatedProducts = relatedRes.ok ? shuffleArray(await relatedRes.json()).slice(0, 4) : [];

@@ -2,11 +2,13 @@
 import Link from 'next/link';
 import Productlist from './ProductList';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+
 export default async function LatestProducts() {
     try {
         // Use the full URL with environment variable
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        const res = await fetch(`${baseUrl}/api/products`, {
+        const res = await fetch(`${API_URL}/api/products`, {
             next: { revalidate: 60 } // Revalidate every 60 seconds for ISR
         });
 

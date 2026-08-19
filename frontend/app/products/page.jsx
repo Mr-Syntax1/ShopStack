@@ -4,13 +4,16 @@ import AllProducts from "@/components/Products/AllProducts";
 export const metadata = productsMetadata;
 
 export default async function ProductsPage({ searchParams }) {
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
+
     // منتظر ماندن برای searchParams
     const params = await searchParams;
     const category = params?.category || 'همه';
     const page = params?.page || 1;
 
     // const url = new URL('api/products');
-    const url = new URL('http://localhost:3000/api/products');
+    const url = new URL(`${API_URL}/api/products`);
 
     // دریافت محصولات با مدیریت خطا
     try {

@@ -10,6 +10,9 @@ import EmptyState from './EmptyState';
 import Error from '../Error';
 import Loading from '../Loading';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+
 export default function AllProducts({
     initialProducts = [],
     initialCategory = 'همه',
@@ -44,7 +47,7 @@ export default function AllProducts({
         setLoading(true);
         setError(null);
 
-        fetch('/api/products')
+        fetch(`${API_URL}/api/products`)
             .then(res => {
                 if (!res.ok) throw new Error('خطا در دریافت اطلاعات');
                 return res.json();
@@ -197,7 +200,7 @@ export default function AllProducts({
             params.delete('category');
         }
 
-        router.replace(`/products?${params.toString()}`, { scroll: false });
+        router.replace(`${API_URL}/products?${params.toString()}`, { scroll: false });
     }, [router]);
 
     const goToPage = useCallback((newPage) => {

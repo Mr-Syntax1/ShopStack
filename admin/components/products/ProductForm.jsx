@@ -2,43 +2,173 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import Link from 'next/link';
 
-export default function ProductForm({ onSubmit, isLoading }) {
-    const [formData, setFormData] = useState({
-        title: '',
-        price: '',
-        description: '',
-        category: '',
-        image: '',
-        brand: '',
-        stock: '',
-        discount: '',
-        tags: [],
-    });
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+// ==============================
+// اسکیما برای اعتبارسنجی با Yup
+// ==============================
+const productSchema = yup.object({
+    title: yup
+        .string()
+        .required('عنوان محصول الزامی است')
+        .min(3, 'عنوان حداقل ۳ کاراکتر باشد'),
+    price: yup
+        .number()
+        .required('قیمت الزامی است')
+        .positive('قیمت باید بزرگتر از ۰ باشد')
+        .typeError('قیمت باید عدد باشد'),
+    description: yup
+        .string()
+        .required('توضیحات الزامی است')
+        .min(10, 'توضیحات حداقل ۱۰ کاراکتر باشد'),
+    category: yup
+        .string()
+        .required('دسته‌بندی الزامی است')
+        .min(2, 'دسته‌بندی حداقل ۲ کاراکتر باشد'),
+    image: yup
+        .string()
+        .required('آدرس تصویر الزامی است')
+        .url('آدرس تصویر معتبر نیست'),
+    brand: yup
+        .string()
+        .required('برند الزامی است')
+        .min(2, 'برند حداقل ۲ کاراکتر باشد'),
+    stock: yup
+        .number()
+        .required('موجودی الزامی است')
+        .min(0, 'موجودی نمی‌تواند منفی باشد')
+        .typeError('موجودی باید عدد باشد'),
+    discount: yup
+        .number()
+        .min(0, 'تخفیف نمی‌تواند منفی باشد')
+        .max(100, 'تخفیف حداکثر ۱۰۰٪ است')
+        .typeError('تخفیف باید عدد باشد')
+        .default(0),
+    tags: yup
+        .array()
+        .of(yup.string())
+        .default([]),
+});
+
+// ==============================
+//  کامپوننت اصلی
+// ==============================
+export default function ProductForm({ onSubmit, isLoading, initialData, isEdit = false }) {
     const [categories, setCategories] = useState([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [isNewCategory, setIsNewCategory] = useState(false);
-    const [newCategory, setNewCategory] = useState('');
     const [tagInput, setTagInput] = useState('');
-    const [errors, setErrors] = useState({});
     const [imageError, setImageError] = useState(false);
+    const [displayPrice, setDisplayPrice] = useState('');
 
+
+    // ==============================
+    //  تنظیم React Hook Form با Yup
+    // ==============================
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        getValues,
+        formState: { errors },
+        reset,
+    } = useForm({
+        resolver: yupResolver(productSchema),
+        defaultValues: {
+            title: '',
+            price: '',
+            description: '',
+            category: '',
+            image: '',
+            brand: '',
+            stock: '',
+            discount: 0,
+            tags: [],
+        },
+    });
+
+    // تماشای مقدار image برای پیش‌نمایش
+    const imageValue = watch('image');
+    const tagsValue = watch('tags');
+
+
+
+    // ==============================
+    // مقداردهی اولیه با initialData (برای ویرایش)
+    // ==============================
     useEffect(() => {
-        setImageError(false);
-    }, [formData.image]);
+        if (initialData) {
+            reset({
+                title: initialData.title || '',
+                price: initialData.price || '',
+                description: initialData.description || '',
+                category: initialData.category || '',
+                image: initialData.image || '',
+                brand: initialData.brand || '',
+                stock: initialData.stock || '',
+                discount: initialData.discount || 0,
+                tags: initialData.tags || [],
+            });
 
-    // دریافت دسته‌بندی‌ها از دیتابیس
+            // تنظیم displayPrice برای نمایش فرمت شده
+            setDisplayPrice(formatPrice(initialData.price || ''));
+        }
+    }, [initialData, reset]);
+
+
+    // ===========================
+    // تابع فرمت کردن عدد
+    // ===========================
+    const formatPrice = (value) => {
+        if (!value) return '';
+        const num = String(value).replace(/,/g, '');
+        if (isNaN(num) || num === '') return '';
+        return new Intl.NumberFormat('en-US').format(num);
+    };
+
+    // وقتی initialData تغییر می‌کنه، مقدار رو فرمت کن
+    useEffect(() => {
+        if (initialData?.price) {
+            setDisplayPrice(formatPrice(initialData.price));
+        }
+    }, [initialData]);
+
+    // هندلر تغییر قیمت
+    const handlePriceChange = (e) => {
+        const raw = e.target.value.replace(/,/g, '');
+        // اگر خالی بود
+        if (raw === '') {
+            setDisplayPrice('');
+            setValue('price', '');
+            return;
+        }
+        // اگر عدد نبود، کاری نکن
+        if (isNaN(raw)) return;
+        const formatted = formatPrice(raw);
+        setDisplayPrice(formatted);
+        setValue('price', raw);
+    };
+
+
+    // ==============================
+    // دریافت دسته‌بندی‌ها
+    // ==============================
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 setLoadingCategories(true);
-                const res = await fetch('http://localhost:3001/api/categories');
+                const res = await fetch(`${API_URL}/api/categories`);
                 if (res.ok) {
                     const data = await res.json();
                     setCategories(data.map(cat => cat.name || cat));
+                    //اگر هر دسته‌بندی یک شیء با name بود، فقط name رو برمیداریم و 
+                    // اگر رشته بود، خود رشته رو
                 }
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -49,78 +179,46 @@ export default function ProductForm({ onSubmit, isLoading }) {
         fetchCategories();
     }, []);
 
-    // تغییر فیلدها
-    const handleChange = (e) => {
-        const { name, value, type } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'number' ? (value === '' ? '' : Number(value)) : value
-        }));
-        // پاک کردن خطا
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: '' }));
-        }
-    };
-
-    // تغییر دسته‌بندی
-    const handleCategoryChange = (e) => {
-        const value = e.target.value;
-        if (value === 'new') {
-            setIsNewCategory(true);
-            setFormData(prev => ({ ...prev, category: '' }));
-        } else {
-            setIsNewCategory(false);
-            setFormData(prev => ({ ...prev, category: value }));
-        }
-    };
-
-    // اضافه کردن تگ
+    // ==============================
+    // مدیریت تگ‌ها
+    // ==============================
     const addTag = () => {
-        if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-            setFormData(prev => ({
-                ...prev,
-                tags: [...prev.tags, tagInput.trim()]
-            }));
+        if (tagInput.trim() && !tagsValue.includes(tagInput.trim())) {
+            setValue('tags', [...tagsValue, tagInput.trim()]);
             setTagInput('');
         }
     };
 
-    // حذف تگ
     const removeTag = (tagToRemove) => {
-        setFormData(prev => ({
-            ...prev,
-            tags: prev.tags.filter(tag => tag !== tagToRemove)
-        }));
+        setValue('tags', tagsValue.filter(tag => tag !== tagToRemove));
     };
 
-    // اعتبارسنجی
-    const validate = () => {
-        const newErrors = {};
-        if (!formData.title) newErrors.title = 'عنوان محصول الزامی است';
-        if (!formData.price || formData.price <= 0) newErrors.price = 'قیمت معتبر الزامی است';
-        if (!formData.description) newErrors.description = 'توضیحات الزامی است';
-        if (!formData.category) newErrors.category = 'دسته‌بندی الزامی است';
-        if (!formData.image) newErrors.image = 'آدرس تصویر الزامی است';
-        if (!formData.brand) newErrors.brand = 'برند الزامی است';
-        if (!formData.stock || formData.stock < 0) newErrors.stock = 'موجودی معتبر الزامی است';
-        if (formData.discount < 0 || formData.discount > 100) newErrors.discount = 'تخفیف باید بین 0 تا 100 باشد';
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    // ارسال فرم
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validate()) {
-            onSubmit(formData);
+    // ==============================
+    // مدیریت دسته‌بندی جدید
+    // ==============================
+    const handleCategoryChange = (e) => {
+        const value = e.target.value;
+        if (value === 'new') {
+            setIsNewCategory(true);
+            setValue('category', '');
         } else {
-            toast.error('لطفاً فرم را کامل کنید');
+            setIsNewCategory(false);
+            setValue('category', value);
         }
     };
 
+    // ==============================
+    // ارسال فرم
+    // ==============================
+    const onFormSubmit = (data) => {
+        onSubmit(data);
+    };
+
+    // ==============================
+    // نمایش فرم
+    // ==============================
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 ">
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* عنوان */}
                 <div>
@@ -129,34 +227,32 @@ export default function ProductForm({ onSubmit, isLoading }) {
                     </label>
                     <input
                         type="text"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
+                        {...register('title')}
                         placeholder="مثال: گوشی سامسونگ گلکسی S24"
                         className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm ${errors.title ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                             }`}
                     />
                     {errors.title && (
-                        <p className="mt-1 text-sm text-red-500">{errors.title}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
                     )}
                 </div>
 
+                {/* قیمت */}
                 {/* قیمت */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
                         قیمت (تومان) <span className="text-red-500">*</span>
                     </label>
                     <input
-                        type="number"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        placeholder="مثال: 45000000"
+                        type="text"  // تغییر به text
+                        value={displayPrice}
+                        onChange={handlePriceChange}
+                        placeholder="مثال: ۴۵,۰۰۰,۰۰۰"
                         className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm ${errors.price ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                             }`}
                     />
                     {errors.price && (
-                        <p className="mt-1 text-sm text-red-500">{errors.price}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.price.message}</p>
                     )}
                 </div>
 
@@ -167,15 +263,13 @@ export default function ProductForm({ onSubmit, isLoading }) {
                     </label>
                     <input
                         type="number"
-                        name="stock"
-                        value={formData.stock}
-                        onChange={handleChange}
+                        {...register('stock')}
                         placeholder="مثال: 10"
                         className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm ${errors.stock ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                             }`}
                     />
                     {errors.stock && (
-                        <p className="mt-1 text-sm text-red-500">{errors.stock}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.stock.message}</p>
                     )}
                 </div>
 
@@ -186,15 +280,13 @@ export default function ProductForm({ onSubmit, isLoading }) {
                     </label>
                     <input
                         type="text"
-                        name="brand"
-                        value={formData.brand}
-                        onChange={handleChange}
+                        {...register('brand')}
                         placeholder="مثال: سامسونگ"
                         className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm ${errors.brand ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                             }`}
                     />
                     {errors.brand && (
-                        <p className="mt-1 text-sm text-red-500">{errors.brand}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.brand.message}</p>
                     )}
                 </div>
 
@@ -205,9 +297,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                     </label>
                     <input
                         type="number"
-                        name="discount"
-                        value={formData.discount}
-                        onChange={handleChange}
+                        {...register('discount')}
                         placeholder="مثال: 10"
                         min="0"
                         max="100"
@@ -215,7 +305,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                             }`}
                     />
                     {errors.discount && (
-                        <p className="mt-1 text-sm text-red-500">{errors.discount}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.discount.message}</p>
                     )}
                 </div>
 
@@ -231,7 +321,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                     ) : (
                         <>
                             <select
-                                value={isNewCategory ? 'new' : formData.category}
+                                value={isNewCategory ? 'new' : getValues('category')}
                                 onChange={handleCategoryChange}
                                 className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm ${errors.category ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                                     }`}
@@ -240,7 +330,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                                 {categories.map(cat => (
                                     <option key={cat} value={cat}>{cat}</option>
                                 ))}
-                                <option value="new" className="text-indigo-600 font-medium"> ایجاد دسته جدید</option>
+                                <option value="new" className="text-indigo-600 font-medium">➕ ایجاد دسته جدید</option>
                             </select>
 
                             {/* ورودی دسته جدید */}
@@ -248,11 +338,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                                 <div className="mt-2">
                                     <input
                                         type="text"
-                                        value={newCategory}
-                                        onChange={(e) => {
-                                            setNewCategory(e.target.value);
-                                            setFormData(prev => ({ ...prev, category: e.target.value }));
-                                        }}
+                                        {...register('category')}
                                         placeholder="نام دسته جدید را وارد کنید..."
                                         className="w-full px-4 py-2.5 border border-indigo-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm bg-indigo-50"
                                         autoFocus
@@ -265,7 +351,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                         </>
                     )}
                     {errors.category && (
-                        <p className="mt-1 text-sm text-red-500">{errors.category}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.category.message}</p>
                     )}
                 </div>
 
@@ -276,25 +362,23 @@ export default function ProductForm({ onSubmit, isLoading }) {
                     </label>
                     <input
                         type="text"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
+                        {...register('image')}
                         placeholder="مثال: /images/products/product.webp"
                         className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm ${errors.image ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                             }`}
                     />
                     {errors.image && (
-                        <p className="mt-1 text-sm text-red-500">{errors.image}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.image.message}</p>
                     )}
 
-                    {/* پیش‌نمایش با fallback */}
-                    {formData.image && (
+                    {/* پیش‌نمایش */}
+                    {imageValue && (
                         <div className="mt-2">
                             <p className="text-xs text-gray-500">پیش‌نمایش:</p>
                             <div className="relative w-20 h-20 rounded-lg border border-gray-200 mt-1 overflow-hidden bg-gray-50 flex items-center justify-center">
                                 {!imageError ? (
                                     <img
-                                        src={formData.image}
+                                        src={imageValue}
                                         alt="پیش‌نمایش"
                                         className="w-full h-full object-cover"
                                         onError={() => setImageError(true)}
@@ -318,16 +402,14 @@ export default function ProductForm({ onSubmit, isLoading }) {
                         توضیحات <span className="text-red-500">*</span>
                     </label>
                     <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
+                        {...register('description')}
                         rows="4"
                         placeholder="توضیحات کامل محصول..."
                         className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm resize-none ${errors.description ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                             }`}
                     />
                     {errors.description && (
-                        <p className="mt-1 text-sm text-red-500">{errors.description}</p>
+                        <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
                     )}
                 </div>
 
@@ -353,9 +435,9 @@ export default function ProductForm({ onSubmit, isLoading }) {
                             افزودن
                         </button>
                     </div>
-                    {formData.tags.length > 0 && (
+                    {tagsValue.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-3">
-                            {formData.tags.map(tag => (
+                            {tagsValue.map(tag => (
                                 <span
                                     key={tag}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-full text-sm"
@@ -390,14 +472,14 @@ export default function ProductForm({ onSubmit, isLoading }) {
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
-                            در حال افزودن...
+                            {isEdit ? 'در حال ویرایش...' : 'در حال افزودن...'}
                         </>
                     ) : (
                         <>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
-                            افزودن محصول
+                            {isEdit ? 'ویرایش محصول' : 'افزودن محصول'}
                         </>
                     )}
                 </button>
