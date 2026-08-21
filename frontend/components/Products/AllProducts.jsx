@@ -2,13 +2,12 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link'; // اضافه کردن import Link
 import ProductToolbar from './ProductToolbar';
 import ProductsGrid from './ProductsGrid';
 import Pagination from './Pagination';
 import EmptyState from './EmptyState';
 import Error from '../Error';
-import Loading from '../Loading';
+import ProductTableSkeleton from './ProductTableSkeleton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -38,6 +37,7 @@ export default function AllProducts({
     const [page, setPage] = useState(
         searchParams.get('page') ? parseInt(searchParams.get('page')) : initialPage
     );
+
     const [sortBy, setSortBy] = useState('newest');
 
     const ppg = 20;
@@ -168,19 +168,20 @@ export default function AllProducts({
 
     const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ppg));
 
-    // // تصحیح خودکار شماره صفحه اگر خارج از محدوده باشد
+    // کنترل page ها
     useEffect(() => {
-        if (page > totalPages && totalPages > 0) {
+        if (!loading && page > totalPages && totalPages > 0) {
             setPage(totalPages);
         }
-    }, [totalPages, page]);
+    }, [totalPages, page, loading]);
 
-    // // محصولات صفحه فعلی (با اعتبارسنجی محدوده)
+    // //  بدست اوردن محصولات صفحه فعلی (با اعتبارسنجی محدوده)
     const currentProducts = useMemo(() => {
         const safePage = Math.min(page, totalPages);
         const firstIndex = (safePage - 1) * ppg;
         return filteredProducts.slice(firstIndex, firstIndex + ppg);
     }, [filteredProducts, page, totalPages]);
+
 
     // // آپدیت URL بدون رندر مجدد (برای حفظ scroll position)
     const updateURL = useCallback((newPage, newCategory) => {
@@ -200,7 +201,7 @@ export default function AllProducts({
             params.delete('category');
         }
 
-        router.replace(`${API_URL}/products?${params.toString()}`, { scroll: false });
+        router.replace(`/products?${params.toString()}`, { scroll: false });
     }, [router]);
 
     const goToPage = useCallback((newPage) => {
@@ -242,7 +243,8 @@ export default function AllProducts({
 
     // نمایش لودینگ
     if (loading) {
-        return <Loading />;
+        return <ProductTableSkeleton />
+
     }
 
 

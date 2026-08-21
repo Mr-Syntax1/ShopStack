@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from 'next/navigation';
 import { formatPrice } from '../../../lib/persian';
 import AddToCartButton from "@/components/AddToCartButton";
+import ShareButton from "@/components/productDetail/ShareButton";
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -112,7 +113,7 @@ export default async function ProductDetail({ params }) {
                                     sizes="(max-width: 1024px) 100vw, 50vw"
                                 />
                                 {product.discount > 0 && (
-                                    <div className="absolute top-4 right-4 bg-linear-to-r from-red-500 to-orange-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg">
+                                    <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg">
                                         {product.discount}% تخفیف
                                     </div>
                                 )}
@@ -244,13 +245,7 @@ export default async function ProductDetail({ params }) {
                             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-auto pt-4 sm:pt-6 border-t border-gray-100">
                                 <AddToCartButton product={product} />
 
-                                <button className="w-full sm:flex-1 py-3 sm:py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base">
-                                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                    </svg>
-                                    <span className="hidden xs:inline">افزودن به</span>
-                                    <span>علاقه‌مندی</span>
-                                </button>
+                                <ShareButton />
                             </div>
 
                         </div>

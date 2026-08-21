@@ -1,4 +1,3 @@
-// app/dashboard/page.jsx
 "use client";
 
 import GreetingHeader from "@/components/home/GreetingHeader";

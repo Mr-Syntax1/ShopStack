@@ -99,6 +99,26 @@ const OrderSchema = new mongoose.Schema({
         enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned'],
         default: 'pending'
     },
+
+    // =============================================================
+    // اطلاعات پرداخت بلوپال (برای نمایش در پنل ادمین و ردیابی)
+    // وبهوک پرداخت این بخش را پر می‌کند.
+    // =============================================================
+    payment: {
+        invoiceId: { type: Number, default: null },       // شناسه فاکتور بلوپال
+        status: {                                          // وضعیت پرداخت: PENDING | PAID | EXPIRED | CANCELED
+            type: String,
+            enum: ['PENDING', 'PAID', 'EXPIRED', 'CANCELED'],
+            default: null
+        },
+        mode: { type: String, enum: ['sandbox', 'live'], default: null }, // محیط فاکتور
+        transactionId: { type: Number, default: null },    // شناسه تراکنش
+        payerName: { type: String, default: null },        // نام پرداخت‌کننده
+        payerCard: { type: String, default: null },        // شماره کارت / شبا
+        payerBankName: { type: String, default: null },    // نام بانک مبدأ
+        paidAt: { type: Date, default: null },             // زمان پرداخت موفق
+    },
+
     createdAt: { type: Date, default: Date.now }
 
 }, {
