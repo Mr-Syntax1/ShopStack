@@ -9,7 +9,7 @@ export async function GET(req, { params }) {
         await connectedToDatabase();
         const { slug } = await params;
         const decodedSlug = decodeURIComponent(slug);
-        const product = await Product.findOne({ slug: decodedSlug });
+        const product = await Product.findOne({ slug: decodedSlug }).lean()
 
         if (!product) {
             return NextResponse.json({ error: 'محصول یافت نشد' }, { status: 404 });

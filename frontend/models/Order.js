@@ -112,9 +112,10 @@ const OrderSchema = new mongoose.Schema({
             default: null
         },
         mode: { type: String, enum: ['sandbox', 'live'], default: null }, // محیط فاکتور
+        cardNumber: { type: String, default: null },       // شماره کارت مقصد (کارتی که باید به آن واریز شود)
         transactionId: { type: Number, default: null },    // شناسه تراکنش
         payerName: { type: String, default: null },        // نام پرداخت‌کننده
-        payerCard: { type: String, default: null },        // شماره کارت / شبا
+        payerCard: { type: String, default: null },        // شماره کارت پرداخت‌کننده / شبا (برای بلو‌بانک)
         payerBankName: { type: String, default: null },    // نام بانک مبدأ
         paidAt: { type: Date, default: null },             // زمان پرداخت موفق
     },

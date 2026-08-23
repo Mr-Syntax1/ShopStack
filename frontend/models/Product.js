@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true // مقدار این باید یکتا و منحصر به فرد باشه
-    },
+    // id: {
+    //     type: Number,
+    //     required: true,
+    //     unique: true // مقدار این باید یکتا و منحصر به فرد باشه
+    // },
     title: {
         type: String,
         required: true,

@@ -13,7 +13,26 @@ function finalPrice(item) {
     return Math.round(base - (base * discount) / 100);
 }
 
-export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle, onStatusChange, onDelete }) {
+// برچسب‌های وضعیت پرداخت بلوپال
+const PAYMENT_LABEL = {
+    PENDING: 'در انتظار پرداخت',
+    PAID: 'پرداخت شده',
+    EXPIRED: 'منقضی شده',
+    CANCELED: 'لغو شده',
+};
+
+// کلاس رنگ‌بندی برچسب وضعیت پرداخت
+function paymentBadgeClass(status) {
+    switch (status) {
+        case 'PAID': return 'bg-green-50 text-green-600';
+        case 'PENDING': return 'bg-amber-50 text-amber-600';
+        case 'EXPIRED': return 'bg-rose-50 text-rose-600';
+        case 'CANCELED': return 'bg-gray-100 text-gray-500';
+        default: return 'bg-gray-100 text-gray-500';
+    }
+}
+
+export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle, onStatusChange, onDelete, onPaymentSync }) {
     const user = order.user || {};
     const [showActions, setShowActions] = useState(false);
     const actionRef = useRef(null);
@@ -128,7 +147,7 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                                 <div className="space-y-2.5">
                                     {(order.cart || []).map((item, idx) => (
                                         <div key={idx} className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-                                            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50 ring-1 ring-gray-100">
+                                            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-linear-to-br from-indigo-50 to-purple-50 ring-1 ring-gray-100">
                                                 {item.image ? (
                                                     // eslint-disable-next-line @next/next/no-img-element
                                                     <img src={item.image} alt={item.title} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
@@ -169,6 +188,27 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                                     شناسه سفارش: {String(order._id)}
                                 </p>
                             </div>
+
+                            {/* بخش وضعیت پرداخت بلوپال (در صورت وجود فاکتور) */}
+                            {order.payment?.invoiceId && (
+                                <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
+                                    <p className="mb-2.5 text-[12px] font-semibold uppercase tracking-wide text-gray-400">وضعیت پرداخت (بلوپال)</p>
+                                    <div className="space-y-2.5 text-[13px]">
+                                        <div className="flex items-center justify-between gap-3">
+                                            <span className="text-gray-400">وضعیت</span>
+                                            <span className={`rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${paymentBadgeClass(order.payment.status)}`}>
+                                                {PAYMENT_LABEL[order.payment.status] || order.payment.status || '—'}
+                                            </span>
+                                        </div>
+                                        <InfoRow label="شناسه فاکتور" value={toPersianDigits(order.payment.invoiceId)} num />
+                                        <InfoRow label="محیط" value={order.payment.mode === 'live' ? 'واقعی' : order.payment.mode === 'sandbox' ? 'آزمایشی' : '—'} />
+                                        {order.payment.payerName && <InfoRow label="پرداخت‌کننده" value={order.payment.payerName} />}
+                                        {order.payment.payerBankName && <InfoRow label="بانک" value={order.payment.payerBankName} />}
+                                        {order.payment.paidAt && <InfoRow label="زمان پرداخت" value={formatDateTime(order.payment.paidAt)} />}
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
                     </td>
                 </tr>

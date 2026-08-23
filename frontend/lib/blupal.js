@@ -1,29 +1,25 @@
 // =============================================================
 // کتابخانه ارتباط با API پرداخت بلوپال (BluePal)
-// -------------------------------------------------------------
+// =============================================================
 // نکته امنیتی مهم: این فایل فقط در سمت سرور (Server) اجرا می‌شود
 // و کلید API هرگز نباید به کد کلاینت (مرورگر) راه پیدا کند.
 // تمام تابع‌ها از متغیرهای محیطی BLU_API_KEY / BLU_BASE_URL استفاده می‌کنند.
-// =============================================================
 
-// آدرس پایه API بلوپال - مقدار پیش‌فرض طبق مستندات
+// ادرس پایه
 const BLU_BASE_URL = process.env.BLU_BASE_URL || 'https://blupal.net/api';
 
-// کلید API (blu_test_... برای محیط Sandbox، blu_live_... برای محیط واقعی)
 const BLU_API_KEY = process.env.BLU_API_KEY;
 
 // حداقل مبلغ مجاز در مستندات بلوپال: ۱۰۰,۰۰۰ ریال
 const MIN_AMOUNT_RIAL = 100000;
 
-// تشخیص خودکار محیط (Sandbox/Live) از روی پیشوند کلید
-// این باعث می‌شود کد جای دیگر نگران تفکیک محیط نباشد.
+// تشخیص ازمایشی یا واقعی بودن api
 export function getBlupalMode() {
     if (!BLU_API_KEY) return null;
     return BLU_API_KEY.startsWith('blu_test_') ? 'sandbox' : 'live';
 }
 
 // تبدیل تومان (واحد فروشگاه) به ریال (واحد بلوپال)
-// مستندات بلوپال مبالغ را به ریال می‌خواهد؛ فروشگاه ما تومان کار می‌کند.
 export function tomanToRial(toman) {
     return Math.round(Number(toman) * 10);
 }
@@ -35,6 +31,7 @@ function authHeaders() {
     }
     return {
         'Content-Type': 'application/json',
+        // ما دیتا رو به صورت json میفرستیم
         'X-API-Key': BLU_API_KEY,
     };
 }
@@ -43,7 +40,7 @@ function authHeaders() {
 async function parseBlupalResponse(res) {
     let data = null;
     try {
-        data = await res.json();
+        data = await res.json(); // از بلو پال میگیریم
     } catch {
         data = null;
     }
@@ -60,9 +57,8 @@ async function parseBlupalResponse(res) {
 }
 
 // =============================================================
-// ۱) ایجاد فاکتور پرداخت
-//    POST /v1/invoices/create
-// -------------------------------------------------------------
+// ایجاد فاکتور پرداخت
+
 // amount: مبلغ به ریال (حداقل 100000)
 // cardNumber: اختیاری - در Sandbox نادیده گرفته می‌شود
 // پاسخ شامل invoice_id, payment_link, final_amount, status, mode و ... است
@@ -88,9 +84,8 @@ export async function createInvoice({ amount, cardNumber }) {
 }
 
 // =============================================================
-// ۲) شبیه‌سازی پرداخت (فقط محیط Sandbox - برای تست)
-//    POST /v1/sandbox/invoices/{invoice_id}/simulate
-// -------------------------------------------------------------
+// شبیه‌سازی پرداخت (فقط محیط Sandbox - برای تست)
+
 // scenarioهای ممکن: success | wrong_amount | expire | cancel
 // فقط با کلید Sandbox و فاکتور در وضعیت PENDING کار می‌کند.
 // =============================================================
@@ -106,9 +101,8 @@ export async function simulatePayment(invoiceId, scenario = 'success') {
 }
 
 // =============================================================
-// ۳) بررسی وضعیت فاکتور
-//    GET /v1/invoices/{invoice_id}
-// -------------------------------------------------------------
+// بررسی وضعیت فاکتور
+
 // وضعیت‌های برگشتی: PENDING | PAID | EXPIRED | CANCELED
 // فیلدهای payer_* فقط پس از پرداخت موفق پر می‌شوند.
 // =============================================================

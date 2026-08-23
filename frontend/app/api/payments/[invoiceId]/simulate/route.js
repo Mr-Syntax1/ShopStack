@@ -1,10 +1,7 @@
 // =============================================================
-// POST /api/payments/[invoiceId]/simulate
-// -------------------------------------------------------------
 // فقط محیط Sandbox - برای تست جریان پرداخت بدون کارت واقعی.
 // بدنه: { scenario }  (پیش‌فرض: success)
 // scenarioها: success | wrong_amount | expire | cancel
-//
 // پس از موفقیت (scenario=success)، رکورد محلی را به‌روز می‌کند
 // تا بتوان وضعیت پرداخت را در فروشگاه دید.
 // =============================================================
@@ -31,7 +28,7 @@ export async function POST(req, { params }) {
         await Payment.findOneAndUpdate(
             { invoiceId: id },
             { status: result.status, transactionId: result.transaction_id ?? null }
-        ).catch(() => {});
+        ).catch(() => { });
 
         return NextResponse.json({
             success: true,

@@ -1,12 +1,12 @@
 // =============================================================
-// GET /api/payments/[invoiceId]
-// -------------------------------------------------------------
+// getInvoice
 // بررسی وضعیت فاکتور از بلوپال و همگام‌سازی با دیتابیس محلی.
 // خروجی شامل وضعیت فاکتور و اطلاعات پرداخت‌کننده (در صورت پرداخت) است.
 // =============================================================
 import { connectedToDatabase } from "@/lib/mongodb";
 import Payment from "@/models/Payment";
 import { getInvoice } from "@/lib/blupal";
+// تابع دریافت وضعیت فاکتور از بلوپال 
 import { NextResponse } from "next/server";
 
 export async function GET(_req, { params }) {
@@ -30,6 +30,7 @@ export async function GET(_req, { params }) {
             transactionId: remote.transaction_id ?? null,
             mode: remote.mode,
         };
+
         if (remote.status === 'PAID') {
             update.paidAt = new Date();
             update.payer = {
@@ -38,7 +39,9 @@ export async function GET(_req, { params }) {
                 bankName: remote.payer_bank_name ?? null,
             };
         }
+
         const payment = await Payment.findOneAndUpdate({ invoiceId: id }, update, { new: true }).lean();
+        //.lean() یعنی به صورت شیء ساده برگردون (نه شیء سنگین Mongoose)
 
         return NextResponse.json({
             success: true,

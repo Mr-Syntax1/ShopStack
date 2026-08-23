@@ -86,6 +86,25 @@ export default function OrdersPage() {
         }
     }, [expandedId]);
 
+    // همگام‌سازی دستی وضعیت پرداخت با بلوپال (وقتی وبهوک نرسیده باشد)
+    const syncPayment = useCallback(async (orderId) => {
+        try {
+            const res = await fetch(`${API_URL}/api/payments/sync/${orderId}`, {
+                method: 'POST',
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                fetchOrders(); // بروزرسانی لیست سفارشات با وضعیت تازه
+            } else {
+                alert(data.error || 'خطا در بروزرسانی وضعیت پرداخت');
+            }
+        } catch (err) {
+            console.error('Error syncing payment:', err);
+            alert('خطا در ارتباط با سرور');
+        }
+    }, [fetchOrders]);
+
     const stats = useMemo(() => {
         const revenue = orders.reduce((s, o) => s + (o.totalPrice || 0), 0);
         const pending = orders.filter((o) => o.status === 'pending' || o.status === 'processing').length;
@@ -251,6 +270,7 @@ export default function OrdersPage() {
                                                 onToggle={() => toggleExpand(order._id)}
                                                 onStatusChange={updateOrderStatus}
                                                 onDelete={deleteOrder}
+                                                onPaymentSync={syncPayment}
                                             />
                                         );
                                     })}
@@ -271,7 +291,8 @@ export default function OrdersPage() {
                                     disabled={safePage === 1}
                                     className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                 >
-                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+
                                 </button>
                                 {Array.from({ length: totalPages }).map((_, i) => (
                                     <button
@@ -287,7 +308,7 @@ export default function OrdersPage() {
                                     disabled={safePage === totalPages}
                                     className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                 >
-                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                                 </button>
                             </div>
                         </div>

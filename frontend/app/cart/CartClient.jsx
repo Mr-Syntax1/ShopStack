@@ -76,7 +76,8 @@ export default function CartClient() {
         };
 
         try {
-            const res = await fetch('/api/orders', {
+            // ساخت فاکتور پرداخت بلوپال و دریافت لینک پرداخت
+            const res = await fetch('/api/payments/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
@@ -84,15 +85,16 @@ export default function CartClient() {
 
             const response = await res.json();
 
-            if (res.ok) {
-                showOrderSuccessToast();
+            if (res.ok && response.paymentLink) {
+                // سفارش ثبت شد و فاکتور ساخته شد → هدایت به درگاه پرداخت
                 clearCart();
                 reset();
+                window.location.href = response.paymentLink;
             } else {
-                showErrorToast(response.error || 'خطا در ثبت سفارش');
+                showErrorToast(response.error || 'خطا در آغاز پرداخت');
             }
         } catch (error) {
-            console.error('خطا در ثبت سفارش:', error);
+            console.error('خطا در آغاز پرداخت:', error);
             showErrorToast('مشکلی در ارتباط با سرور پیش آمد.');
         }
     };

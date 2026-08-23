@@ -1,6 +1,6 @@
 // =============================================================
 // POST /api/payments/create
-// -------------------------------------------------------------
+
 // ورودی: { user, cart, totalPrice }  (totalPrice به تومان)
 // خروجی: { paymentLink, invoiceId, orderId, mode, finalAmount }
 //
@@ -22,7 +22,7 @@ export async function POST(req) {
 
         const { user, cart, totalPrice } = await req.json();
 
-        // ---- ۱) اعتبارسنجی سبد خرید ----
+        // ---- اعتبارسنجی سبد خرید ----
         if (!Array.isArray(cart) || cart.length === 0) {
             return NextResponse.json({ error: 'سبد خرید خالی است' }, { status: 400 });
         }
@@ -36,7 +36,7 @@ export async function POST(req) {
 
         const rial = tomanToRial(totalPrice);
 
-        // ---- ۲) ساخت سفارش در دیتابیس (وضعیت اولیه: در انتظار پرداخت) ----
+        // ---- ساخت سفارش در دیتابیس (وضعیت اولیه: در انتظار پرداخت) ----
         const mappedCart = cart.map((item) => ({
             productId: item.productId,
             title: item.title,
@@ -55,20 +55,21 @@ export async function POST(req) {
         });
         await order.save();
 
-        // ---- ۳) ساخت فاکتور در بلوپال ----
+        // ---- ساخت فاکتور در بلوپال ----
         // اگر ساخت فاکتور شکست خورد، سفارش یتیم باقی نماند → حذف می‌کنیم
         let invoice;
         try {
             invoice = await createInvoice({ amount: totalPrice });
         } catch (err) {
-            await Order.findByIdAndDelete(order._id).catch(() => {});
+            await Order.findByIdAndDelete(order._id).catch(() => { });
+            // تا فاکتور یتیم ن مونه
             return NextResponse.json(
                 { error: err.message || 'خطا در ایجاد فاکتور پرداخت' },
                 { status: 502 }
             );
         }
 
-        // ---- ۴) ذخیره تراکنش پرداخت ----
+        // ---- ذخیره تراکنش پرداخت ----
         const payment = new Payment({
             orderId: order._id,
             invoiceId: invoice.invoice_id,
@@ -87,6 +88,7 @@ export async function POST(req) {
             invoiceId: invoice.invoice_id,
             status: invoice.status,
             mode: payment.mode,
+            cardNumber: invoice.card_number || payment.cardNumber || '', // شماره کارت مقصد
         };
         await order.save();
 

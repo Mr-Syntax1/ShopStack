@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
         const decodedSlug = decodeURIComponent(slug);
 
         // ۱. محصول اصلی رو پیدا کن
-        const product = await Product.findOne({ slug: decodedSlug });
+        const product = await Product.findOne({ slug: decodedSlug })
         if (!product) {
             return NextResponse.json(
                 { error: 'محصول یافت نشد' },

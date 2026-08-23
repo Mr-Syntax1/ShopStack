@@ -14,11 +14,11 @@ export async function GET(request) {
         let products
 
         if (category) {
-            products = await Product.find({ category })
+            products = await Product.find({ category }).lean()
         }
 
         else {
-            products = await Product.find({})
+            products = await Product.find({}).lean()
         }
         //از دیتابیس همه محصولات رو پیدا کن و توی متغیر products ذخیره کن
 
