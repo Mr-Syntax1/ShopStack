@@ -5,6 +5,11 @@ export function formatPrice(price) {
     return numberWithComma.replace(/\d/g, (digit) => persianDigits[+digit]);
 }
 
+export function toPersianDigits(str) {
+    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+    return String(str).replace(/\d/g, (digit) => persianDigits[+digit]);
+}
+
 //   قیمت: {formatPrice(price)} تومان
 
 // ۱ - ۲ - ۳ - ۴ - ۵ - ۶ - ۷ - ۸ - ۹ - ۱۰

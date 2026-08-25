@@ -28,24 +28,24 @@ export default function Header() {
                 {/* desktop menu */}
                 <nav className="hidden md:flex items-center gap-8 font-semibold ">
                     <Link href="/"
-                        className="hover:text-blue-600 transition"
+                        className="text-gray-800 hover:text-blue-700 transition"
                     >
                         صفحه اصلی
                     </Link>
 
-                    <Link href="/products" className="hover:text-blue-600 transition"
+                    <Link href="/products" className="text-gray-800 hover:text-blue-700 transition"
                     >
                         محصولات
                     </Link>
 
                     <Link href="/about"
-                        className="hover:text-blue-600 transition"
+                        className="text-gray-800 hover:text-blue-700 transition"
                     >
                         درباره ما
                     </Link>
 
                     <Link href="/contact"
-                        className="hover:text-blue-600 transition"
+                        className="text-gray-800 hover:text-blue-700 transition"
                     >
                         تماس با ما
                     </Link>

@@ -75,7 +75,6 @@ export default function ProductForm({ onSubmit, isLoading, initialData, isEdit =
         handleSubmit,
         setValue,
         watch,
-        getValues,
         formState: { errors },
         reset,
     } = useForm({
@@ -96,7 +95,8 @@ export default function ProductForm({ onSubmit, isLoading, initialData, isEdit =
     // تماشای مقدار image برای پیش‌نمایش
     const imageValue = watch('image');
     const tagsValue = watch('tags');
-
+    const categoryValue = watch('category');
+    // برا به روز کردن مقدار هاشون
 
 
     // ==============================
@@ -322,7 +322,7 @@ export default function ProductForm({ onSubmit, isLoading, initialData, isEdit =
                     ) : (
                         <>
                             <select
-                                value={isNewCategory ? 'new' : getValues('category')}
+                                value={isNewCategory ? 'new' : categoryValue}
                                 onChange={handleCategoryChange}
                                 className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm ${errors.category ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
                                     }`}

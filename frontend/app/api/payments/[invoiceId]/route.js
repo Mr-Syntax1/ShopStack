@@ -1,5 +1,6 @@
 // =============================================================
 // getInvoice
+// شبیه‌سازی میکنه
 // بررسی وضعیت فاکتور از بلوپال و همگام‌سازی با دیتابیس محلی.
 // خروجی شامل وضعیت فاکتور و اطلاعات پرداخت‌کننده (در صورت پرداخت) است.
 // =============================================================
@@ -40,7 +41,7 @@ export async function GET(_req, { params }) {
             };
         }
 
-        const payment = await Payment.findOneAndUpdate({ invoiceId: id }, update, { new: true }).lean();
+        const payment = await Payment.findOneAndUpdate({ invoiceId: id }, update, { returnDocument: 'after' }).lean();
         //.lean() یعنی به صورت شیء ساده برگردون (نه شیء سنگین Mongoose)
 
         return NextResponse.json({

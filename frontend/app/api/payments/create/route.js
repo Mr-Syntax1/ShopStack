@@ -1,5 +1,5 @@
 // =============================================================
-// POST /api/payments/create
+// فاکتور میسازه
 
 // ورودی: { user, cart, totalPrice }  (totalPrice به تومان)
 // خروجی: { paymentLink, invoiceId, orderId, mode, finalAmount }

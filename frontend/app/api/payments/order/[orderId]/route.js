@@ -1,5 +1,6 @@
 // =============================================================
 // GET /api/payments/order/[orderId]
+// وضعیت سفارش رو میگیره
 
 // دریافت وضعیت پرداخت یک سفارش بر اساس شناسه سفارش (برای صفحه پرداخت).
 // ابتدا رکورد محلی را برمی‌گرداند؛ اگر هنوز PENDING باشد،
@@ -39,7 +40,7 @@ export async function GET(_req, { params }) {
                     payment = await Payment.findOneAndUpdate(
                         { invoiceId: payment.invoiceId },
                         update,
-                        { new: true }
+                        { returnDocument: 'after' }
                     ).lean();
                 }
             } catch {
