@@ -1,5 +1,6 @@
 import { connectedToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
+import Payment from "@/models/Payment"; // برای حذف فاکتور (پرداخت) مرتبط با سفارش
 import { NextResponse } from "next/server";
 
 const VALID_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned'];
@@ -63,6 +64,10 @@ export async function DELETE(req, { params }) {
                 { status: 404 }
             );
         }
+
+        // حذف فاکتور (پرداخت) مرتبط با این سفارش تا رکورد یتیم نماند
+        // orderId از نوع ObjectId است و مقدار id (رشته) توسط mongoose به ObjectId تبدیل می‌شود
+        await Payment.deleteOne({ orderId: id }).catch(() => { });
 
         return NextResponse.json(
             { message: 'سفارش با موفقیت حذف شد', id },

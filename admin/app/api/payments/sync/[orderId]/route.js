@@ -9,6 +9,7 @@
 import { connectedToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import Payment from "@/models/Payment";
+import Product from "@/models/Product";
 import { getInvoice } from "@/lib/blupal";
 import { NextResponse } from "next/server";
 
@@ -45,7 +46,19 @@ export async function POST(_req, { params }) {
             // سفارش را به «در حال پردازش» ارتقا بده (پرداخت انجام شده)
             update.status = 'processing';
         }
+
+        const alreadyProcessed = order.status === 'processing';
         await Order.findByIdAndUpdate(orderId, update).lean();
+
+        if (!alreadyProcessed && order.cart?.length && remote.status === 'PAID') {
+            const bulkOps = order.cart.map((item) => ({
+                updateOne: {
+                    filter: { _id: item.productId },
+                    update: { $inc: { stock: -item.quantity } },
+                },
+            }));
+            await Product.bulkWrite(bulkOps);
+        }
 
         // همگام‌سازی رکورد پرداخت نیز (در صورت وجود)
         await Payment.findOneAndUpdate(

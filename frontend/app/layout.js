@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "@/context";
 
 export const metadata = {
   title: {
@@ -68,27 +69,29 @@ export default function RootLayout({ children }) {
 
       <body className="min-h-full flex flex-col font-sans">
         <CartProvider>
-          <Header />
-          <Toaster
-            position="bottom-center"
-            reverseOrder={false}
-            gutter={8}
-            containerClassName=""
-            containerStyle={{}}
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-              },
-            }}
-          />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          <AuthProvider>
+            <Header />
+            <Toaster
+              position="bottom-center"
+              reverseOrder={false}
+              gutter={8}
+              containerClassName=""
+              containerStyle={{}}
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+              }}
+            />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </AuthProvider>
         </CartProvider>
       </body>
-    </html>
+    </html >
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   AreaChart,
   Area,
@@ -9,7 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { revenueSeries } from "@/lib/mock-data";
+import { getDashboardData } from "@/lib/dashboard-api";
 
 function ChartTooltip({ active, payload }) {
   if (!active || !payload || !payload.length) return null;
@@ -27,12 +28,37 @@ function ChartTooltip({ active, payload }) {
 }
 
 export default function RevenueChart() {
+  const [revenueSeries, setRevenueSeries] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDashboardData();
+        setRevenueSeries(data?.revenueSeries || []);
+      } catch (error) {
+        console.error('Error fetching revenue:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   // محاسبه مجموع و میانگین
-  const totalRevenue = revenueSeries.reduce((sum, d) => sum + d.revenue, 0);
+  const totalRevenue = revenueSeries.reduce((sum, d) => sum + (d.revenue || 0), 0);
+  const avgRevenue = revenueSeries.length > 0 ? Math.round(totalRevenue / revenueSeries.length) : 0;
+  const totalOrders = revenueSeries.reduce((sum, d) => sum + (d.orders || 0), 0);
 
-  const avgRevenue = Math.round(totalRevenue / revenueSeries.length);
-
-  const totalOrders = revenueSeries.reduce((sum, d) => sum + d.orders, 0);
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">
+        <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded w-48 mt-2 animate-pulse" />
+        <div className="h-64 bg-gray-100 rounded mt-4 animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">

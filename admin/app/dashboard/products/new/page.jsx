@@ -52,7 +52,7 @@ export default function NewProductPage() {
                     </p>
                 </div>
                 <Link
-                    href="/products"
+                    href="/dashboard/products"
                     className="inline-flex items-center gap-2 px-3 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-xl transition-all duration-300 cursor-pointer"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

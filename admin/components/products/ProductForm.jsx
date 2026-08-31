@@ -486,7 +486,7 @@ export default function ProductForm({ onSubmit, isLoading, initialData, isEdit =
                     )}
                 </button>
                 <Link
-                    href="/products"
+                    href="/dashboard/products"
                     className="flex-1 sm:flex-none px-8 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-center"
                 >
                     انصراف

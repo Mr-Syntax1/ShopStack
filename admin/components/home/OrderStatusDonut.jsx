@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { orderStatus } from "@/lib/mock-data";
+import { getDashboardData } from "@/lib/dashboard-api";
 
 // Tooltip سفارشی
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, total }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
-    const total = orderStatus.reduce((sum, s) => sum + s.value, 0);
-    const percent = Math.round((data.value / total) * 100);
+    const percent = total > 0 ? Math.round((data.value / total) * 100) : 0;
 
     return (
       <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/80 px-4 py-3 text-sm ">
@@ -27,14 +26,41 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export default function OrderStatusDonut() {
+  const [orderStatus, setOrderStatus] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const total = orderStatus.reduce((sum, s) => sum + s.value, 0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDashboardData();
+        setOrderStatus(data?.orderStatus || []);
+      } catch (error) {
+        console.error('Error fetching order status:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const total = orderStatus.reduce((sum, s) => sum + (s.value || 0), 0);
 
   // داده‌های با رنگ‌بندی جدید
   const statusData = orderStatus.map((s) => ({
     ...s,
     color: s.color || "#4f46e5",
   }));
+
+  if (loading) {
+    return (
+      <div className="flex h-full flex-col rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">
+        <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded w-48 mt-2 animate-pulse" />
+        <div className="mx-auto mt-2 h-44 w-44 bg-gray-100 rounded-full animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">
@@ -73,7 +99,7 @@ export default function OrderStatusDonut() {
               ))}
             </Pie>
             <Tooltip
-              content={<CustomTooltip />}
+              content={<CustomTooltip total={total} />}
               wrapperStyle={{ zIndex: 9999 }}
             />
           </PieChart>
@@ -82,7 +108,7 @@ export default function OrderStatusDonut() {
         {/* مرکز دایره */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-bold text-[22px] text-gray-800">
-            {Math.round((statusData[0]?.value || 0) / total * 100)}%
+            {statusData.length > 0 ? Math.round((statusData[0]?.value || 0) / total * 100) : 0}%
           </span>
           <span className="text-[11px] text-gray-400">تحویل شده</span>
         </div>

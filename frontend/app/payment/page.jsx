@@ -362,7 +362,7 @@ export default function PaymentCallbackPage() {
                         {isPending && data?.paymentLink && (
                             <a
                                 href={data.paymentLink}
-                                className="flex-1 px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-xl border border-gray-200 transition-all duration-200"
+                                className="flex-1 px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-xl border border-gray-200 transition-all duration-200 cursor-pointer"
                             >
                                 ادامه پرداخت
                             </a>

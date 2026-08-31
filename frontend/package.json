@@ -10,19 +10,21 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "framer-motion": "^12.43.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.8.0",
     "next": "^16.2.12",
     "persian-tools": "^1.0.6",
+    "postcss": "8.5.25",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.84.0",
     "react-hot-toast": "^2.6.0",
+    "sharp": "0.35.3",
     "typeit": "^8.8.7",
-    "yup": "^1.7.1",
-    "postcss": "8.5.25",
-    "sharp": "0.35.3"
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

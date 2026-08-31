@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
-import { stats } from "@/lib/mock-data";
+import { getDashboardData } from "@/lib/dashboard-api";
 
 function formatValue(value, prefix, suffix) {
   const formatted = value >= 1000 ? value.toLocaleString("fa-IR") : value.toString();
@@ -9,6 +10,72 @@ function formatValue(value, prefix, suffix) {
 }
 
 export default function StatsGrid() {
+  const [stats, setStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDashboardData();
+        const apiStats = data?.stats || {};
+        setStats([
+          {
+            label: "فروش کل",
+            value: apiStats.totalSales || 0,
+            prefix: "",
+            suffix: " تومان",
+            delta: apiStats.salesDelta || 0,
+            trend: (apiStats.salesDelta || 0) >= 0 ? "up" : "down",
+            spark: [],
+          },
+          {
+            label: "سفارشات",
+            value: apiStats.totalOrders || 0,
+            prefix: "",
+            delta: apiStats.ordersDelta || 0,
+            trend: (apiStats.ordersDelta || 0) >= 0 ? "up" : "down",
+            spark: [],
+          },
+          {
+            label: "مشتریان جدید",
+            value: apiStats.newCustomers || 0,
+            prefix: "",
+            delta: apiStats.customersDelta || 0,
+            trend: (apiStats.customersDelta || 0) >= 0 ? "up" : "down",
+            spark: [],
+          },
+          {
+            label: "نرخ تبدیل",
+            value: apiStats.conversionRate || 0,
+            suffix: "%",
+            prefix: "",
+            delta: 0,
+            trend: "up",
+            spark: [],
+          },
+        ]);
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="rounded-2xl border border-gray-200/80 bg-white/80 p-5 shadow-sm">
+            <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+            <div className="h-8 bg-gray-200 rounded w-24 mt-3 animate-pulse" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => {
@@ -62,23 +129,25 @@ export default function StatsGrid() {
               </div>
 
               {/* درصد تغییر */}
-              <span
-                className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[11px] font-semibold ${isUp
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "bg-rose-50 text-rose-700"
-                  }`}
-              >
-                {isUp ? (
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.6} d="M5 15l7-7 7 7" />
-                  </svg>
-                ) : (
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.6} d="M19 9l-7 7-7-7" />
-                  </svg>
-                )}
-                {Math.abs(stat.delta)}%
-              </span>
+              {stat.delta !== 0 && (
+                <span
+                  className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[11px] font-semibold ${isUp
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "bg-rose-50 text-rose-700"
+                    }`}
+                >
+                  {isUp ? (
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.6} d="M5 15l7-7 7 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.6} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
+                  {Math.abs(stat.delta)}%
+                </span>
+              )}
             </div>
 
             {/* مقدار اصلی */}
@@ -87,44 +156,46 @@ export default function StatsGrid() {
             </p>
 
             {/* اسپارک لاین (نمودار کوچک) */}
-            <div className="mt-3 h-10 -mx-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={sparkData}
-                  margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient
-                      id={gradientId}
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="0%"
-                        stopColor="#4f46e5"
-                        stopOpacity={0.25}
-                      />
-                      <stop
-                        offset="100%"
-                        stopColor="#4f46e5"
-                        stopOpacity={0}
-                      />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="v"
-                    stroke="#4f46e5"
-                    strokeWidth={1.75}
-                    fill={`url(#${gradientId})`}
-                    isAnimationActive={true}
-                    animationDuration={600}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            {sparkData.length > 0 && (
+              <div className="mt-3 h-10 -mx-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={sparkData}
+                    margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id={gradientId}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="0%"
+                          stopColor="#4f46e5"
+                          stopOpacity={0.25}
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor="#4f46e5"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <Area
+                      type="monotone"
+                      dataKey="v"
+                      stroke="#4f46e5"
+                      strokeWidth={1.75}
+                      fill={`url(#${gradientId})`}
+                      isAnimationActive={true}
+                      animationDuration={600}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
 
             {/* خط تزئینی زیرین */}
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-indigo-500/0 via-indigo-500/20 to-indigo-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

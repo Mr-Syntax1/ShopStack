@@ -18,7 +18,7 @@ export default function ProductHeader({ totalProducts }) {
                 </p>
             </div>
             <Link
-                href="/products/new"
+                href="/dashboard/products/new"
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
             >
                 <AddIcon />

@@ -1,7 +1,23 @@
-import { liveEvents } from "@/lib/mock-data";
+"use client";
+
+import { useState, useEffect } from "react";
+import { getDashboardData } from "@/lib/dashboard-api";
 
 export default function LiveTicker() {
-  const items = [...liveEvents, ...liveEvents];
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDashboardData();
+        const events = data?.liveEvents || [];
+        setItems([...events, ...events]);
+      } catch (error) {
+        console.error('Error fetching live events:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="flex items-center gap-3 overflow-hidden rounded-full border border-line bg-surface pl-4 pr-1 py-1.5">

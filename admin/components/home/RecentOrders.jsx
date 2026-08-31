@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { recentOrders } from "@/lib/mock-data";
+import { getDashboardData } from "@/lib/dashboard-api";
 
 const statusStyles = {
   "تحویل شده": "bg-emerald-50 text-emerald-700",
@@ -26,8 +27,39 @@ function initials(name) {
 }
 
 export default function RecentOrders() {
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDashboardData();
+        setRecentOrders(data?.recentOrders || []);
+      } catch (error) {
+        console.error('Error fetching recent orders:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   // محاسبه مجموع برای نمایش
-  const totalAmount = recentOrders.reduce((sum, order) => sum + order.amount, 0);
+  const totalAmount = recentOrders.reduce((sum, order) => sum + (order.amount || 0), 0);
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">
+        <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded w-48 mt-2 animate-pulse" />
+        <div className="mt-4 space-y-3">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-12 bg-gray-100 rounded animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">
@@ -54,7 +86,7 @@ export default function RecentOrders() {
       {/* خلاصه سریع */}
       <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
         <span>
-          مجموع: <span className="font-semibold text-gray-700">${totalAmount.toFixed(2)}</span>
+          مجموع: <span className="font-semibold text-gray-700">{totalAmount.toLocaleString("fa-IR")} تومان</span>
         </span>
         <span className="w-px h-4 bg-gray-200" />
         <span>
@@ -116,7 +148,7 @@ export default function RecentOrders() {
                   </span>
                 </td>
                 <td className="py-3 text-right font-semibold text-[13.5px] text-gray-800">
-                  ${order.amount.toFixed(2)}
+                  {order.amount.toLocaleString("fa-IR")} تومان
                 </td>
               </tr>
             ))}

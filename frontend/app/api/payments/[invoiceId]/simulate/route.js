@@ -7,6 +7,8 @@
 // =============================================================
 import { connectedToDatabase } from "@/lib/mongodb";
 import Payment from "@/models/Payment";
+import Order from "@/models/Order";
+import Product from "@/models/Product";
 import { simulatePayment } from "@/lib/blupal";
 import { NextResponse } from "next/server";
 
@@ -24,11 +26,45 @@ export async function POST(req, { params }) {
 
         const result = await simulatePayment(id, scenario || 'success');
 
+        // یافتن رکورد محلی برای دسترسی به orderId (جهت همگام‌سازی سفارش)
+        const local = await Payment.findOne({ invoiceId: id }).lean();
+
+        const patch = {
+            status: result.status,
+            transactionId: result.transaction_id ?? null,
+        };
+        if (result.status === 'PAID') {
+            patch.paidAt = new Date(); // زمان پرداخت موفق (شبیه‌سازی)
+        }
+
         // همگام‌سازی رکورد محلی (مثلاً PAID پس از success)
         await Payment.findOneAndUpdate(
             { invoiceId: id },
-            { status: result.status, transactionId: result.transaction_id ?? null }
+            patch
         ).catch(() => { });
+
+        // در محیط Sandbox وبهوک معمولاً نمی‌رسد؛ پس وضعیت سفارش را هم دستی بروزرسانی کن
+        if (local?.orderId && result.status === 'PAID') {
+            const existingOrder = await Order.findById(local.orderId).lean();
+            const alreadyProcessed = existingOrder?.status === 'processing';
+
+            await Order.findByIdAndUpdate(local.orderId, {
+                status: 'processing',
+                'payment.status': 'PAID',
+                'payment.paidAt': patch.paidAt,
+                'payment.transactionId': patch.transactionId,
+            }).catch(() => { });
+
+            if (!alreadyProcessed && existingOrder?.cart?.length) {
+                const bulkOps = existingOrder.cart.map((item) => ({
+                    updateOne: {
+                        filter: { _id: item.productId },
+                        update: { $inc: { stock: -item.quantity } },
+                    },
+                }));
+                await Product.bulkWrite(bulkOps);
+            }
+        }
 
         return NextResponse.json({
             success: true,

@@ -1,6 +1,40 @@
 import { connectedToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import { NextResponse } from "next/server";
+import { getUserFromToken } from "@/lib/auth";
+import { cookies } from "next/headers";
+
+// ==============================
+// دریافت سفارشات کاربر جاری
+// ==============================
+export async function GET() {
+    try {
+        await connectedToDatabase();
+
+        const cookieStore = await cookies();
+        const token = cookieStore.get("token")?.value;
+        if (!token) {
+            return NextResponse.json({ error: "احراز هویت نشده" }, { status: 401 });
+        }
+
+        const decoded = getUserFromToken(token);
+        if (!decoded) {
+            return NextResponse.json({ error: "توکن نامعتبر" }, { status: 401 });
+        }
+
+        const orders = await Order.find({ "user.email": decoded.email })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return NextResponse.json(orders, { status: 200 });
+    } catch (error) {
+        console.error("خطا در دریافت سفارشات:", error);
+        return NextResponse.json(
+            { error: "خطا در دریافت سفارشات", details: error.message },
+            { status: 500 }
+        );
+    }
+}
 
 export async function POST(req) {
     try {

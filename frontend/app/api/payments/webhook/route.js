@@ -15,6 +15,7 @@
 import { connectedToDatabase } from "@/lib/mongodb";
 import Payment from "@/models/Payment";
 import Order from "@/models/Order";
+import Product from "@/models/Product";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -80,6 +81,18 @@ export async function POST(req) {
                 paidAt: payment.paidAt,
             },
         });
+
+        // ---- کم کردن موجودی محصولات بر اساس سبد خرید ----
+        const orderForStock = await Order.findById(payment.orderId).lean();
+        if (orderForStock?.cart?.length) {
+            const bulkOps = orderForStock.cart.map((item) => ({
+                updateOne: {
+                    filter: { _id: item.productId },
+                    update: { $inc: { stock: -item.quantity } },
+                },
+            }));
+            await Product.bulkWrite(bulkOps);
+        }
 
         // پاسخ موفق و سریع (کمتر از ۱۰ ثانیه)
         return NextResponse.json({ received: true }, { status: 200 });

@@ -67,7 +67,7 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                 <td className="px-4 py-3.5 text-[13px] text-gray-600">
                     {toPersianDigits(itemCount)} کالا
                 </td>
-                <td className="px-4 py-3.5 font-semibold text-[13.5px] text-gray-800 font-[var(--font-num)]">
+                <td className="px-4 py-3.5 font-semibold text-[13.5px] text-gray-800">
                     {toPersianDigits(formatPrice(order.totalPrice || 0))} تومان
                 </td>
                 <td className="px-4 py-3.5">
@@ -169,7 +169,7 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                                                     {toPersianDigits(formatPrice(finalPrice(item) * item.quantity))} تومان
                                                 </p>
                                                 {item.discount > 0 && (
-                                                    <p className="text-[11px] text-gray-400 line-through font-[var(--font-num)]">
+                                                    <p className="text-[11px] text-gray-400 line-through">
                                                         {toPersianDigits(formatPrice((item.price || 0) * item.quantity))}
                                                     </p>
                                                 )}

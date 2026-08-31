@@ -121,7 +121,7 @@ export default function ProductTable({ products, onDelete }) {
                             <td className="px-4 py-3">
                                 <div className="flex items-center gap-1">
                                     <Link
-                                        href={`/products/edit/${product.slug}`}
+                                        href={`/dashboard/products/edit/${product.slug}`}
                                         className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
                                         title="ویرایش محصول"
                                     >

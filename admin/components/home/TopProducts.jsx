@@ -1,8 +1,44 @@
 "use client";
 
-import { topProducts, lowStock } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { getDashboardData } from "@/lib/dashboard-api";
 
 export default function TopProducts() {
+  const [topProducts, setTopProducts] = useState([]);
+  const [lowStock, setLowStock] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDashboardData();
+        setTopProducts(data?.topProducts || []);
+        setLowStock(data?.lowStock || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">
+          <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+          <div className="h-4 bg-gray-200 rounded w-48 mt-2 animate-pulse" />
+          <div className="mt-4 space-y-3">
+            {[1, 2, 3, 4, 5].map(i => (
+              <div key={i} className="h-8 bg-gray-100 rounded animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {/* محصولات برتر */}

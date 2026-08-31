@@ -58,6 +58,7 @@ export async function GET(_req, { params }) {
             finalAmount: payment.finalAmount,
             paymentLink: payment.paymentLink,
             payer: payment.status === 'PAID' ? payment.payer : null,
+            paidAt: payment.paidAt || null,
         }, { status: 200 });
 
     } catch (error) {
