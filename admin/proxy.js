@@ -1,29 +1,22 @@
-// middleware.js همون
+// proxy.js - Middleware برای پنل مدیریت
 import { NextResponse } from 'next/server';
 
-const DASHBOARD_ROUTES = ['/dashboard'];
-const AUTH_ROUTES = ['/login', '/register', '/forgot-password'];
+const AUTH_ROUTES = ['/auth/login'];
 
 export async function proxy(request) {
     const pathname = request.nextUrl.pathname;
     const token = request.cookies.get('token')?.value;
 
-    // تشخیص اینکه آیا در مسیر داشبورد هستیم
-    const isDashboardRoute = pathname.startsWith('/orders') ||
-        pathname.startsWith('/products') ||
-        pathname.startsWith('/customers') ||
-        pathname.startsWith('/analytics') ||
-        pathname.startsWith('/settings') ||
-        pathname === '/';
-
+    const isDashboardRoute = pathname.startsWith('/dashboard');
     const isAuthRoute = AUTH_ROUTES.some(route => pathname === route || pathname.startsWith(`${route}/`));
-
+    const isMeApi = pathname.startsWith('/api/auth/me');
+    const isProtectedApi = isMeApi || pathname.startsWith('/api/users') || pathname.startsWith('/api/products') || pathname.startsWith('/api/orders') || pathname.startsWith('/api/categories') || pathname.startsWith('/api/payments') || pathname.startsWith('/api/settings');
     // اگر در صفحه لاگین است و توکن دارد → به داشبورد بفرست
     if (isAuthRoute && token) {
         try {
             const user = await getUserFromToken(token);
             if (user?.role === 'admin') {
-                return NextResponse.redirect(new URL('/', request.url));
+                return NextResponse.redirect(new URL('/dashboard', request.url));
             }
         } catch { }
     }
@@ -38,16 +31,27 @@ export async function proxy(request) {
         try {
             const user = await getUserFromToken(token);
             if (!user || user.role !== 'admin') {
-                return NextResponse.redirect('http://localhost:3001/dashboard');
+                return NextResponse.redirect(new URL('/auth/login', request.url));
             }
             return NextResponse.next();
         } catch {
-            return NextResponse.redirect(new URL('/login', request.url));
+            return NextResponse.redirect(new URL('/auth/login', request.url));
         }
     }
 
+    if (pathname === '/') {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
+    // APIهای محافظت شده
+    if (isProtectedApi && !token) {
+        return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+    }
+
+    // ادامه مسیر
     return NextResponse.next();
 }
+
 
 // ==============================
 // تابع دریافت اطلاعات کاربر از توکن

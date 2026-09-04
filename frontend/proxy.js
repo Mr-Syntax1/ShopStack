@@ -1,32 +1,23 @@
-// middleware.js همان
+// proxy.js - Middleware برای فروشگاه
 import { NextResponse } from 'next/server';
 import { getUserFromToken } from './lib/auth';
 
 export async function proxy(request) {
-    const token = request.cookies.get('token')?.value;
     const { pathname } = request.nextUrl;
+    const token = request.cookies.get('token')?.value;
 
     // ==============================
     // ۱. مسیرهای عمومی (بدون احراز هویت)
     // ==============================
-    const publicPaths = ['/', '/products', '/auth/login', '/auth/register'];
-    const isPublicPath = publicPaths.some(p => pathname.startsWith(p));
+    const publicPaths = ['/', '/products', '/products/*', '/auth/login', '/auth/register', '/contact', '/about', '/cart'];
+    const publicApis = ['/api/products', '/api/categories', '/api/dashboard', '/api/products/[slug]', '/api/products/related']; // ← اضافه شد
 
-    // ==============================
-    // ۲. مسیرهای API احراز هویت (همیشه عمومی)
-    // ==============================
+    const isPublicPath = publicPaths.some(p => pathname === p || pathname.startsWith(`${p}/`));
+    const isPublicApi = publicApis.some(p => pathname.startsWith(p));
     const isAuthApi = pathname.startsWith('/api/auth');
-    if (isAuthApi) {
-        return NextResponse.next();
-    }
 
     // ==============================
-    // ۳. مسیرهای ادمین
-    // ==============================
-    const isAdminPath = pathname.startsWith('/admin');
-
-    // ==============================
-    // ۴. اعتبارسنجی توکن (با مدیریت خطا)
+    // ۲. اعتبارسنجی توکن
     // ==============================
     let user = null;
     if (token) {
@@ -34,7 +25,6 @@ export async function proxy(request) {
             user = getUserFromToken(token);
         } catch (error) {
             console.error('❌ خطا در اعتبارسنجی توکن:', error.message);
-            // توکن نامعتبر - پاکش کن
             const response = NextResponse.redirect(new URL('/auth/login', request.url));
             response.cookies.delete('token');
             return response;
@@ -42,54 +32,39 @@ export async function proxy(request) {
     }
 
     // ==============================
-    // ۵. اگر کاربر توکن نداره و میخواد به مسیر محافظت شده بره
+    // ۳. اگر توکن نامعتبره و مسیر عمومی نیست → پاک کن و به لاگین بفرست
     // ==============================
-    if (!token && !isPublicPath) {
-        return NextResponse.redirect(new URL('/auth/login', request.url));
-
-    }
-
-    // ==============================
-    // ۶. اگر توکن نامعتبره و مسیر عمومی نیست
-    // ==============================
-    if (token && !user && !isPublicPath) {
+    if (token && !user && !isPublicPath && !isAuthApi && !isPublicApi) {
         const response = NextResponse.redirect(new URL('/auth/login', request.url));
         response.cookies.delete('token');
         return response;
     }
 
     // ==============================
-    // ۷. اگر کاربر لاگین کرده و میخواد بره صفحات لاگین/ثبت‌نام
+    // ۴. اگر کاربر لاگین کرده و میخواد بره صفحات لاگین/ثبت‌نام
     // ==============================
-    if (user && (pathname === '/auth/login' || pathname === '/auth/register')) {
+    if (user && (pathname === '/auth/login' || pathname.startsWith('/auth/register'))) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
     // ==============================
-    // ۸. اگر کاربر ادمین نیست و میخواد بره ادمین
+    // ۵. اگر کاربر لاگین نکرده و میخواد به مسیر محافظت شده بره
     // ==============================
-    if (isAdminPath) {
-        if (!user || user.role !== 'admin') {
-            return NextResponse.redirect(new URL('/auth/login', request.url));
-        }
+    if (!token && !isPublicPath && !isAuthApi && !isPublicApi) {
+        return NextResponse.redirect(new URL('/auth/login', request.url));
     }
 
     // ==============================
-    // ۹. ادامه مسیر
+    // ۶. ادامه مسیر
     // ==============================
     return NextResponse.next();
 }
 
 // ==============================
-// تنظیمات Middleware (بهینه شده)
+// تنظیمات Middleware
 // ==============================
 export const config = {
     matcher: [
-        /*
-         * مسیرهایی که middleware اجرا میشه:
-         * - تمام مسیرهای صفحه (به جز فایل‌های استاتیک)
-         * - APIها (به جز webhook)
-         */
         '/((?!api/webhook|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 };

@@ -15,12 +15,33 @@ import Order from "@/models/Order";
 import Payment from "@/models/Payment";
 import { createInvoice, getBlupalMode, tomanToRial } from "@/lib/blupal";
 import { NextResponse } from "next/server";
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/lib/auth';
 
 export async function POST(req) {
     try {
         await connectedToDatabase();
 
-        const { user, cart, totalPrice } = await req.json();
+        // بررسی احراز هویت
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+
+        if (!token) {
+            return NextResponse.json(
+                { error: 'لطفاً وارد شوید' },
+                { status: 401 }
+            );
+        }
+
+        const decoded = verifyToken(token);
+        if (!decoded) {
+            return NextResponse.json(
+                { error: 'توکن نامعتبر' },
+                { status: 401 }
+            );
+        }
+
+        const { cart, totalPrice, user: deliveryUser } = await req.json();
 
         // ---- اعتبارسنجی سبد خرید ----
         if (!Array.isArray(cart) || cart.length === 0) {
@@ -30,6 +51,20 @@ export async function POST(req) {
         if (invalidItems.length > 0) {
             return NextResponse.json(
                 { error: 'برخی محصولات سبد خرید شناسه معتبر ندارند.' },
+                { status: 400 }
+            );
+        }
+
+        if (!deliveryUser?.phone || !deliveryUser?.city || !deliveryUser?.address || !deliveryUser?.postalCode) {
+            return NextResponse.json(
+                { error: 'اطلاعات تحویل (شهر، آدرس، شماره تماس و کد پستی) الزامی است.' },
+                { status: 400 }
+            );
+        }
+
+        if (!totalPrice || Number(totalPrice) <= 0) {
+            return NextResponse.json(
+                { error: 'مبلغ سفارش نامعتبر است.' },
                 { status: 400 }
             );
         }
@@ -48,14 +83,24 @@ export async function POST(req) {
         }));
 
         const order = new Order({
-            user,
+            userId: decoded.userId,
+            user: {
+                userId: decoded.userId,
+                email: decoded.email,
+                name: decoded.name || deliveryUser?.name || 'کاربر',
+                phone: deliveryUser?.phone || '',
+                country: deliveryUser?.country || 'ایران',
+                city: deliveryUser?.city || '',
+                address: deliveryUser?.address || '',
+                postalCode: deliveryUser?.postalCode || '',
+            },
             cart: mappedCart,
             totalPrice: totalPrice || 0,
             status: 'pending',
         });
         await order.save();
 
-        // ---- ساخت فاکتور در بلوپال ----
+        // ---- ساخت فاکتور در بلوپال با userId----
         // اگر ساخت فاکتور شکست خورد، سفارش یتیم باقی نماند → حذف می‌کنیم
         let invoice;
         try {
@@ -70,9 +115,19 @@ export async function POST(req) {
         }
 
         // ---- ذخیره تراکنش پرداخت ----
+        const invoiceId = Number(invoice.invoice_id);
+        if (!invoiceId || Number.isNaN(invoiceId)) {
+            await Order.findByIdAndDelete(order._id).catch(() => { });
+            return NextResponse.json(
+                { error: 'شناسه فاکتور نامعتبر است.' },
+                { status: 502 }
+            );
+        }
+
         const payment = new Payment({
+            userId: decoded.userId,
             orderId: order._id,
-            invoiceId: invoice.invoice_id,
+            invoiceId,
             amount: rial,
             finalAmount: invoice.final_amount,
             status: invoice.status,                 // معمولاً PENDING
@@ -85,7 +140,7 @@ export async function POST(req) {
 
         // ثبت ارجاع فاکتور روی خودِ سفارش (برای نمایش در پنل ادمین)
         order.payment = {
-            invoiceId: invoice.invoice_id,
+            invoiceId,
             status: invoice.status,
             mode: payment.mode,
             cardNumber: invoice.card_number || payment.cardNumber || '', // شماره کارت مقصد

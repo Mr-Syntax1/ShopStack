@@ -134,7 +134,7 @@ export default function Footer() {
                 {/* button for going up*/}
                 <button
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-linear-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-110 hover:-translate-y-1 flex items-center justify-center"
+                    className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-linear-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-110 hover:-translate-y-1 flex items-center justify-center cursor-pointer"
                     aria-label="بازگشت به بالا"
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -4,6 +4,13 @@ import mongoose from "mongoose";
 
 const PaymentSchema = new mongoose.Schema({
     // شناسه سفارش مرتبط در فروشگاه (یک به یک)
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        index: true, // برای جستجوی سریع
+    },
+
     orderId: {
         type: mongoose.Schema.Types.ObjectId, // اشاره به _id 
         ref: 'Order', // populate
@@ -86,6 +93,9 @@ const PaymentSchema = new mongoose.Schema({
 }, {
     timestamps: true, // createdAt و updatedAt
 });
+
+// ایندکس برای جستجوی سریع فاکتورهای کاربر
+PaymentSchema.index({ userId: 1, createdAt: -1 });
 
 // جلوگیری از کامپایل چندباره مدل در محیط توسعه
 export default mongoose.models.Payment || mongoose.model('Payment', PaymentSchema);

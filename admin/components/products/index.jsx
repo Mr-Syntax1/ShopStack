@@ -134,7 +134,7 @@ export default function ProductsPage() {
         if (updated.page > 1) params.set('page', updated.page);
 
         // تغییر مسیر
-        router.push(`/products?${params.toString()}`);
+        router.push(`/dashboard/products?${params.toString()}`);
     };
 
     // ===========================================================

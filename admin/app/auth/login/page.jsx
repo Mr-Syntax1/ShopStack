@@ -1,4 +1,3 @@
-// app/auth/login/page.jsx (پنل ادمین - http://localhost:3001)
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import Link from 'next/link'; // ← اضافه کنید
 
 // ==============================
 // Schema اعتبارسنجی با Yup
@@ -128,7 +128,29 @@ export default function AdminLoginPage() {
                     <p className="text-gray-500 text-sm mt-1">ورود به پنل مدیریت</p>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
+                {/*  دکمه رفتن به فروشگاه */}
+                <Link
+                    href="http://localhost:3000"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 mb-4 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-2xl transition-colors border border-indigo-200/50"
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    دکمه رفتن به فروشگاه
+
+                </Link>
+
+                {/* خط جداکننده */}
+                <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-200" />
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                        <span className="px-2 bg-white text-gray-400">ورود به پنل مدیریت</span>
+                    </div>
+                </div>
+
+                <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
                     {/* ایمیل */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">ایمیل</label>

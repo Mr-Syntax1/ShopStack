@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import GreetingHeader from "@/components/home/GreetingHeader";
 import LiveTicker from "@/components/home/LiveTicker";
 import StatsGrid from "@/components/home/StatsGrid";
@@ -9,6 +10,8 @@ import RecentOrders from "@/components/home/RecentOrders";
 import TopProducts from "@/components/home/TopProducts";
 
 export default function DashboardHome() {
+  const [activeRange, setActiveRange] = useState("7days");
+
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
       {/* عنوان صفحه در موبایل */}
@@ -17,28 +20,28 @@ export default function DashboardHome() {
       </h1>
 
       {/* هدر خوش‌آمدگویی */}
-      <GreetingHeader />
+      <GreetingHeader range={activeRange} onRangeChange={setActiveRange} />
 
       {/* تیکر زنده */}
       <LiveTicker />
 
       {/* کارت‌های آمار */}
-      <StatsGrid />
+      <StatsGrid range={activeRange} />
 
       {/* نمودارها */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <RevenueChart />
+          <RevenueChart range={activeRange} />
         </div>
-        <OrderStatusDonut />
+        <OrderStatusDonut range={activeRange} />
       </div>
 
       {/* سفارشات اخیر و محصولات برتر */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <RecentOrders />
+          <RecentOrders range={activeRange} />
         </div>
-        <TopProducts />
+        <TopProducts range={activeRange} />
       </div>
 
       {/* فوتر */}

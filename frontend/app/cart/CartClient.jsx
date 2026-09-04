@@ -6,12 +6,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formatPrice } from '../../lib/persian';
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context";
 import Error from "@/components/Error";
 import { showOrderSuccessToast, showErrorToast } from "@/components/CustomToast";
 import { orderSchema } from "@/lib/validations";
 
 
 export default function CartClient() {
+    const { user, isAuthenticated } = useAuth();
     const [error, setError] = useState(null);
 
     const {
@@ -35,6 +37,7 @@ export default function CartClient() {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors, isSubmitting },
         reset,
     } = useForm({
@@ -51,6 +54,19 @@ export default function CartClient() {
     });
 
     // ============================================
+    // پر کردن خودکار فیلدها اگر کاربر لاگین کرده
+    // ============================================
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            // ✅ فقط این ۳ تا فیلد رو پر کن
+            setValue('name', user.name || '');
+            setValue('email', user.email || '');
+            setValue('phone', user.phone || '');
+            // ❌ بقیه فیلدها خالی می‌مونن (city, postalCode, address, country)
+        }
+    }, [isAuthenticated, user, setValue]);
+
+    // ============================================
     // ثبت سفارش
     // ============================================
     const onSubmit = async (data) => {
@@ -59,6 +75,13 @@ export default function CartClient() {
             return;
         }
 
+        // ✅ اگر کاربر لاگین نکرده → فقط توست خطا بده
+        if (!isAuthenticated) {
+            showErrorToast('لطفاً ابتدا وارد حساب کاربری خود شوید');
+            return;
+        }
+
+        // ✅ اگر کاربر لاگین کرده → ادامه بده
         const cartWithProductId = items.map(item => ({
             productId: item._id || item.id,
             title: item.title,
@@ -69,14 +92,22 @@ export default function CartClient() {
             image: item.image
         }));
 
+        // ✅ از اطلاعات فرم استفاده کن (بعضی از فیلدها از کاربر پر شده)
         const orderData = {
-            user: data,
+            user: {
+                name: data.name,
+                email: data.email,
+                phone: data.phone,
+                city: data.city,
+                postalCode: data.postalCode,
+                address: data.address,
+                country: data.country || 'ایران',
+            },
             cart: cartWithProductId,
             totalPrice: total
         };
 
         try {
-            // ساخت فاکتور پرداخت بلوپال و دریافت لینک پرداخت
             const res = await fetch('/api/payments/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -86,7 +117,6 @@ export default function CartClient() {
             const response = await res.json();
 
             if (res.ok && response.paymentLink) {
-                // سفارش ثبت شد و فاکتور ساخته شد → هدایت به درگاه پرداخت
                 clearCart();
                 reset();
                 window.location.href = response.paymentLink;
@@ -195,7 +225,6 @@ export default function CartClient() {
                                                     {item.title}
                                                 </h3>
                                             </Link>
-                                            {/* ✅ قیمت با تخفیف */}
                                             <p className="text-lg font-bold text-blue-600">
                                                 {formatPrice(getDiscountedPrice(item))}
                                             </p>
@@ -226,7 +255,7 @@ export default function CartClient() {
                                             </button>
                                         </div>
 
-                                        {/* ✅ قیمت کل با تخفیف */}
+                                        {/* قیمت کل با تخفیف */}
                                         <div className="text-right min-w-[100px]">
                                             <p className="text-xs text-gray-400">قیمت کل</p>
                                             <p className="font-bold text-gray-800">
@@ -291,9 +320,8 @@ export default function CartClient() {
                                 خلاصه سفارش
                             </h2>
 
-                            {/* ===== جمع‌بندی قیمت‌ها ===== */}
+                            {/* جمع‌بندی قیمت‌ها */}
                             <div className="space-y-2 text-sm">
-                                {/* ✅ قیمت بدون تخفیف */}
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">قیمت محصولات</span>
                                     <span className="font-medium text-gray-800">
@@ -301,7 +329,6 @@ export default function CartClient() {
                                     </span>
                                 </div>
 
-                                {/* ✅ تخفیف محصولات */}
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-green-600">
                                         <span className="text-gray-500">تخفیف محصولات</span>
@@ -309,7 +336,6 @@ export default function CartClient() {
                                     </div>
                                 )}
 
-                                {/* ✅ هزینه ارسال */}
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">هزینه ارسال</span>
                                     {shippingCost === 0 ? (
@@ -326,7 +352,6 @@ export default function CartClient() {
                                     )}
                                 </div>
 
-                                {/* پیام ارسال رایگان */}
                                 {shippingCost > 0 && cartTotal > 0 && (
                                     <div className="text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
                                         <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -345,9 +370,9 @@ export default function CartClient() {
                                         </svg>
                                         هزینه ارسال برای شما رایگان شد
                                     </div>
+
                                 )}
 
-                                {/* ✅ مجموع نهایی */}
                                 <div className="flex justify-between text-lg font-bold pt-3 border-t border-gray-100/50">
                                     <span className="text-gray-800">مجموع</span>
                                     <span className="text-blue-600 text-xl">
@@ -363,74 +388,77 @@ export default function CartClient() {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                     اطلاعات شما
+                                    {isAuthenticated && (
+                                        <span className="text-xs text-green-500 font-normal">(برخی فیلدها خودکار پر شدند)</span>
+                                    )}
                                 </h3>
 
-                                {/* ===== نام ===== */}
+                                {/* ===== نام - خودکار پر میشه ===== */}
                                 <div>
                                     <input
                                         type="text"
                                         placeholder="نام و نام خانوادگی"
                                         {...register('name')}
-                                        className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.name ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white ${isAuthenticated ? 'bg-gray-100 text-gray-700' : ''}`}
                                     />
                                     {errors.name && (
                                         <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
                                     )}
                                 </div>
 
-                                {/* ===== ایمیل ===== */}
+                                {/* ===== ایمیل - خودکار پر میشه ===== */}
                                 <div>
                                     <input
                                         type="email"
                                         placeholder="ایمیل"
                                         {...register('email')}
-                                        className={`w-full px-4 py-3 rounded-xl border ${errors.email ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.email ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white ${isAuthenticated ? 'bg-gray-100 text-gray-700' : ''}`}
                                     />
                                     {errors.email && (
                                         <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
                                     )}
                                 </div>
 
-                                {/* ===== تلفن ===== */}
+                                {/* ===== تلفن - خودکار پر میشه ===== */}
                                 <div>
                                     <input
                                         type="tel"
                                         placeholder="شماره تماس"
                                         {...register('phone')}
-                                        className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white ${isAuthenticated ? 'bg-gray-100 text-gray-700' : ''}`}
                                     />
                                     {errors.phone && (
                                         <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
                                     )}
                                 </div>
 
-                                {/* ===== شهر و کد پستی ===== */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <input
-                                            type="text"
-                                            placeholder="شهر"
-                                            {...register('city')}
-                                            className={`w-full px-4 py-3 rounded-xl border ${errors.city ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
-                                        />
-                                        {errors.city && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <input
-                                            type="text"
-                                            placeholder="کد پستی"
-                                            {...register('postalCode')}
-                                            className={`w-full px-4 py-3 rounded-xl border ${errors.postalCode ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
-                                        />
-                                        {errors.postalCode && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.postalCode.message}</p>
-                                        )}
-                                    </div>
+                                {/* ===== شهر - خالی ===== */}
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="شهر"
+                                        {...register('city')}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.city ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
+                                    />
+                                    {errors.city && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>
+                                    )}
                                 </div>
 
-                                {/* ===== آدرس ===== */}
+                                {/* ===== کد پستی - خالی ===== */}
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="کد پستی"
+                                        {...register('postalCode')}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.postalCode ? 'border-red-500 focus:ring-red-500/20' : 'border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'} transition-all outline-none text-sm bg-white/50 focus:bg-white`}
+                                    />
+                                    {errors.postalCode && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.postalCode.message}</p>
+                                    )}
+                                </div>
+
+                                {/* ===== آدرس - خالی ===== */}
                                 <div>
                                     <input
                                         type="text"
@@ -443,7 +471,7 @@ export default function CartClient() {
                                     )}
                                 </div>
 
-                                {/* ===== کشور ===== */}
+                                {/* ===== کشور - خالی ===== */}
                                 <div>
                                     <select
                                         {...register('country')}

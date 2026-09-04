@@ -18,7 +18,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
     };
 
     return (
-        <div className="flex justify-center items-center gap-2 mt-16 flex-wrap">
+        <div className="flex justify-center items-center gap-2 mt-12 flex-wrap mb-10 ">
             {/* اولین */}
             <button
                 onClick={() => onPageChange(1)}

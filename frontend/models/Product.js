@@ -78,7 +78,7 @@ const ProductSchema = new mongoose.Schema({
 });
 
 
-export default mongoose.model.Product || mongoose.model('Product', ProductSchema)
+export default mongoose.models.Product || mongoose.model('Product', ProductSchema)
 
 //یه مدل (Model) که به ما اجازه میده با محصولات توی دیتابیس کار کنیم
 //مثل یک پل بین کد ما و دیتابیس

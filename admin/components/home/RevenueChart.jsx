@@ -27,14 +27,15 @@ function ChartTooltip({ active, payload }) {
   );
 }
 
-export default function RevenueChart() {
+export default function RevenueChart({ range = '7days' }) {
   const [revenueSeries, setRevenueSeries] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const data = await getDashboardData();
+        const data = await getDashboardData(range);
         setRevenueSeries(data?.revenueSeries || []);
       } catch (error) {
         console.error('Error fetching revenue:', error);
@@ -43,7 +44,7 @@ export default function RevenueChart() {
       }
     };
     fetchData();
-  }, []);
+  }, [range]);
 
   // محاسبه مجموع و میانگین
   const totalRevenue = revenueSeries.reduce((sum, d) => sum + (d.revenue || 0), 0);
@@ -60,6 +61,8 @@ export default function RevenueChart() {
     );
   }
 
+  const rangeLabel = range === 'today' ? 'امروز' : range === '30days' ? '۳۰ روز اخیر' : '۷ روز اخیر';
+
   return (
     <div className="rounded-2xl border border-gray-200/80 bg-white/80 backdrop-blur-sm p-5 lg:p-6 shadow-sm">
       <div className="flex items-start justify-between">
@@ -68,7 +71,7 @@ export default function RevenueChart() {
             درآمد فروش
           </h2>
           <p className="mt-0.5 text-[12.5px] text-gray-500">
-            این هفته نسبت به هفته قبل
+            {rangeLabel} نسبت به دوره قبل
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-[12px]">
@@ -122,8 +125,12 @@ export default function RevenueChart() {
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#9997ab", fontSize: 12 }}
-              tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
-              width={40}
+              tickFormatter={(v) => {
+                if (v >= 1000000) return `${(v / 1000000).toFixed(1)}M`;
+                if (v >= 1000) return `${(v / 1000).toFixed(0)}k`;
+                return String(v);
+              }}
+              width={45}
             />
             <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#e0e3ff", strokeWidth: 1 }} />
             <Area
