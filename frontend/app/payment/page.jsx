@@ -2,7 +2,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { toPersianDigits, formatPrice } from '@/lib/persian';
 
@@ -64,9 +64,47 @@ const StatusIcon = ({ status }) => {
 const FINAL_STATES = ['PAID', 'EXPIRED', 'CANCELED', 'ERROR', 'TIMEOUT', 'NO_INVOICE'];
 
 // ==============================
-// کامپوننت اصلی
+// مپ رنگ‌ها برای جلوگیری از purge شدن کلاس‌های داینامیک تیلویند
 // ==============================
-export default function PaymentCallbackPage() {
+const colorClasses = {
+    gray: {
+        header: 'bg-gray-500 bg-linear-to-r from-gray-500 to-gray-600',
+        iconBg: 'bg-gray-50 text-gray-500',
+        title: 'text-gray-600',
+    },
+    rose: {
+        header: 'bg-rose-500 bg-linear-to-r from-rose-500 to-rose-600',
+        iconBg: 'bg-rose-50 text-rose-500',
+        title: 'text-rose-600',
+    },
+    emerald: {
+        header: 'bg-emerald-500 bg-linear-to-r from-emerald-500 to-emerald-600',
+        iconBg: 'bg-emerald-50 text-emerald-500',
+        title: 'text-emerald-600',
+    },
+    amber: {
+        header: 'bg-amber-500 bg-linear-to-r from-amber-500 to-amber-600',
+        iconBg: 'bg-amber-50 text-amber-500',
+        title: 'text-amber-600',
+    },
+};
+
+function PaymentFallback() {
+    return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+            <div className="relative">
+                <div className="w-14 h-14 rounded-full border-4 border-gray-200" />
+                <div className="absolute top-0 left-0 w-14 h-14 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin" />
+            </div>
+            <p className="text-sm text-gray-400">در حال بارگذاری...</p>
+        </div>
+    );
+}
+
+// ==============================
+// کامپوننت داخلی (باید داخل Suspense باشد چون useSearchParams دارد)
+// ==============================
+function PaymentCallbackContent() {
     const searchParams = useSearchParams();
     const invoiceId = searchParams?.get('invoice_id') ?? null;
 
@@ -280,12 +318,14 @@ export default function PaymentCallbackPage() {
     // ==============================
     // رندر اصلی
     // ==============================
+    const colors = colorClasses[config.color] || colorClasses.gray;
+
     return (
         <div className="min-h-[60vh] flex items-center justify-center px-4 py-8 mt-20">
             <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden">
 
                 {/* هدر */}
-                <div className={`px-6 py-4 bg-${config.color}-500 bg-linear-to-r from-${config.color}-500 to-${config.color}-600`}>
+                <div className={`px-6 py-4 ${colors.header}`}>
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-white/80 uppercase tracking-wider">وضعیت پرداخت</span>
                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/20 text-white">
@@ -303,12 +343,12 @@ export default function PaymentCallbackPage() {
                 {/* محتوا */}
                 <div className="p-8 text-center">
                     {/* آیکون */}
-                    <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center bg-${config.color}-50 text-${config.color}-500`}>
+                    <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${colors.iconBg}`}>
                         <StatusIcon status={config.icon} />
                     </div>
 
                     {/* عنوان */}
-                    <h3 className={`mt-4 text-xl font-bold text-${config.color}-600`}>
+                    <h3 className={`mt-4 text-xl font-bold ${colors.title}`}>
                         {config.title}
                     </h3>
 
@@ -385,5 +425,16 @@ export default function PaymentCallbackPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+// ==============================
+// کامپوننت Export اصلی - حتما داخل Suspense برای رفع خطای Next.js build
+// ==============================
+export default function PaymentCallbackPage() {
+    return (
+        <Suspense fallback={<PaymentFallback />}>
+            <PaymentCallbackContent />
+        </Suspense>
     );
 }

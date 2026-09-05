@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import UserInfo from "@/components/UserInfo";
 
+const API_CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_URL
+
 // ==============================
 // آیتم‌های منو
 // ==============================
@@ -180,7 +182,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
         <div className="mt-4 pt-4 border-t border-gray-200/60">
           <Link
-            href="http://localhost:3000"
+            href={API_CLIENT_URL}
             target="_blank"
             onClick={onClose}
             className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13.5px] font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-200"

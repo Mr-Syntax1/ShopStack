@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { getDashboardData } from "@/lib/dashboard-api";
 
 const ranges = [
-  { label: 'امروز', value: "today" },
   { label: "۷ روز", value: "7days" },
   { label: "۳۰ روز", value: "30days" },
 ];
@@ -65,6 +64,9 @@ export default function GreetingHeader({ range, onRangeChange }) {
     fetchData(rangeValue);
   };
   // وقتی کاربر روی یکی از دکمه‌های بازه کلیک می‌کند، داده‌ها را با بازه جدید دریافت می‌کند.
+  useEffect(() => {
+    fetchData(range);
+  }, [range, fetchData]);
 
   const today = new Date();// ==================================================
   const persianDate = today.toLocaleDateString('fa-IR', {

@@ -5,6 +5,8 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
+const API_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL
+
 // ==============================
 // ایجاد Context
 // ==============================
@@ -89,8 +91,8 @@ export function AuthProvider({ children }) {
 
             // هدایت بر اساس نقش
             if (data.user?.role === 'admin') {
-                window.location.href = 'http://localhost:3001/dashboard';
-                router.push('/products');
+                window.location.assign(`${API_ADMIN_URL}/dashboard`);
+                return { success: true };
             } else {
                 router.push('/products');
             }

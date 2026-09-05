@@ -2,7 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/persian';
 import StockBadge from './StockBadge';
-import DeleteButton from './DeleteButton';
+import DeleteButton from '../DeleteButton';
+
+const API_CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_URL
+
 
 const EditIcon = () => (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,7 +131,7 @@ export default function ProductTable({ products, onDelete }) {
                                         <EditIcon />
                                     </Link>
                                     <Link
-                                        href={`http://localhost:3000/products/${product.slug}`}
+                                        href={`${API_CLIENT_URL}/products/${product.slug}`}
                                         target="_blank"
                                         className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                                         title="مشاهده در سایت"
@@ -136,9 +139,11 @@ export default function ProductTable({ products, onDelete }) {
                                         <ViewIcon />
                                     </Link>
                                     <DeleteButton
-                                        productSlug={product.slug}
-                                        productTitle={product.title}
+                                        slug={product.slug}
+                                        title={product.title}
                                         onDelete={onDelete}
+                                        deleteUrl={`/api/products/${product.slug}`}
+                                        successMessage={`محصول "${product.title}" با موفقیت حذف شد`}
                                     />
                                 </div>
                             </td>

@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/context";
 
 export const metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_API_URL),
   title: {
     default: "OnlineShop | فروشگاه آنلاین",
   },
@@ -22,7 +23,7 @@ export const metadata = {
   openGraph: {
     title: "OnlineShop | فروشگاه آنلاین",
     description: "بهترین و جدیدترین محصولات دیجیتال با قیمت مناسب و ارسال سریع",
-    url: "http://localhost:3000",
+    url: process.env.NEXT_PUBLIC_API_URL,
     siteName: "OnlineShop",
     images: [
       {

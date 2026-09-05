@@ -41,7 +41,7 @@ export default function EditProduct({ params }) {
                 if (!res.ok) {
                     if (res.status === 404) {
                         toast.error('محصول یافت نشد');
-                        router.push('/products');
+                        router.push('/dashboard/products');
                         return;
                     }
                     throw new Error('خطا در دریافت محصول');
@@ -54,7 +54,7 @@ export default function EditProduct({ params }) {
             } catch (error) {
                 console.error('Error:', error);
                 toast.error('خطا در دریافت اطلاعات محصول');
-                router.push('/products');
+                router.push('/dashboard/products');
             } finally {
                 setIsLoading(false);
             }
@@ -87,7 +87,7 @@ export default function EditProduct({ params }) {
             }
 
             toast.success('محصول با موفقیت ویرایش شد! ✅');
-            router.push('/products');
+            router.push('/dashboard/products');
             router.refresh();
         } catch (error) {
             console.error('Error:', error);

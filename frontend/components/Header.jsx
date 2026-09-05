@@ -8,6 +8,9 @@ import { useAuth } from "@/context";
 import { createPortal } from "react-dom";
 import Avatar from "@/components/Avatar";
 
+const API_CLIENT_URL = process.env.NEXT_PUBLIC_API_URL
+const API_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL
+
 
 export default function Header() {
     const [isOpenHamburger, setIsOpenHamburger] = useState(false);
@@ -49,9 +52,9 @@ export default function Header() {
     // تعیین مسیر پروفایل بر اساس نقش
     const getProfileLink = () => {
         if (user?.role === 'admin') {
-            return 'http://localhost:3001/dashboard'; // ادمین
+            return `${API_ADMIN_URL}/dashboard`; // ادمین
         }
-        return '/profile'; // کاربر عادی
+        return `${API_CLIENT_URL}/profile`; // کاربر عادی
     };
 
     const handleLogout = async () => {

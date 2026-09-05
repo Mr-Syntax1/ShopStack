@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getDashboardData } from "@/lib/dashboard-api";
+import { initials } from "@/lib/persian";
 
 const statusStyles = {
   "تحویل شده": "bg-emerald-50 text-emerald-700",
@@ -17,14 +18,6 @@ const statusLabels = {
   "در انتظار": "در انتظار",
   "لغو شده": "لغو شده",
 };
-
-function initials(name) {
-  return name
-    .split(" ")
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join("");
-}
 
 export default function RecentOrders() {
   const [recentOrders, setRecentOrders] = useState([]);

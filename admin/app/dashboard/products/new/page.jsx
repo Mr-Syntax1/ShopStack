@@ -28,8 +28,8 @@ export default function NewProductPage() {
                 return;
             }
 
-            toast.success('محصول با موفقیت اضافه شد! 🎉');
-            router.push('/products');
+            toast.success('محصول با موفقیت اضافه شد! ✅');
+            router.push('/dashboard/products');
             router.refresh();
         } catch (error) {
             console.error('Error:', error);

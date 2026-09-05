@@ -105,13 +105,6 @@ export default function OrdersPage() {
         }
     }, [fetchOrders]);
 
-    const stats = useMemo(() => {
-        const revenue = orders.reduce((s, o) => s + (o.totalPrice || 0), 0);
-        const pending = orders.filter((o) => o.status === 'pending' || o.status === 'processing').length;
-        const delivered = orders.filter((o) => o.status === 'delivered').length;
-        return { total: orders.length, revenue, pending, delivered };
-    }, [orders]);
-
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase();
         return orders.filter((o) => {

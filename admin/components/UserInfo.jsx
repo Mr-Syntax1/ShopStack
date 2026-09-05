@@ -56,7 +56,7 @@ export default function UserInfo() {
             }
 
             toast.success('با موفقیت خارج شدید');
-            window.location.href = 'http://localhost:3001/auth/login';
+            router.push('/auth/login');
 
         } catch (error) {
             toast.error(error.message || 'خطا در خروج');

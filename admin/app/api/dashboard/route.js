@@ -38,13 +38,6 @@ function getTimeRanges(range) {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     const ranges = {
-        today: {
-            start: today,
-            compareStart: new Date(today.getTime() - 24 * 60 * 60 * 1000),
-            end: new Date(today.getTime() + 24 * 60 * 60 * 1000),
-            label: 'امروز',
-            days: 1,
-        },
         '7days': {
             start: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000),
             compareStart: new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000),
@@ -65,7 +58,8 @@ function getTimeRanges(range) {
 }
 
 function calculateStats(orders, users, range) {
-    const { start, compareStart, end } = getTimeRanges(range);
+    const timeRange = getTimeRanges(range);
+    const { start, compareStart, end, label } = timeRange;
 
     // سفارشات بازه فعلی و قبلی
     const currentOrders = filterOrdersByDate(orders, start, end);
@@ -97,7 +91,7 @@ function calculateStats(orders, users, range) {
         salesDelta: calculateDelta(currentSales, previousSales),
         ordersDelta: calculateDelta(currentOrderCount, previousOrderCount),
         customersDelta: calculateDelta(newCustomers, newCustomersPrev),
-        periodLabel: getTimeRanges(range).label,
+        periodLabel: label,
         currentOrders,
         previousOrders,
     };
@@ -109,19 +103,13 @@ function calculateStats(orders, users, range) {
 
 function generateRevenueData(orders, range) {
     const today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-    const { days } = getTimeRanges(range);
+    const timeRange = getTimeRanges(range);
+    const { days } = timeRange;
     const persianDays = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
 
     const data = [];
 
-    if (range === 'today') {
-        const dayOrders = orders.filter(o => new Date(o.createdAt) >= today);
-        data.push({
-            day: today.toLocaleDateString('fa-IR', { month: 'short', day: 'numeric' }),
-            revenue: calculateTotalSales(dayOrders),
-            orders: dayOrders.length,
-        });
-    } else if (range === '30days') {
+    if (range === '30days') {
         // ۴ هفته
         for (let i = 3; i >= 0; i--) {
             const start = new Date(today.getTime() - (i + 1) * 7 * 24 * 60 * 60 * 1000);
@@ -134,7 +122,7 @@ function generateRevenueData(orders, range) {
             });
         }
     } else {
-        // ۷ روز
+        // ۷ روز (پیش‌فرض)
         for (let i = days - 1; i >= 0; i--) {
             const start = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
             const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
@@ -227,15 +215,38 @@ function getLowStock(products) {
             left: p.stock,
         }));
 }
-
+//  Live Ticker (تیکر زنده)
 function getLiveEvents(orders) {
     return orders
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 5)
         .map(o => {
-            const minutes = Math.floor((Date.now() - new Date(o.createdAt).getTime()) / 60000);
-            const timeText = minutes === 0 ? 'لحظاتی پیش' : `${minutes} دقیقه پیش`;
-            return `سفارش جدید #OS-${o._id.toString().slice(-4)} از ${o.user?.city || 'نامشخص'}، ${o.user?.country || ''} · ${timeText}`;
+            const now = Date.now();
+            const createdAt = new Date(o.createdAt).getTime();
+            const diffMs = now - createdAt;
+
+            // محاسبه دقیقه و ساعت
+            const diffMinutes = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+
+            let timeText;
+            if (diffMinutes < 1) {
+                timeText = 'لحظاتی پیش';
+            } else if (diffMinutes < 60) {
+                timeText = `${diffMinutes} دقیقه پیش`;
+            } else if (diffHours < 24) {
+                timeText = `${diffHours} ساعت پیش`;
+            } else {
+                // اگر بیشتر از ۲۴ ساعت بود، تاریخ را نشان بده
+                const days = Math.floor(diffHours / 24);
+                timeText = `${days} روز پیش`;
+            }
+
+            const city = o.user?.city || 'نامشخص';
+            const country = o.user?.country || '';
+            const location = country ? `${city}، ${country}` : city;
+
+            return `سفارش جدید #${o._id.toString().slice(-5)} از ${location} · ${timeText}`;
         });
 }
 

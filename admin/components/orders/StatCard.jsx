@@ -49,13 +49,12 @@ export default function StatsGrid({ orders = [], loading = false }) {
     const cards = [
         { label: 'فروش کل', value: `${formatPrice(s.totalRevenue)} تومان`, icon: ICONS.revenue, accent: 'bg-indigo-50 text-indigo-600' },
         { label: 'سفارشات', value: toPersianDigits(s.totalOrders), icon: ICONS.orders, accent: 'bg-blue-50 text-blue-600' },
-        { label: 'مشتریان', value: toPersianDigits(s.customers), icon: ICONS.customers, accent: 'bg-emerald-50 text-emerald-600' },
         { label: 'در انتظار', value: toPersianDigits(s.pending), icon: ICONS.pending, accent: 'bg-amber-50 text-amber-600' },
         { label: 'تحویل شده', value: toPersianDigits(s.delivered), icon: ICONS.delivered, accent: 'bg-green-50 text-green-600' },
     ];
 
     return (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {cards.map((c) => (
                 <div
                     key={c.label}

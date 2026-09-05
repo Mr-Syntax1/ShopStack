@@ -131,19 +131,21 @@ body {
     opacity: 100;
 }
 
-/* subtle scrollbar for horizontal ticker */
 .ticker-track {
-    animation: ticker 20s linear infinite;
+    display: flex;
+    width: max-content;
+    gap: 2.5rem;
+    white-space: nowrap;
+    animation: ticker 65s linear infinite;
 }
 
 .ticker-track:hover {
     animation-play-state: paused;
 }
 
-
 @keyframes ticker {
     0% {
-        transform: translateX(0%);
+        transform: translateX(100%);
     }
 
     100% {

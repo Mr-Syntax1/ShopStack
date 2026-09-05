@@ -11,7 +11,8 @@ export default function LiveTicker() {
       try {
         const data = await getDashboardData();
         const events = data?.liveEvents || [];
-        setItems([...events, ...events]);
+        const reversedEvents = [...events].reverse();
+        setItems([...reversedEvents, ...reversedEvents]);
       } catch (error) {
         console.error('Error fetching live events:', error);
       }

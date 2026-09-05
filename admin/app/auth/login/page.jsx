@@ -8,6 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Link from 'next/link'; // ← اضافه کنید
 
+const API_CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_URL
+
 // ==============================
 // Schema اعتبارسنجی با Yup
 // ==============================
@@ -130,7 +132,7 @@ export default function AdminLoginPage() {
 
                 {/*  دکمه رفتن به فروشگاه */}
                 <Link
-                    href="http://localhost:3000"
+                    href={API_CLIENT_URL}
                     className="flex items-center justify-center gap-2 w-full py-2.5 mb-4 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-2xl transition-colors border border-indigo-200/50"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

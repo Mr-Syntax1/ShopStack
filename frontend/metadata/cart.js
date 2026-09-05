@@ -12,7 +12,6 @@ export const cartMetadata = {
                 alt: "سبد خرید OnlineShop"
             }
         ],
-        url: "http://localhost:3000/cart",
         type: "website",
         siteName: "OnlineShop",
         locale: "fa_IR",

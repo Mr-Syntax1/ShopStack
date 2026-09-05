@@ -99,14 +99,14 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             {testimonialsData.map((review) => (
               <div
                 key={review.id}
                 className="group bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-gray-100/80 hover:border-purple-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative"
               >
                 <div className="absolute top-6 left-6 text-7xl text-purple-100/50 leading-none font-serif group-hover:text-purple-200/70 transition-colors duration-500">
-                  "
+
                 </div>
 
                 <div className="flex gap-1 mb-5 relative">
@@ -117,7 +117,7 @@ export default function Home() {
                   ))}
                 </div>
 
-                <p className="text-gray-600 leading-relaxed mb-6 relative z-10">"{review.text}"</p>
+                <p className="text-gray-600 leading-relaxed mb-6 relative z-10">{review.text}</p>
 
                 <div className="flex items-center gap-4 relative">
                   <div className="w-14 h-14 rounded-full bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-2xl font-bold text-indigo-600 shadow-md">

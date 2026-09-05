@@ -73,6 +73,6 @@ export function initials(name = '') {
         .trim()
         .split(/\s+/)
         .map((p) => p[0])
-        .slice(0, 2)
+        .slice(0, 1)
         .join('') || '؟';
 }
