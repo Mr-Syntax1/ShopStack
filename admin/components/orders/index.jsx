@@ -68,8 +68,6 @@ export default function OrdersPage() {
     }, []);
 
     const deleteOrder = useCallback(async (orderId) => {
-        if (!confirm('آیا از حذف این سفارش اطمینان دارید؟')) return;
-
         try {
             const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
                 method: 'DELETE',

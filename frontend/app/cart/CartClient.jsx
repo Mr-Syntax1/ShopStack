@@ -9,12 +9,15 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context";
 import Error from "@/components/Error";
 import { showOrderSuccessToast, showErrorToast } from "@/components/CustomToast";
+import ConfirmModal from "@/components/ConfirmModal";
 import { orderSchema } from "@/lib/validations";
 
 
 export default function CartClient() {
     const { user, isAuthenticated } = useAuth();
     const [error, setError] = useState(null);
+    const [showClearModal, setShowClearModal] = useState(false);
+    const [isClearing, setIsClearing] = useState(false);
 
     const {
         cart: items,
@@ -27,7 +30,8 @@ export default function CartClient() {
         shippingCost,
         getDiscountedPrice,
         getItemTotal,
-        discountAmount
+        discountAmount,
+        isLoading
     } = useCart();
 
 
@@ -132,6 +136,22 @@ export default function CartClient() {
     // نمایش خطا
     if (error) {
         return <Error error={error} onRetry={() => window.location.reload()} />;
+    }
+
+    // حالت لودینگ
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 sm:p-12 text-center border border-gray-100/50">
+                        <div className="flex justify-center items-center py-12">
+                            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        </div>
+                        <p className="text-gray-500">در حال بارگذاری سبد خرید...</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
 
@@ -291,11 +311,7 @@ export default function CartClient() {
                             </Link>
 
                             <button
-                                onClick={() => {
-                                    if (confirm('آیا از خالی کردن سبد خرید مطمئن هستید؟')) {
-                                        clearCart();
-                                    }
-                                }}
+                                onClick={() => setShowClearModal(true)}
                                 className="text-sm text-red-400 hover:text-red-600 font-medium transition-colors cursor-pointer px-3 py-1 hover:bg-red-50 rounded-lg flex items-center gap-1"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -472,7 +488,7 @@ export default function CartClient() {
                                 </div>
 
                                 {/* ===== کشور - خالی ===== */}
-                                <div>
+                                {/* <div>
                                     <select
                                         {...register('country')}
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200/80 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-sm bg-white/50 focus:bg-white cursor-pointer"
@@ -482,7 +498,7 @@ export default function CartClient() {
                                         <option value="ترکیه">🇹🇷 ترکیه</option>
                                         <option value="امارات">🇦🇪 امارات</option>
                                     </select>
-                                </div>
+                                </div> */}
 
                                 {/* ===== دکمه پرداخت ===== */}
                                 <button
@@ -511,6 +527,27 @@ export default function CartClient() {
 
                 </div>
             </div>
+
+            <ConfirmModal
+                isOpen={showClearModal}
+                onClose={() => setShowClearModal(false)}
+                onConfirm={async () => {
+                    setIsClearing(true);
+                    try {
+                        clearCart();
+                        setShowClearModal(false);
+                    } finally {
+                        setIsClearing(false);
+                    }
+                }}
+                title="خالی کردن سبد خرید"
+                message="آیا از خالی کردن سبد خرید مطمئن هستید؟"
+                confirmText="بله، خالی کن"
+                cancelText="انصراف"
+                isLoading={isClearing}
+                highlightText="همه محصولات از سبد شما حذف خواهند شد!"
+                iconColor="red"
+            />
         </div>
     );
 }

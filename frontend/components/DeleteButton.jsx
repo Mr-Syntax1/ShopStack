@@ -12,33 +12,12 @@ const DeleteIcon = () => (
     </svg>
 );
 
-const bloomStyles = `
-@keyframes adminBtnBloom {
-    0% {
-        opacity: 0;
-        transform: scale(0.3) rotate(-15deg);
-    }
-    60% {
-        opacity: 1;
-        transform: scale(1.15) rotate(5deg);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-    }
-}
-.admin-btn-bloom {
-    display: inline-block;
-    animation: adminBtnBloom 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-`;
-
 export default function DeleteButton({
-    slug,
-    title,
-    onDelete,
-    deleteUrl,
-    successMessage,
+    slug,          // ← اسم کلی (برای محصولات = productSlug، برای سفارشات = orderId)
+    title,         // ← عنوان
+    onDelete,      // ← تابع حذف
+    deleteUrl,     // ← آدرس API (مثلاً `/api/products/${slug}`)
+    successMessage,// ← پیام موفقیت
 }) {
     const [showModal, setShowModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -65,16 +44,13 @@ export default function DeleteButton({
 
     return (
         <>
-            <style dangerouslySetInnerHTML={{ __html: bloomStyles }} />
-            <div className="admin-btn-bloom">
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                    title="حذف"
-                >
-                    <DeleteIcon />
-                </button>
-            </div>
+            <button
+                onClick={() => setShowModal(true)}
+                className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                title="حذف"
+            >
+                <DeleteIcon />
+            </button>
 
             <ConfirmModal
                 isOpen={showModal}

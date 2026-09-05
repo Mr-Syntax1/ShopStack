@@ -2,6 +2,17 @@
 
 import { useState, useEffect } from 'react';
 
+const pageBloomStyles = `
+@keyframes adminPageBloom {
+    0% { transform: scale(1); filter: blur(0px); }
+    100% { transform: scale(1.02); filter: blur(1px); }
+}
+.admin-page-bloom {
+    animation: adminPageBloom 0.4s ease-out forwards;
+    transform-origin: center center;
+}
+`;
+
 // ============================================
 // آیکون‌ها
 // ============================================
@@ -83,62 +94,66 @@ export default function ConfirmModal({
     if (!isOpen) return null;
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-            onClick={onClose}
-        >
+        <>
+            <style dangerouslySetInnerHTML={{ __html: pageBloomStyles }} />
+            <div className="admin-page-bloom fixed inset-0 z-40 pointer-events-none" />
             <div
-                className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-in fade-in zoom-in duration-200"
-                onClick={(e) => e.stopPropagation()}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+                onClick={onClose}
             >
-                <div className="text-center">
-                    {/* آیکون */}
-                    <div className={`w-16 h-16 mx-auto mb-4 ${color.bg} rounded-full flex items-center justify-center`}>
-                        <DangerIcon />
-                    </div>
+                <div
+                    className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-in fade-in zoom-in duration-200"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="text-center">
+                        {/* آیکون */}
+                        <div className={`w-16 h-16 mx-auto mb-4 ${color.bg} rounded-full flex items-center justify-center`}>
+                            <DangerIcon />
+                        </div>
 
-                    {/* عنوان */}
-                    <h3 className={`text-xl font-bold ${color.text} mb-2`}>
-                        {title}
-                    </h3>
+                        {/* عنوان */}
+                        <h3 className={`text-xl font-bold ${color.text} mb-2`}>
+                            {title}
+                        </h3>
 
-                    {/* پیام */}
-                    <p className="text-gray-600 mb-6">
-                        {message}
-                        {highlightText && (
-                            <>
-                                <br />
-                                <span className="text-sm text-red-500 font-semibold">{highlightText}</span>
-                            </>
-                        )}
-                    </p>
-
-                    {/* دکمه‌ها */}
-                    <div className="flex gap-3 justify-center">
-                        <button
-                            onClick={onClose}
-                            className="px-6 py-2.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium cursor-pointer"
-                            disabled={isLoading}
-                        >
-                            {cancelText}
-                        </button>
-                        <button
-                            onClick={onConfirm}
-                            disabled={isLoading}
-                            className={`px-6 py-2.5 ${color.button} text-white rounded-xl transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer`}
-                        >
-                            {isLoading ? (
+                        {/* پیام */}
+                        <p className="text-gray-600 mb-6">
+                            {message}
+                            {highlightText && (
                                 <>
-                                    <SpinnerIcon />
-                                    در حال پردازش...
+                                    <br />
+                                    <span className="text-sm text-red-500 font-semibold">{highlightText}</span>
                                 </>
-                            ) : (
-                                confirmText
                             )}
-                        </button>
+                        </p>
+
+                        {/* دکمه‌ها */}
+                        <div className="flex gap-3 justify-center">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium cursor-pointer"
+                                disabled={isLoading}
+                            >
+                                {cancelText}
+                            </button>
+                            <button
+                                onClick={onConfirm}
+                                disabled={isLoading}
+                                className={`px-6 py-2.5 ${color.button} text-white rounded-xl transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer`}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <SpinnerIcon />
+                                        در حال پردازش...
+                                    </>
+                                ) : (
+                                    confirmText
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }

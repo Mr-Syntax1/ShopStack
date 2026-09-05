@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toPersianDigits, formatPrice, formatDate, initials } from '@/lib/persian';
 import CustomerSkeleton from './CustomerSkeleton';
+import DeleteButton from '../DeleteButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -106,8 +107,6 @@ export default function CustomersPage() {
     }, []);
 
     const deleteUser = useCallback(async (userId) => {
-        if (!confirm('آیا از حذف این کاربر اطمینان دارید؟ این عمل قابل بازگشت نیست.')) return;
-
         try {
             const res = await fetch(`${API_URL}/api/users/${userId}`, {
                 method: 'DELETE',
@@ -353,15 +352,13 @@ export default function CustomersPage() {
                                                 {/* عملیات */}
                                                 <td className="px-4 py-3">
                                                     <div className="flex items-center gap-1">
-                                                        <button
-                                                            onClick={() => deleteUser(user._id)}
-                                                            className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                                                            title="حذف کاربر"
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                            </svg>
-                                                        </button>
+                                                        <DeleteButton
+                                                            slug={user._id}
+                                                            title={user.name || user.email}
+                                                            onDelete={deleteUser}
+                                                            deleteUrl={`/api/users/${user._id}`}
+                                                            successMessage="کاربر با موفقیت حذف شد"
+                                                        />
                                                     </div>
                                                 </td>
                                             </tr>

@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { formatDate, formatDateTime, formatPrice, initials, toPersianDigits } from '@/lib/persian';
 import StatusDropdown from './StatusDropdown';
 import InfoRow from './InfoRow';
+import ConfirmModal from '../ConfirmModal';
 
 function finalPrice(item) {
     const base = item.price || 0;
@@ -35,6 +36,8 @@ function paymentBadgeClass(status) {
 export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle, onStatusChange, onDelete, onPaymentSync }) {
     const user = order.user || {};
     const [showActions, setShowActions] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const actionRef = useRef(null);
 
     useEffect(() => {
@@ -100,8 +103,8 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            onDelete(order._id);
                                             setShowActions(false);
+                                            setShowDeleteModal(true);
                                         }}
                                         className="flex w-full items-center gap-2 px-3 py-2 text-[12.5px] text-rose-600 transition-colors hover:bg-rose-50"
                                     >
@@ -213,6 +216,26 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                     </td>
                 </tr>
             )}
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={async () => {
+                    setIsDeleting(true);
+                    try {
+                        await onDelete(order._id);
+                        setShowDeleteModal(false);
+                    } finally {
+                        setIsDeleting(false);
+                    }
+                }}
+                title="حذف سفارش"
+                message="آیا از حذف این سفارش اطمینان دارید؟"
+                confirmText="حذف"
+                cancelText="انصراف"
+                isLoading={isDeleting}
+                highlightText="این عمل غیرقابل بازگشت است!"
+                iconColor="red"
+            />
         </>
     );
 }

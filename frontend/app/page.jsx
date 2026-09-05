@@ -5,6 +5,7 @@ import FeaturesSection from "@/components/home/FeaturesSection";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import Container from "@/components/shared/Container";
 import { testimonialsData } from "@/data/homeData";
+import Link from "next/link";
 
 export const metadata = homeMetadata;
 
@@ -138,8 +139,10 @@ export default function Home() {
         </Container>
       </section>
 
+
+
       {/* ===== Newsletter Section ===== */}
-      <section className="py-20 lg:py-28 bg-linear-to-b from-white via-blue-50/30 to-indigo-50/20">
+      {/* <section className="py-20 lg:py-28 bg-linear-to-b from-white via-blue-50/30 to-indigo-50/20">
 
         <Container>
           <div className="max-w-5xl mx-auto relative">
@@ -192,7 +195,55 @@ export default function Home() {
           </div>
         </Container>
 
-      </section>
+      </section> */}
+
+
+      {/* CTA پایین صفحه */}
+      <div className="mt-14 mx-auto max-w-6xl sm:mt-16 bg-linear-to-r from-sky-500 via-blue-500 to-indigo-500 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-16 text-center text-white relative overflow-hidden min-h-[260px] sm:min-h-[300px] flex justify-center items-center mb-32">
+        {/* پس‌زمینه نقطه‌نقطه */}
+        <div
+          className="absolute inset-0 opacity-[0.3]"
+          style={{
+            backgroundImage: `radial-gradient(circle, white 1.5px, transparent 1.5px)`,
+            backgroundSize: '24px 24px',
+          }}
+        />
+
+        {/* المان‌های تزئینی پس‌زمینه */}
+        <div className="absolute -top-16 -right-16 sm:-top-20 sm:-right-20 w-48 sm:w-60 h-48 sm:h-60 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 sm:-bottom-20 sm:-left-20 w-48 sm:w-60 h-48 sm:h-60 bg-white/10 rounded-full blur-3xl" />
+
+        <div className="relative w-full py-2 sm:py-3 z-10">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 leading-tight">
+            آماده‌اید بهترین تجربه خرید را داشته باشید؟
+          </h2>
+          <p className="text-purple-100 max-w-2xl mx-auto mb-5 sm:mb-6 text-sm sm:text-base md:text-lg px-4 leading-relaxed">
+            با OnlineShop، خرید آنلاین را به سطح جدیدی ببرید. کیفیت، قیمت و سرعت را یکجا تجربه کنید.
+          </p>
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
+            <Link
+              href="/products"
+              className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-purple-600 font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base shadow-md"
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              شروع خرید
+            </Link>
+            <Link
+              href="/contact"
+              className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white/15 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl hover:bg-white/25 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base"
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              تماس با ما
+            </Link>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   );
 }
