@@ -1,17 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
-const pageBloomStyles = `
-@keyframes adminPageBloom {
-    0% { transform: scale(1); filter: blur(0px); }
-    100% { transform: scale(1.02); filter: blur(1px); }
-}
-.admin-page-bloom {
-    animation: adminPageBloom 0.4s ease-out forwards;
-    transform-origin: center center;
-}
-`;
+import { useEffect } from 'react';
 
 // ============================================
 // آیکون‌ها
@@ -43,6 +32,7 @@ export default function ConfirmModal({
     isLoading = false,
     highlightText = '',
     iconColor = 'red', // red | amber | blue
+    isFullPage = false,
 }) {
     // جلوگیری از اسکرول پس‌زمینه
     useEffect(() => {
@@ -93,12 +83,14 @@ export default function ConfirmModal({
 
     if (!isOpen) return null;
 
+    const zClass = isFullPage ? 'z-[60]' : 'z-50';
+    const overlayBg = isFullPage ? 'bg-black/70 backdrop-blur-xl' : 'bg-black/50 backdrop-blur-sm';
+
     return (
         <>
-            <style dangerouslySetInnerHTML={{ __html: pageBloomStyles }} />
-            <div className="admin-page-bloom fixed inset-0 z-40 pointer-events-none" />
+
             <div
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+                className={`fixed inset-0 ${zClass} flex items-center justify-center p-4 ${overlayBg}`}
                 onClick={onClose}
             >
                 <div

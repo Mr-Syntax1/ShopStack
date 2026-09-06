@@ -3,10 +3,11 @@
 // یک ردیف کامل سفارش (با جزئیات بازشونده)
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { formatDate, formatDateTime, formatPrice, initials, toPersianDigits } from '@/lib/persian';
 import StatusDropdown from './StatusDropdown';
 import InfoRow from './InfoRow';
-import ConfirmModal from '../ConfirmModal';
+import DeleteButton from '../DeleteButton';
 
 function finalPrice(item) {
     const base = item.price || 0;
@@ -97,22 +98,25 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                             </button>
 
                             {showActions && (
-                                <div className="absolute left-0 mt-1 min-w-[180px] rounded-xl border border-gray-100 bg-white py-1 shadow-lg z-20">
+                                <div className="absolute flex justify-around items-center mt-1 min-w-[120px] rounded-xl border border-gray-100 bg-white py-1 shadow-lg z-50">
 
                                     <div className="border-t border-gray-100 my-1" />
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
+
+                                    {/* ✅ استفاده از DeleteButton */}
+                                    <DeleteButton
+                                        slug={order._id}
+                                        title={`سفارش #${order._id.toString().slice(-4)}`}
+                                        onDelete={() => {
                                             setShowActions(false);
-                                            setShowDeleteModal(true);
+                                            if (onDelete) {
+                                                onDelete(order._id);
+                                            }
                                         }}
-                                        className="flex w-full items-center gap-2 px-3 py-2 text-[12.5px] text-rose-600 transition-colors hover:bg-rose-50"
-                                    >
-                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                        حذف سفارش
-                                    </button>
+                                        buttonText="حذف سفارش"
+                                        deleteUrl={`/api/orders/${order._id}`}
+                                        successMessage={`سفارش #${order._id.toString().slice(-4)} با موفقیت حذف شد`}
+                                    // isFullPage
+                                    />
                                 </div>
                             )}
                         </div>
@@ -126,7 +130,7 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                 </td>
-            </tr>
+            </tr >
             {isOpen && (
                 <tr className="border-b border-gray-100/50 bg-gray-50/40">
                     <td colSpan={6} className="px-4 py-5 sm:px-5">
@@ -150,10 +154,14 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                                 <div className="space-y-2.5">
                                     {(order.cart || []).map((item, idx) => (
                                         <div key={idx} className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-                                            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-linear-to-br from-indigo-50 to-purple-50 ring-1 ring-gray-100">
+                                            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-linear-to-br from-indigo-50 to-purple-50 ring-1 ring-gray-100 relative">
                                                 {item.image ? (
-                                                    // eslint-disable-next-line @next/next/no-img-element
-                                                    <img src={item.image} alt={item.title} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                                                    <Image
+                                                        src={item.image}
+                                                        alt={item.title}
+                                                        fill
+                                                        className="object-cover"
+                                                    />
                                                 ) : null}
                                             </div>
                                             <div className="min-w-0 flex-1">
@@ -215,27 +223,8 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                         </div>
                     </td>
                 </tr>
-            )}
-            <ConfirmModal
-                isOpen={showDeleteModal}
-                onClose={() => setShowDeleteModal(false)}
-                onConfirm={async () => {
-                    setIsDeleting(true);
-                    try {
-                        await onDelete(order._id);
-                        setShowDeleteModal(false);
-                    } finally {
-                        setIsDeleting(false);
-                    }
-                }}
-                title="حذف سفارش"
-                message="آیا از حذف این سفارش اطمینان دارید؟"
-                confirmText="حذف"
-                cancelText="انصراف"
-                isLoading={isDeleting}
-                highlightText="این عمل غیرقابل بازگشت است!"
-                iconColor="red"
-            />
+            )
+            }
         </>
     );
 }

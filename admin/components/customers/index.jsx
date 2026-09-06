@@ -231,7 +231,7 @@ export default function CustomersPage() {
 
             {/* جدول */}
             {!error && (
-                <div className="rounded-2xl border border-gray-100/80 bg-white/80 shadow-sm backdrop-blur-sm">
+                <div className="rounded-2xl border border-gray-100/80 bg-white/80 shadow-sm">
                     {/* فیلترها */}
                     <div className="flex flex-col gap-3 border-b border-gray-100/70 p-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="relative w-full sm:max-w-xs">
@@ -358,6 +358,7 @@ export default function CustomersPage() {
                                                             onDelete={deleteUser}
                                                             deleteUrl={`/api/users/${user._id}`}
                                                             successMessage="کاربر با موفقیت حذف شد"
+                                                        // isFullPage
                                                         />
                                                     </div>
                                                 </td>

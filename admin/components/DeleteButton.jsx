@@ -4,7 +4,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import ConfirmModal from './ConfirmModal';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 const DeleteIcon = () => (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -12,33 +12,15 @@ const DeleteIcon = () => (
     </svg>
 );
 
-const bloomStyles = `
-@keyframes adminBtnBloom {
-    0% {
-        opacity: 0;
-        transform: scale(0.3) rotate(-15deg);
-    }
-    60% {
-        opacity: 1;
-        transform: scale(1.15) rotate(5deg);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-    }
-}
-.admin-btn-bloom {
-    display: inline-block;
-    animation: adminBtnBloom 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-`;
-
 export default function DeleteButton({
     slug,
     title,
     onDelete,
     deleteUrl,
+    buttonText = 'حذف',
     successMessage,
+    isFullPage = false,
+    className = '',
 }) {
     const [showModal, setShowModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -50,13 +32,20 @@ export default function DeleteButton({
                 method: 'DELETE',
             });
 
-            if (!res.ok) throw new Error('خطا در حذف');
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'خطا در حذف');
+            }
 
             toast.success(successMessage || `با موفقیت حذف شد`);
-            onDelete(slug);
+
+            if (onDelete) {
+                await onDelete(slug);
+            }
+
             setShowModal(false);
         } catch (error) {
-            toast.error('خطا در حذف');
+            toast.error(error.message || 'خطا در حذف');
             console.error(error);
         } finally {
             setIsDeleting(false);
@@ -65,14 +54,15 @@ export default function DeleteButton({
 
     return (
         <>
-            <style dangerouslySetInnerHTML={{ __html: bloomStyles }} />
-            <div className="admin-btn-bloom">
+            <div className={`admin-btn-bloom ${className}`}>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer flex justify-center text-center items-center gap-1"
                     title="حذف"
+                    disabled={isDeleting}
                 >
                     <DeleteIcon />
+                    <span className='text-sm'>{buttonText}</span>
                 </button>
             </div>
 
@@ -87,6 +77,7 @@ export default function DeleteButton({
                 isLoading={isDeleting}
                 highlightText="این عمل غیرقابل بازگشت است!"
                 iconColor="red"
+                isFullPage={isFullPage}
             />
         </>
     );
