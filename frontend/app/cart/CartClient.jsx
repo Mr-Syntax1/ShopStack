@@ -162,7 +162,9 @@ export default function CartClient() {
         return (
             <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 sm:p-12 text-center border border-gray-100/50">
+                    <div
+                        className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 sm:p-12 text-center border border-gray-100/50"
+                    >
                         <div className="mb-6 relative">
                             <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-indigo-500/10 rounded-full blur-3xl" />
                             <div className="relative w-32 h-32 mx-auto bg-linear-to-br from-blue-50/80 to-indigo-50/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/50 shadow-xl shadow-blue-500/10 animate-bounce-slow">
@@ -193,7 +195,9 @@ export default function CartClient() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
 
                 {/* عنوان صفحه */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+                <div
+                    className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8"
+                >
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-indigo-600 shadow-lg shadow-blue-500/25">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,80 +223,83 @@ export default function CartClient() {
                         {items.map((item) => (
                             <div
                                 key={item._id || item.id}
-                                className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/50 overflow-hidden"
                             >
-                                <div className="flex flex-col sm:flex-row gap-4 p-4">
-                                    {/* تصویر */}
-                                    <div className="relative w-full sm:w-28 h-72 sm:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                                        <Image
-                                            src={item.image}
-                                            alt={item.title}
-                                            fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                        {item.discount > 0 && (
-                                            <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                                {item.discount}%
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {/* اطلاعات */}
-                                    <div className="flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                        <div className="flex-1">
-                                            <Link href={`/products/${item.slug || item.id}`}>
-                                                <h3 className="font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer text-sm sm:text-base line-clamp-2">
-                                                    {item.title}
-                                                </h3>
-                                            </Link>
-                                            <p className="text-lg font-bold text-blue-600">
-                                                {formatPrice(getDiscountedPrice(item))}
-                                            </p>
+                                <div
+                                    className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/50 overflow-hidden"
+                                >
+                                    <div className="flex flex-col sm:flex-row gap-4 p-4">
+                                        {/* تصویر */}
+                                        <div className="relative w-full sm:w-28 h-72 sm:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                                            <Image
+                                                src={item.image}
+                                                alt={item.title}
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                            {item.discount > 0 && (
+                                                <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                                                    {item.discount}%
+                                                </span>
+                                            )}
                                         </div>
 
-                                        {/* تعداد */}
-                                        <div className="flex items-center gap-2">
+                                        {/* اطلاعات */}
+                                        <div className="flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                            <div className="flex-1">
+                                                <Link href={`/products/${item.slug || item.id}`}>
+                                                    <h3 className="font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer text-sm sm:text-base line-clamp-2">
+                                                        {item.title}
+                                                    </h3>
+                                                </Link>
+                                                <p className="text-lg font-bold text-blue-600">
+                                                    {formatPrice(getDiscountedPrice(item))}
+                                                </p>
+                                            </div>
+
+                                            {/* تعداد */}
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => {
+                                                        if (item.quantity <= 1) {
+                                                            removeFromCart(item._id || item.id);
+                                                        } else {
+                                                            updateQuantity(item._id || item.id, item.quantity - 1);
+                                                        }
+                                                    }}
+                                                    className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="w-10 text-center font-bold text-gray-800">
+                                                    {item.quantity}
+                                                </span>
+                                                <button
+                                                    onClick={() => updateQuantity(item._id || item.id, item.quantity + 1)}
+                                                    className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+
+                                            {/* قیمت کل با تخفیف */}
+                                            <div className="text-right min-w-[100px]">
+                                                <p className="text-xs text-gray-400">قیمت کل</p>
+                                                <p className="font-bold text-gray-800">
+                                                    {formatPrice(getItemTotal(item))}
+                                                </p>
+                                            </div>
+
+                                            {/* دکمه حذف */}
                                             <button
-                                                onClick={() => {
-                                                    if (item.quantity <= 1) {
-                                                        removeFromCart(item._id || item.id);
-                                                    } else {
-                                                        updateQuantity(item._id || item.id, item.quantity - 1);
-                                                    }
-                                                }}
-                                                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                                                onClick={() => removeFromCart(item._id || item.id)}
+                                                className="absolute left-3 bottom-3 sm:relative sm:left-0 sm:bottom-0 text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all duration-200 cursor-pointer"
+                                                aria-label="حذف"
                                             >
-                                                -
-                                            </button>
-                                            <span className="w-10 text-center font-bold text-gray-800">
-                                                {item.quantity}
-                                            </span>
-                                            <button
-                                                onClick={() => updateQuantity(item._id || item.id, item.quantity + 1)}
-                                                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
-                                            >
-                                                +
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
                                             </button>
                                         </div>
-
-                                        {/* قیمت کل با تخفیف */}
-                                        <div className="text-right min-w-[100px]">
-                                            <p className="text-xs text-gray-400">قیمت کل</p>
-                                            <p className="font-bold text-gray-800">
-                                                {formatPrice(getItemTotal(item))}
-                                            </p>
-                                        </div>
-
-                                        {/* دکمه حذف */}
-                                        <button
-                                            onClick={() => removeFromCart(item._id || item.id)}
-                                            className="absolute left-3 bottom-3 sm:relative sm:left-0 sm:bottom-0 text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all duration-200 cursor-pointer"
-                                            aria-label="حذف"
-                                        >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -327,7 +334,9 @@ export default function CartClient() {
                     {/* ====== ستون راست: اطلاعات و پرداخت ====== */}
                     {/* ============================================ */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100/50 p-6 sticky top-24">
+                        <div
+                            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100/50 p-6 sticky top-24"
+                        >
 
                             <h2 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100/50 flex items-center gap-2">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -15,15 +15,29 @@ export default function CategoriesSection() {
             <Container className="relative">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <span className="inline-block text-sm font-semibold text-indigo-600 bg-linear-to-r from-indigo-50/80 to-purple-50/80 backdrop-blur-sm px-5 py-2 rounded-full mb-4 border border-indigo-100/50 shadow-sm">
+                    <span
+                        data-aos="fade-down"
+                        data-aos-once="true"
+                        className="inline-block text-sm font-semibold text-indigo-600 bg-linear-to-r from-indigo-50/80 to-purple-50/80 backdrop-blur-sm px-5 py-2 rounded-full mb-4 border border-indigo-100/50 shadow-sm"
+                    >
                         دسته‌بندی‌های پرطرفدار
                     </span>
 
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
+                    <h2
+                        data-aos="fade-up"
+                        data-aos-delay="100"
+                        data-aos-once="true"
+                        className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4"
+                    >
                         به‌راحتی <span className="bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">پیدا کن</span>
                     </h2>
 
-                    <p className="text-gray-500 max-w-xl mx-auto text-base">
+                    <p
+                        data-aos="fade-up"
+                        data-aos-delay="200"
+                        data-aos-once="true"
+                        className="text-gray-500 max-w-xl mx-auto text-base"
+                    >
                         با دسته‌بندی‌های متنوع ما، دقیقاً همان محصولی که نیاز دارید را پیدا کنید.
                     </p>
                 </div>
@@ -31,9 +45,15 @@ export default function CategoriesSection() {
                 {/* Categories Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {categoriesData.map((cat, index) => (
+                        <div
+                            key={cat.id}
+                            data-aos="flip-up"
+                            data-aos-duration="800"
+                            data-aos-delay={index * 120}
+                            data-aos-once="true"
+                        >
                         <Link
                             href={`/products?category=${cat.id}`}
-                            key={cat.id}
                             className="group relative overflow-hidden rounded-3xl p-8 h-52 flex flex-col justify-between bg-linear-to-br from-white/80 to-gray-50/80 backdrop-blur-sm border border-white/50 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-500"
                         >
                             {/* Background linear Overlay */}
@@ -79,6 +99,7 @@ export default function CategoriesSection() {
                             {/* Hover Border Effect */}
                             <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-white/20 transition-colors duration-500" />
                         </Link>
+                        </div>
                     ))}
                 </div>
             </Container>

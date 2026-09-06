@@ -217,7 +217,9 @@ export default function ProfilePage() {
     const renderContent = () => {
         if (active === 'profile') {
             return (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 p-6 sm:p-8">
+                <div
+                    className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 p-6 sm:p-8"
+                >
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h2 className="text-xl font-bold text-gray-800">اطلاعات پروفایل</h2>
@@ -370,7 +372,9 @@ export default function ProfilePage() {
 
         if (active === 'orders') {
             return (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 overflow-hidden">
+                <div
+                    className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 overflow-hidden"
+                >
                     <div className="p-6 sm:p-8 border-b border-gray-100/50">
                         <h2 className="text-xl font-bold text-gray-800">سفارشات من</h2>
                         <p className="text-sm text-gray-400 mt-1">لیست کامل سفارشات ثبت شده در حساب شما</p>
@@ -444,7 +448,9 @@ export default function ProfilePage() {
 
         if (active === 'invoices') {
             return (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 overflow-hidden">
+                <div
+                    className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 overflow-hidden"
+                >
                     <div className="p-6 sm:p-8 border-b border-gray-100/50">
                         <h2 className="text-xl font-bold text-gray-800">فاکتورها</h2>
                         <p className="text-sm text-gray-400 mt-1">وضعیت فاکتورهای پرداخت مربوط به سفارشات شما</p>

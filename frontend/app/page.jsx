@@ -89,47 +89,65 @@ export default function Home() {
 
         <Container className="relative">
           <div className="text-center mb-16">
-            <span className="inline-block text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-5 py-2 rounded-full mb-4 border border-purple-100/50">
+            <span
+              data-aos="fade-up"
+              data-aos-delay="200"
+              className="inline-block text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-5 py-2 rounded-full mb-4 border border-purple-100/50"
+            >
               نظرات مشتریان
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
+            <h2
+              data-aos="fade-up"
+              data-aos-delay="100"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4"
+            >
               آنها به ما <span className="bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">اعتماد کردند</span>
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-base">
+            <p
+              data-aos="fade-up"
+              data-aos-delay="200"
+              className="text-gray-500 max-w-xl mx-auto text-base"
+            >
               تجربه خرید مشتریان ما، بهترین گواه برای کیفیت خدماتمان است.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-            {testimonialsData.map((review) => (
+            {testimonialsData.map((review, index) => (
               <div
                 key={review.id}
-                className="group bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-gray-100/80 hover:border-purple-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative"
+                data-aos="fade-up"
+                data-aos-delay={index * 150}
+                data-aos-once="true"
               >
-                <div className="absolute top-6 left-6 text-7xl text-purple-100/50 leading-none font-serif group-hover:text-purple-200/70 transition-colors duration-500">
+                <div
+                  className="group bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-gray-100/80 hover:border-purple-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative"
+                >
+                  <div className="absolute top-6 left-6 text-7xl text-purple-100/50 leading-none font-serif group-hover:text-purple-200/70 transition-colors duration-500">
 
-                </div>
-
-                <div className="flex gap-1 mb-5 relative">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 fill-gray-200'}`} viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-
-                <p className="text-gray-600 leading-relaxed mb-6 relative z-10">{review.text}</p>
-
-                <div className="flex items-center gap-4 relative">
-                  <div className="w-14 h-14 rounded-full bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-2xl font-bold text-indigo-600 shadow-md">
-                    {review.name.charAt(0)}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-gray-800">{review.name}</h4>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500">{review.role}</span>
-                      <span className="text-xs text-gray-300">•</span>
-                      <span className="text-xs text-gray-400">{review.date}</span>
+
+                  <div className="flex gap-1 mb-5 relative">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 fill-gray-200'}`} viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+
+                  <p className="text-gray-600 leading-relaxed mb-6 relative z-10">{review.text}</p>
+
+                  <div className="flex items-center gap-4 relative">
+                    <div className="w-14 h-14 rounded-full bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-2xl font-bold text-indigo-600 shadow-md">
+                      {review.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-800">{review.name}</h4>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500">{review.role}</span>
+                        <span className="text-xs text-gray-300">•</span>
+                        <span className="text-xs text-gray-400">{review.date}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -199,7 +217,11 @@ export default function Home() {
 
 
       {/* CTA پایین صفحه */}
-      <div className="mt-14 mx-auto max-w-6xl sm:mt-16 bg-linear-to-r from-sky-500 via-blue-500 to-indigo-500 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-16 text-center text-white relative overflow-hidden min-h-[260px] sm:min-h-[300px] flex justify-center items-center mb-32">
+      <div
+        data-aos="zoom-in-up"
+        data-aos-once="true"
+        className="mt-14 mx-auto max-w-6xl sm:mt-16 bg-linear-to-r from-sky-500 via-blue-500 to-indigo-500 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-16 text-center text-white relative overflow-hidden min-h-[260px] sm:min-h-[300px] flex justify-center items-center mb-32"
+      >
         {/* پس‌زمینه نقطه‌نقطه */}
         <div
           className="absolute inset-0 opacity-[0.3]"
@@ -214,15 +236,28 @@ export default function Home() {
         <div className="absolute -bottom-16 -left-16 sm:-bottom-20 sm:-left-20 w-48 sm:w-60 h-48 sm:h-60 bg-white/10 rounded-full blur-3xl" />
 
         <div className="relative w-full py-2 sm:py-3 z-10">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 leading-tight">
+          <h2
+            data-aos="fade-up"
+            data-aos-delay="150"
+            data-aos-once="true"
+            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 leading-tight"
+          >
             آماده‌اید بهترین تجربه خرید را داشته باشید؟
           </h2>
-          <p className="text-purple-100 max-w-2xl mx-auto mb-5 sm:mb-6 text-sm sm:text-base md:text-lg px-4 leading-relaxed">
+          <p
+            data-aos="fade-up"
+            data-aos-delay="250"
+            data-aos-once="true"
+            className="text-purple-100 max-w-2xl mx-auto mb-5 sm:mb-6 text-sm sm:text-base md:text-lg px-4 leading-relaxed"
+          >
             با OnlineShop، خرید آنلاین را به سطح جدیدی ببرید. کیفیت، قیمت و سرعت را یکجا تجربه کنید.
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
             <Link
               href="/products"
+              data-aos="fade-up"
+              data-aos-delay="400"
+              data-aos-once="true"
               className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-purple-600 font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base shadow-md"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,6 +267,9 @@ export default function Home() {
             </Link>
             <Link
               href="/contact"
+              data-aos="fade-up"
+              data-aos-delay="500"
+              data-aos-once="true"
               className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white/15 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl hover:bg-white/25 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

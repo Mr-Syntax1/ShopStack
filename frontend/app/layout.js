@@ -1,6 +1,7 @@
 import { CartProvider } from "@/context/CartContext";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import AOSProvider from "../components/AOSProvider";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/context";
@@ -69,6 +70,7 @@ export default function RootLayout({ children }) {
     >
 
       <body className="min-h-full flex flex-col font-sans">
+        <AOSProvider />
         <CartProvider>
           <AuthProvider>
             <Header />

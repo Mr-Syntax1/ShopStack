@@ -39,8 +39,18 @@ const HeroSection = () => {
             <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-0">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-                    <div className="text-center lg:text-right animate-right-slow">
-                        <h1 className="text-6xl xl:text-7xl font-bold text-gray-800 leading-20 xl:leading-24 mb-8 ">
+                    <div
+                        data-aos="fade-left"
+                        data-aos-duration="1000"
+                        data-aos-delay="100"
+                        className="text-center lg:text-right"
+                    >
+                        <h1
+                            data-aos="fade-down"
+                            data-aos-duration="900"
+                            data-aos-delay="200"
+                            className="text-6xl xl:text-7xl font-bold text-gray-800 leading-20 xl:leading-24 mb-8 "
+                        >
                             <span className="block bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent vazir-medium">
                                 فروشگاه
                             </span>
@@ -53,12 +63,22 @@ const HeroSection = () => {
                             </span>
                         </h1>
 
-                        <p className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                        <p
+                            data-aos="fade-up"
+                            data-aos-duration="900"
+                            data-aos-delay="350"
+                            className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
+                        >
                             فروشگاهی معتبر Online Shop با تنوع گسترده‌ای از محصولات باکیفیت و اصل.
                             خرید آسان، ارسال سریع و پشتیبانی ۲۴ ساعته، تجربه‌ای مطمئن و لذت‌بخش را برای شما به ارمغان می‌آورد.
                         </p>
 
-                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-duration="900"
+                            data-aos-delay="500"
+                            className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+                        >
                             <Link
                                 href="/products"
                                 className="group relative px-8 py-4 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105 flex items-center gap-2 overflow-hidden"
@@ -78,44 +98,87 @@ const HeroSection = () => {
                             </a>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-24 xl:gap-36 mt-16 pt-10 border-t border-gray-200/50 mb-15">
-                            <div className="text-center">
+                        <div
+                            data-aos="fade-up"
+                            data-aos-duration="900"
+                            data-aos-delay="700"
+                            className="flex flex-wrap items-center justify-center lg:justify-start gap-24 xl:gap-36 mt-16 pt-10 border-t border-gray-200/50 mb-15"
+                        >
+                            <div
+                                data-aos="zoom-in"
+                                data-aos-duration="800"
+                                data-aos-delay="800"
+                                className="text-center"
+                            >
                                 <p className="text-3xl sm:text-4xl font-bold text-gray-800">۵۰۰+</p>
                                 <p className="text-base sm:text-lg text-gray-500">محصولات</p>
                             </div>
-                            <div className="text-center">
+                            <div
+                                data-aos="zoom-in"
+                                data-aos-duration="800"
+                                data-aos-delay="950"
+                                className="text-center"
+                            >
                                 <p className="text-3xl sm:text-4xl font-bold text-gray-800">۱۰۰۰+</p>
                                 <p className="text-base sm:text-lg text-gray-500">مشتریان</p>
                             </div>
-                            <div className="text-center">
+                            <div
+                                data-aos="zoom-in"
+                                data-aos-duration="800"
+                                data-aos-delay="1100"
+                                className="text-center"
+                            >
                                 <p className="text-3xl sm:text-4xl font-bold text-gray-800">۹۸%</p>
                                 <p className="text-base sm:text-lg text-gray-500">رضایت</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="relative flex justify-center lg:justify-end">
+                    <div
+                        data-aos="fade-right"
+                        data-aos-duration="1100"
+                        data-aos-delay="400"
+                        className="relative flex justify-center lg:justify-end"
+                    >
                         <div className="relative w-full max-w-md lg:max-w-lg">
                             <div className="absolute -top-4 -right-4 w-full h-full border-2 border-blue-500/20 rounded-3xl -rotate-3" />
                             <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-purple-500/20 rounded-3xl rotate-3" />
 
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:shadow-blue-500/30 hover:scale-[1.02] ">
+                            <div
+                                data-aos="zoom-in"
+                                data-aos-duration="900"
+                                data-aos-delay="800"
+                            >
+                            <div
+                                className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:shadow-blue-500/30 hover:scale-[1.02] "
+                            >
                                 <Image
                                     src={img}
                                     alt="محصولات فروشگاهی"
                                     width={600}
                                     height={600}
-                                    className="w-full h-auto object-cover animate-ups-slow"
+                                    className="w-full h-auto object-cover"
                                     priority
                                 />
                                 <div className="absolute inset-0 bg-linear-to-tr from-blue-900/10 via-transparent to-purple-900/10" />
-                                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+                                <div
+                                    data-aos="fade-up"
+                                    data-aos-duration="700"
+                                    data-aos-delay="1100"
+                                    className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg"
+                                >
                                     <p className="text-sm font-semibold text-gray-900">تخفیف ویژه</p>
                                     <p className="text-xs text-gray-500">۲۰٪ تا پایان هفته</p>
                                 </div>
                             </div>
+                            </div>
 
-                            <div className="absolute -bottom-6 -left-2 md:-left-6 bg-white rounded-2xl px-8 py-4 shadow-xl shadow-blue-500/30 border border-blue-100/50 animate-bounce-slow">
+                            <div
+                                data-aos="fade-left"
+                                data-aos-duration="900"
+                                data-aos-delay="1200"
+                                className="absolute -bottom-6 -left-2 md:-left-6 bg-white rounded-2xl px-8 py-4 shadow-xl shadow-blue-500/30 border border-blue-100/50 animate-bounce-slow"
+                            >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
                                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">

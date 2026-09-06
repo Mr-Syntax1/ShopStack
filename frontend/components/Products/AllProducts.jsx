@@ -273,17 +273,27 @@ export default function AllProducts({
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 overflow-hidden">
 
                 {/* عنوان */}
-                <div className="relative text-center mb-12 sm:mb-16">
+                <div className="relative text-center mb-12 sm:mb-16" data-aos="fade-down" data-aos-once="true">
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-64 h-64 sm:w-96 sm:h-96 bg-purple-200/20 rounded-full blur-3xl" />
                         <div className="w-48 h-48 sm:w-64 sm:h-64 bg-indigo-200/20 rounded-full blur-3xl -ml-20" />
                     </div>
 
                     <div className="relative">
-                        <span className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-2 sm:mb-3 border border-purple-100/50">
+                        <span
+                            data-aos="fade-down"
+                            data-aos-delay="100"
+                            data-aos-once="true"
+                            className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-2 sm:mb-3 border border-purple-100/50"
+                        >
                             {selectedCategory !== 'همه' ? `دسته‌بندی ${selectedCategory}` : 'همه محصولات'}
                         </span>
-                        <h1 className="text-5xl lg:text-6xl font-bold text-gray-800 mb-2 sm:mb-3">
+                        <h1
+                            data-aos="fade-up"
+                            data-aos-delay="150"
+                            data-aos-once="true"
+                            className="text-5xl lg:text-6xl font-bold text-gray-800 mb-2 sm:mb-3"
+                        >
                             {selectedCategory !== 'همه' ? (
                                 <>
                                     محصولات <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{selectedCategory}</span>
@@ -294,24 +304,36 @@ export default function AllProducts({
                                 </>
                             )}
                         </h1>
-                        <p className="text-sm md:text-base text-gray-500">
+                        <p
+                            data-aos="fade-up"
+                            data-aos-delay="250"
+                            data-aos-once="true"
+                            className="text-sm md:text-base text-gray-500"
+                        >
                             <span className="font-semibold text-gray-800">{filteredProducts.length}</span> محصول از {' '}
                             <span className="font-semibold text-gray-800">{allProducts.length}</span> محصول موجود
                         </p>
-                        <div className="w-16 sm:w-20 md:w-24 h-1 bg-linear-to-r from-purple-600 to-indigo-600 mx-auto rounded-full mt-3 sm:mt-4" />
+                        <div
+                            data-aos="zoom-in"
+                            data-aos-delay="350"
+                            data-aos-once="true"
+                            className="w-16 sm:w-20 md:w-24 h-1 bg-linear-to-r from-purple-600 to-indigo-600 mx-auto rounded-full mt-3 sm:mt-4"
+                        />
                     </div>
                 </div>
 
                 {/* نوار ابزار */}
-                <ProductToolbar
-                    searchInput={searchInput}
-                    onSearchChange={handleSearch}
-                    selectedCategory={selectedCategory}
-                    categories={categories}
-                    onCategoryChange={handleCategoryChange}
-                    sortBy={sortBy}
-                    onSortChange={handleSortChange}
-                />
+                <div data-aos="fade-up" data-aos-delay="200" data-aos-once="true">
+                    <ProductToolbar
+                        searchInput={searchInput}
+                        onSearchChange={handleSearch}
+                        selectedCategory={selectedCategory}
+                        categories={categories}
+                        onCategoryChange={handleCategoryChange}
+                        sortBy={sortBy}
+                        onSortChange={handleSortChange}
+                    />
+                </div>
 
                 {/* محصولات */}
                 {currentProducts.length > 0 ? (

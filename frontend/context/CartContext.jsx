@@ -10,20 +10,24 @@ export function CartProvider({ children }) {
 
     // خوندن localstorage از سمت کلاینت
     useEffect(() => {
-        setIsMounted(true)
-        const savedCart = localStorage.getItem('cart')
-        if (savedCart) {
-            try {
+        try {
+            const savedCart = localStorage.getItem('cart')
+            if (savedCart) {
                 setCart(JSON.parse(savedCart))
-            } catch (e) {
-                console.error('خطا در خواندن سبد خرید:', e)
             }
+        } catch (e) {
+            console.error('خطا در خواندن سبد خرید:', e)
+        } finally {
+            setIsMounted(true)
         }
     }, [])
 
     useEffect(() => {
+        // تا وقتی داده اولیه از localStorage خونده نشده، اجازه نویسی نداریم
+        // وگرنه مقدار خالی [] روی داده ذخیره‌شده رونویسی میشه
+        if (!isMounted) return
         localStorage.setItem('cart', JSON.stringify(cart))
-    }, [cart])
+    }, [cart, isMounted])
 
 
     // محاسبه تعداد کل آیتم‌ها
@@ -149,6 +153,8 @@ export function CartProvider({ children }) {
     return (
         <CartContext.Provider value={{
             cart,                    // لیست محصولات سبد خرید
+            isMounted,               // آیا داده اولیه از localStorage خونده شده
+            isLoading: !isMounted,   // حالت لودینگ تا خونده شدن localStorage
             cartCount,               // تعداد کل آیتم‌ها
             cartTotal,               // قیمت کل (با تخفیف)
             shippingCost,            // هزینه ارسال

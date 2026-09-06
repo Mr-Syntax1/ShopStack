@@ -129,22 +129,44 @@ export default function AboutPage() {
                         <div className="w-48 h-48 sm:w-64 sm:h-64 bg-indigo-200/20 rounded-full blur-3xl -ml-20" />
                     </div>
 
-                    <div className="relative">
-                        <span className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4 border border-purple-100/50">
+                    <div className="relative" data-aos="fade-up" data-aos-once="true">
+                        <span
+                            data-aos="fade-up"
+                            data-aos-delay="100"
+                            data-aos-once="true"
+                            className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4 border border-purple-100/50"
+                        >
                             آشنایی با ما
                         </span>
-                        <h1 className="text-5xl lg:text-6xl font-bold text-gray-800 mb-3 sm:mb-4">
+                        <h1
+                            data-aos="fade-up"
+                            data-aos-delay="150"
+                            data-aos-once="true"
+                            className="text-5xl lg:text-6xl font-bold text-gray-800 mb-3 sm:mb-4"
+                        >
                             درباره <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">OnlineShop</span>
                         </h1>
-                        <p className="text-sm sm:text-base md:text-lg text-gray-500 max-w-2xl mx-auto px-4">
+                        <p
+                            data-aos="fade-up"
+                            data-aos-delay="250"
+                            data-aos-once="true"
+                            className="text-sm sm:text-base md:text-lg text-gray-500 max-w-2xl mx-auto px-4"
+                        >
                             داستان، افتخارات و تیمی که پشت موفقیت‌های ما قرار دارند
                         </p>
-                        <div className="w-20 sm:w-24 h-1 bg-linear-to-r from-purple-600 to-indigo-600 mx-auto rounded-full mt-3 sm:mt-4" />
+                        <div
+                            className="w-20 sm:w-24 h-1 bg-linear-to-r from-purple-600 to-indigo-600 mx-auto rounded-full mt-3 sm:mt-4"
+                        />
                     </div>
                 </div>
 
                 {/* داستان ما - طراحی مدرن */}
-                <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden mb-12 sm:mb-16 border border-gray-100/50">
+                <div
+                    data-aos="fade-up"
+                    data-aos-duration="1000"
+                    data-aos-once="true"
+                    className="bg-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden mb-12 sm:mb-16 border border-gray-100/50"
+                >
                     <div className="grid lg:grid-cols-5 gap-0">
                         <div className="lg:col-span-3 p-6 sm:p-8 md:p-10 lg:p-12">
                             <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
@@ -190,7 +212,13 @@ export default function AboutPage() {
                             </div>
                         </div>
 
-                        <div className="lg:col-span-2 bg-linear-to-br from-purple-600 via-indigo-600 to-blue-600 p-8 sm:p-10 md:p-12 flex flex-col items-center justify-center text-white relative overflow-hidden min-h-[200px] sm:min-h-[250px] lg:min-h-0">
+                        <div
+                            data-aos="fade-left"
+                            data-aos-duration="1000"
+                            data-aos-delay="200"
+                            data-aos-once="true"
+                            className="lg:col-span-2 bg-linear-to-br from-purple-600 via-indigo-600 to-blue-600 p-8 sm:p-10 md:p-12 flex flex-col items-center justify-center text-white relative overflow-hidden min-h-[200px] sm:min-h-[250px] lg:min-h-0"
+                        >
                             <div className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-white/10 rounded-full blur-3xl" />
                             <div className="absolute -bottom-20 -left-20 w-48 sm:w-64 h-48 sm:h-64 bg-white/10 rounded-full blur-3xl" />
 
@@ -215,20 +243,27 @@ export default function AboutPage() {
                     {stats.map((stat, index) => (
                         <div
                             key={index}
-                            className="group relative bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 p-4 sm:p-6 text-center overflow-hidden border border-gray-100/50"
+                            data-aos="zoom-in"
+                            data-aos-duration="700"
+                            data-aos-delay={index * 120}
+                            data-aos-once="true"
                         >
-                            <div className={`absolute inset-0 bg-linear-to-br ${stat.linear} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-                            <div className="absolute -top-12 -right-12 w-24 sm:w-32 h-24 sm:h-32 bg-gray-100/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                            <div
+                                className="group relative bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 p-4 sm:p-6 text-center overflow-hidden border border-gray-100/50 h-full"
+                            >
+                                <div className={`absolute inset-0 bg-linear-to-br ${stat.linear} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                                <div className="absolute -top-12 -right-12 w-24 sm:w-32 h-24 sm:h-32 bg-gray-100/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
 
-                            <div className="relative">
-                                <div className={`inline-flex p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-linear-to-br ${stat.linear} text-white shadow-lg mb-3 sm:mb-4`}>
-                                    {stat.svg}
-                                </div>
-                                <div className="text-xl sm:text-2xl font-bold text-gray-800 mb-0.5 sm:mb-1">
-                                    {stat.value}
-                                </div>
-                                <div className="text-[10px] sm:text-sm text-gray-500">
-                                    {stat.label}
+                                <div className="relative">
+                                    <div className={`inline-flex p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-linear-to-br ${stat.linear} text-white shadow-lg mb-3 sm:mb-4`}>
+                                        {stat.svg}
+                                    </div>
+                                    <div className="text-xl sm:text-2xl font-bold text-gray-800 mb-0.5 sm:mb-1">
+                                        {stat.value}
+                                    </div>
+                                    <div className="text-[10px] sm:text-sm text-gray-500">
+                                        {stat.label}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -236,12 +271,26 @@ export default function AboutPage() {
                 </div>
 
                 {/* ارزش‌های ما */}
-                <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl p-6 sm:p-8 md:p-10 lg:p-12 mb-12 sm:mb-16 border border-gray-100/50">
+                <div
+                    data-aos="fade-up"
+                    data-aos-once="true"
+                    className="bg-white rounded-2xl sm:rounded-3xl shadow-xl p-6 sm:p-8 md:p-10 lg:p-12 mb-12 sm:mb-16 border border-gray-100/50"
+                >
                     <div className="text-center mb-8 sm:mb-12">
-                        <span className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4">
+                        <span
+                            data-aos="fade-down"
+                            data-aos-delay="100"
+                            data-aos-once="true"
+                            className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4"
+                        >
                             ارزش‌های ما
                         </span>
-                        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
+                        <h2
+                            data-aos="fade-up"
+                            data-aos-delay="150"
+                            data-aos-once="true"
+                            className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800"
+                        >
                             چه چیزی ما را <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">متمایز</span> کرده
                         </h2>
                     </div>
@@ -250,29 +299,45 @@ export default function AboutPage() {
                         {values.map((item, index) => (
                             <div
                                 key={index}
-                                className="group relative p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gray-50 hover:bg-white transition-all duration-500 hover:shadow-lg text-center"
+                                data-aos="fade-up"
+                                data-aos-delay={index * 150}
+                                data-aos-once="true"
                             >
-                                <div className={`inline-flex p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-linear-to-br ${item.linear} text-white shadow-lg mb-3 sm:mb-4`}>
-                                    {item.svg}
+                                <div
+                                    className="group relative p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gray-50 hover:bg-white transition-all duration-500 hover:shadow-lg text-center h-full"
+                                >
+                                    <div className={`inline-flex p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-linear-to-br ${item.linear} text-white shadow-lg mb-3 sm:mb-4`}>
+                                        {item.svg}
+                                    </div>
+                                    <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-xs sm:text-sm text-gray-500">
+                                        {item.description}
+                                    </p>
                                 </div>
-                                <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">
-                                    {item.title}
-                                </h3>
-                                <p className="text-xs sm:text-sm text-gray-500">
-                                    {item.description}
-                                </p>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* تیم ما - طراحی مدرن */}
-                <div className="text-center">
+                <div className="text-center" data-aos="fade-up" data-aos-once="true">
                     <div className="mb-8 sm:mb-12">
-                        <span className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4">
+                        <span
+                            data-aos="fade-down"
+                            data-aos-delay="100"
+                            data-aos-once="true"
+                            className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4"
+                        >
                             تیم ما
                         </span>
-                        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
+                        <h2
+                            data-aos="fade-up"
+                            data-aos-delay="150"
+                            data-aos-once="true"
+                            className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800"
+                        >
                             افراد <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">کلیدی</span> پشت OnlineShop
                         </h2>
                     </div>
@@ -281,24 +346,31 @@ export default function AboutPage() {
                         {team.map((member, index) => (
                             <div
                                 key={index}
-                                className="group bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-4 sm:p-6 border border-gray-100/50 relative overflow-hidden"
+                                data-aos="flip-left"
+                                data-aos-duration="800"
+                                data-aos-delay={index * 150}
+                                data-aos-once="true"
                             >
-                                <div className={`absolute inset-0 bg-linear-to-br ${member.linear} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                                <div
+                                    className="group bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 p-4 sm:p-6 border border-gray-100/50 relative overflow-hidden h-full"
+                                >
+                                    <div className={`absolute inset-0 bg-linear-to-br ${member.linear} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
 
-                                <div className="relative">
-                                    <div className={`w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-linear-to-br ${member.linear} rounded-xl sm:rounded-2xl mx-auto mb-3 sm:mb-4 flex items-center justify-center text-white shadow-xl group-hover:scale-105 transition-transform duration-500`}>
-                                        {member.icon}
+                                    <div className="relative">
+                                        <div className={`w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-linear-to-br ${member.linear} rounded-xl sm:rounded-2xl mx-auto mb-3 sm:mb-4 flex items-center justify-center text-white shadow-xl group-hover:scale-105 transition-transform duration-500`}>
+                                            {member.icon}
+                                        </div>
+
+                                        <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800">
+                                            {member.name}
+                                        </h3>
+                                        <p className={`text-xs sm:text-sm font-medium bg-linear-to-r ${member.linear} bg-clip-text text-transparent mb-1 sm:mb-2`}>
+                                            {member.role}
+                                        </p>
+                                        <p className="text-xs sm:text-sm text-gray-500">
+                                            {member.bio}
+                                        </p>
                                     </div>
-
-                                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800">
-                                        {member.name}
-                                    </h3>
-                                    <p className={`text-xs sm:text-sm font-medium bg-linear-to-r ${member.linear} bg-clip-text text-transparent mb-1 sm:mb-2`}>
-                                        {member.role}
-                                    </p>
-                                    <p className="text-xs sm:text-sm text-gray-500">
-                                        {member.bio}
-                                    </p>
                                 </div>
                             </div>
                         ))}

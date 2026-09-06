@@ -74,7 +74,11 @@ export default async function ProductDetail({ params }) {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20">
 
                 {/* مسیر (Breadcrumb) */}
-                <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6 sm:mb-8">
+                <nav
+                    data-aos="fade-down"
+                    data-aos-once="true"
+                    className="flex items-center gap-2 text-sm text-gray-500 mb-6 sm:mb-8"
+                >
                     <Link href="/" className="hover:text-blue-600 transition-colors">خانه</Link>
 
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,11 +102,22 @@ export default async function ProductDetail({ params }) {
                 </nav>
 
                 {/* کارت اصلی محصول */}
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100/80">
+                <div
+                    data-aos="fade-up"
+                    data-aos-duration="900"
+                    data-aos-once="true"
+                    className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100/80"
+                >
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 p-4 sm:p-6 lg:p-8">
 
                         {/* بخش تصویر */}
-                        <div className="relative">
+                        <div
+                            data-aos="zoom-in"
+                            data-aos-duration="900"
+                            data-aos-delay="150"
+                            data-aos-once="true"
+                            className="relative"
+                        >
                             <div className="relative aspect-4/3 lg:aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
                                 <Image
                                     src={product.image}
@@ -133,7 +148,13 @@ export default async function ProductDetail({ params }) {
                         </div>
 
                         {/* بخش اطلاعات */}
-                        <div className="flex flex-col">
+                        <div
+                            data-aos="fade-left"
+                            data-aos-duration="900"
+                            data-aos-delay="300"
+                            data-aos-once="true"
+                            className="flex flex-col"
+                        >
                             {/* برند و دسته‌بندی */}
                             <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
                                 {/* <span className="inline-block text-xs sm:text-sm font-medium text-blue-600 bg-blue-50 px-2.5 sm:px-3 py-1 rounded-full">
@@ -254,18 +275,29 @@ export default async function ProductDetail({ params }) {
 
                 {/* محصولات مرتبط */}
                 {relatedProducts.length > 0 && (
-                    <div className="mt-12 sm:mt-16">
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">
+                    <div className="mt-12 sm:mt-16" data-aos="fade-up" data-aos-once="true">
+                        <h2
+                            data-aos="fade-up"
+                            data-aos-delay="100"
+                            data-aos-once="true"
+                            className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8"
+                        >
                             محصولات مرتبط
                         </h2>
 
                         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                             {relatedProducts.map((item, index) => (
-                                <Link
+                                <div
                                     key={item._id || item.id || index}
-                                    href={`/products/${item.slug}`}
-                                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/80"
+                                    data-aos="fade-up"
+                                    data-aos-duration="700"
+                                    data-aos-delay={(index + 1) * 120}
+                                    data-aos-once="true"
                                 >
+                                    <Link
+                                        href={`/products/${item.slug}`}
+                                        className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/80"
+                                    >
                                     <div className="relative aspect-square bg-white overflow-hidden">
                                         <Image
                                             src={item.image}
@@ -294,6 +326,7 @@ export default async function ProductDetail({ params }) {
                                         </p>
                                     </div>
                                 </Link>
+                                </div>
                             ))}
                         </div>
                     </div>

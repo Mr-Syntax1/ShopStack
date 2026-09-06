@@ -134,16 +134,30 @@ export default function RegisterPage() {
     );
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-indigo-50 to-violet-100 p-4 mt-20">
-            <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
+        <div className="min-h-[1100px] flex items-center justify-center bg-linear-to-b from-indigo-50 to-violet-100 p-4">
+            <div
+                data-aos="fade-down"
+                data-aos-duration="800"
+                className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8"
+            >
                 <div className="text-center mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-indigo-600 mx-auto flex items-center justify-center">
+                    <div
+                        className="w-14 h-14 rounded-2xl bg-indigo-600 mx-auto flex items-center justify-center"
+                    >
                         <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l-4-8H5.3m6 12h7a2 2 0 002-2v-4a2 2 0 00-2-2h-7m6 12a6 6 0 11-12 0 6 6 0 0112 0z" />
                         </svg>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-800 mt-4">ثبت نام</h1>
-                    <p className="text-gray-500 text-sm mt-1">حساب کاربری جدید بسازید</p>
+                    <h1
+                        className="text-3xl font-bold text-gray-800 mt-4"
+                    >
+                        ثبت نام
+                    </h1>
+                    <p
+                        className="text-gray-500 text-sm mt-1"
+                    >
+                        حساب کاربری جدید بسازید
+                    </p>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
@@ -295,7 +309,11 @@ export default function RegisterPage() {
                     </button>
                 </form>
 
-                <p className="text-center text-sm text-gray-500 mt-4">
+                <p
+                    data-aos="fade-up"
+                    data-aos-delay="100"
+                    className="text-center text-sm text-gray-500 mt-4"
+                >
                     قبلاً حساب دارید؟{' '}
                     <Link href="/auth/login" className="text-indigo-600 hover:underline font-medium">
                         وارد شوید

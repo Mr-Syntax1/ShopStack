@@ -322,7 +322,11 @@ function PaymentCallbackContent() {
 
     return (
         <div className="min-h-[60vh] flex items-center justify-center px-4 py-8 mt-20">
-            <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden">
+            <div
+                data-aos="zoom-in"
+                data-aos-duration="800"
+                className="w-full max-w-md bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden"
+            >
 
                 {/* هدر */}
                 <div className={`px-6 py-4 ${colors.header}`}>
@@ -343,16 +347,28 @@ function PaymentCallbackContent() {
                 {/* محتوا */}
                 <div className="p-8 text-center">
                     {/* آیکون */}
-                    <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${colors.iconBg}`}>
+                    <div
+                        data-aos="zoom-in"
+                        data-aos-delay="200"
+                        className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${colors.iconBg}`}
+                    >
                         <StatusIcon status={config.icon} />
                     </div>
 
                     {/* عنوان */}
-                    <h3 className={`mt-4 text-xl font-bold ${colors.title}`}>
+                    <h3
+                        data-aos="fade-up"
+                        data-aos-delay="300"
+                        className={`mt-4 text-xl font-bold ${colors.title}`}
+                    >
                         {config.title}
                     </h3>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p
+                        data-aos="fade-up"
+                        data-aos-delay="400"
+                        className="mt-1 text-sm text-gray-400"
+                    >
                         {config.desc}
                     </p>
 

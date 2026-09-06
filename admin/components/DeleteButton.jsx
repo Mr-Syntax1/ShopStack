@@ -17,7 +17,7 @@ export default function DeleteButton({
     title,
     onDelete,
     deleteUrl,
-    buttonText = 'حذف',
+    buttonText = '',
     successMessage,
     isFullPage = false,
     className = '',

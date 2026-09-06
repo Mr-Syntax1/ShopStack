@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "aos": "^3.0.0-beta.6",
     "bcryptjs": "^3.0.3",
     "jsonwebtoken": "^9.0.3",
     "lodash": "^4.18.1",

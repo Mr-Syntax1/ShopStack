@@ -37,8 +37,6 @@ function paymentBadgeClass(status) {
 export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle, onStatusChange, onDelete, onPaymentSync }) {
     const user = order.user || {};
     const [showActions, setShowActions] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
     const actionRef = useRef(null);
 
     useEffect(() => {
