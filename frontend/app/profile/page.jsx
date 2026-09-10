@@ -515,7 +515,13 @@ export default function ProfilePage() {
     // رندر اصلی
     // ==============================
     return (
-        <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30">
+        <div
+            className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30"
+            data-aos="fade-up"
+            data-aos-once="true"
+            data-aos-duration="800"
+            data-aos-easing="ease-out-cubic"
+        >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* سایدبار */}

@@ -104,7 +104,7 @@ export default function Header() {
                 </nav>
 
                 {/* buttons = cart and hamburger and login */}
-                <div className="flex items-center">
+                <div className="flex items-center ml-2 md:ml-0">
 
                     {/* login button desktop */}
                     {!isAuthenticated ? (
@@ -118,6 +118,7 @@ export default function Header() {
                         <Avatar
                             name={user?.name}
                             href={getProfileLink()}
+                            className="ml-3 md:ml-2"
                             size="md"
                         />
                     )}
@@ -290,7 +291,7 @@ export default function Header() {
                             </svg>
                             سبد خرید
                             {cart.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                                <span className="absolute -top-1 -right-3 bg-blue-500 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
                                     {formatPrice(cart.length)}
                                 </span>
                             )}

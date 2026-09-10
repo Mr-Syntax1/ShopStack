@@ -29,10 +29,8 @@ export default async function LatestProducts() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-10">
                 {/* هدر بخش */}
                 <div className="relative mb-12 sm:mb-16">
-                    <div className="text-center">
+                    <div className="text-center" data-aos="fade-up" data-aos-once="true" data-aos-delay="100">
                         <span
-                            data-aos="fade-down"
-                            data-aos-once="true"
                             className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 bg-blue-100/70 px-5 py-2 rounded-full mb-4 backdrop-blur-sm border border-blue-200/50"
                         >
                             <span className="relative flex h-2 w-2">
@@ -43,9 +41,6 @@ export default async function LatestProducts() {
                         </span>
 
                         <h2
-                            data-aos="fade-up"
-                            data-aos-delay="100"
-                            data-aos-once="true"
                             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-3"
                         >
                             محصولات
@@ -53,9 +48,6 @@ export default async function LatestProducts() {
                         </h2>
 
                         <p
-                            data-aos="fade-up"
-                            data-aos-delay="200"
-                            data-aos-once="true"
                             className="text-gray-500 max-w-2xl mx-auto text-sm sm:text-base"
                         >
                             بهترین و محبوب‌ترین محصولات فروشگاه رو با بهترین قیمت تهیه کنید

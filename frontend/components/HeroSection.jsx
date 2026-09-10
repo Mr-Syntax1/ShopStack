@@ -46,9 +46,6 @@ const HeroSection = () => {
                         className="text-center lg:text-right"
                     >
                         <h1
-                            data-aos="fade-down"
-                            data-aos-duration="900"
-                            data-aos-delay="200"
                             className="text-6xl xl:text-7xl font-bold text-gray-800 leading-20 xl:leading-24 mb-8 "
                         >
                             <span className="block bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent vazir-medium">
@@ -74,9 +71,6 @@ const HeroSection = () => {
                         </p>
 
                         <div
-                            data-aos="fade-up"
-                            data-aos-duration="900"
-                            data-aos-delay="500"
                             className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
                         >
                             <Link
@@ -99,33 +93,21 @@ const HeroSection = () => {
                         </div>
 
                         <div
-                            data-aos="fade-up"
-                            data-aos-duration="900"
-                            data-aos-delay="700"
                             className="flex flex-wrap items-center justify-center lg:justify-start gap-24 xl:gap-36 mt-16 pt-10 border-t border-gray-200/50 mb-15"
                         >
                             <div
-                                data-aos="zoom-in"
-                                data-aos-duration="800"
-                                data-aos-delay="800"
                                 className="text-center"
                             >
                                 <p className="text-3xl sm:text-4xl font-bold text-gray-800">۵۰۰+</p>
                                 <p className="text-base sm:text-lg text-gray-500">محصولات</p>
                             </div>
                             <div
-                                data-aos="zoom-in"
-                                data-aos-duration="800"
-                                data-aos-delay="950"
                                 className="text-center"
                             >
                                 <p className="text-3xl sm:text-4xl font-bold text-gray-800">۱۰۰۰+</p>
                                 <p className="text-base sm:text-lg text-gray-500">مشتریان</p>
                             </div>
                             <div
-                                data-aos="zoom-in"
-                                data-aos-duration="800"
-                                data-aos-delay="1100"
                                 className="text-center"
                             >
                                 <p className="text-3xl sm:text-4xl font-bold text-gray-800">۹۸%</p>
@@ -145,32 +127,29 @@ const HeroSection = () => {
                             <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-purple-500/20 rounded-3xl rotate-3" />
 
                             <div
-                                data-aos="zoom-in"
-                                data-aos-duration="900"
-                                data-aos-delay="800"
                             >
-                            <div
-                                className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:shadow-blue-500/30 hover:scale-[1.02] "
-                            >
-                                <Image
-                                    src={img}
-                                    alt="محصولات فروشگاهی"
-                                    width={600}
-                                    height={600}
-                                    className="w-full h-auto object-cover"
-                                    priority
-                                />
-                                <div className="absolute inset-0 bg-linear-to-tr from-blue-900/10 via-transparent to-purple-900/10" />
                                 <div
-                                    data-aos="fade-up"
-                                    data-aos-duration="700"
-                                    data-aos-delay="1100"
-                                    className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg"
+                                    className="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:shadow-blue-500/30 hover:scale-[1.02] "
                                 >
-                                    <p className="text-sm font-semibold text-gray-900">تخفیف ویژه</p>
-                                    <p className="text-xs text-gray-500">۲۰٪ تا پایان هفته</p>
+                                    <Image
+                                        src={img}
+                                        alt="محصولات فروشگاهی"
+                                        width={600}
+                                        height={600}
+                                        className="w-full h-auto object-cover"
+                                        priority
+                                    />
+                                    <div className="absolute inset-0 bg-linear-to-tr from-blue-900/10 via-transparent to-purple-900/10" />
+                                    <div
+                                        data-aos="fade-up"
+                                        data-aos-duration="700"
+                                        data-aos-delay="1100"
+                                        className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg"
+                                    >
+                                        <p className="text-sm font-semibold text-gray-900">تخفیف ویژه</p>
+                                        <p className="text-xs text-gray-500">۲۰٪ تا پایان هفته</p>
+                                    </div>
                                 </div>
-                            </div>
                             </div>
 
                             <div

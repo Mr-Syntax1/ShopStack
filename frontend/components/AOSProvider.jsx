@@ -18,6 +18,21 @@ export default function AOSProvider() {
             delay: 0,
             anchorPlacement: "top-bottom",
         });
+
+        // صفحاتی که محتواشون async رندر میشه، بعد از init المنت data-aos به DOM اضافه می‌کنن.
+        // توجه: refresh() فقط المنت‌های کش‌شده قبلی رو پردازش می‌کنه؛
+        // فقط refreshHard() دوباره DOM رو اسکن می‌کنه و aos-animate میده
+        let timeoutId;
+        const observer = new MutationObserver(() => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => AOS.refreshHard(), 100);
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        return () => {
+            observer.disconnect();
+            clearTimeout(timeoutId);
+        };
     }, []);
 
     useEffect(() => {

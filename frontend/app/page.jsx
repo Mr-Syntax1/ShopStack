@@ -88,24 +88,18 @@ export default function Home() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-100/20 rounded-full blur-3xl" />
 
         <Container className="relative">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up" data-aos-once="true" data-aos-delay="100">
             <span
-              data-aos="fade-up"
-              data-aos-delay="200"
               className="inline-block text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-5 py-2 rounded-full mb-4 border border-purple-100/50"
             >
               نظرات مشتریان
             </span>
             <h2
-              data-aos="fade-up"
-              data-aos-delay="100"
               className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4"
             >
               آنها به ما <span className="bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">اعتماد کردند</span>
             </h2>
             <p
-              data-aos="fade-up"
-              data-aos-delay="200"
               className="text-gray-500 max-w-xl mx-auto text-base"
             >
               تجربه خرید مشتریان ما، بهترین گواه برای کیفیت خدماتمان است.
@@ -117,7 +111,8 @@ export default function Home() {
               <div
                 key={review.id}
                 data-aos="fade-up"
-                data-aos-delay={index * 150}
+                data-aos-delay={index * 200}
+                data-aos-offset="100"
                 data-aos-once="true"
               >
                 <div
@@ -252,12 +247,9 @@ export default function Home() {
           >
             با OnlineShop، خرید آنلاین را به سطح جدیدی ببرید. کیفیت، قیمت و سرعت را یکجا تجربه کنید.
           </p>
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4" data-aos="zoom-in-up" data-aos-once="true" data-aos-delay="100">
             <Link
               href="/products"
-              data-aos="fade-up"
-              data-aos-delay="400"
-              data-aos-once="true"
               className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-purple-600 font-semibold rounded-xl hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base shadow-md"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -267,9 +259,6 @@ export default function Home() {
             </Link>
             <Link
               href="/contact"
-              data-aos="fade-up"
-              data-aos-delay="500"
-              data-aos-once="true"
               className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white/15 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl hover:bg-white/25 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

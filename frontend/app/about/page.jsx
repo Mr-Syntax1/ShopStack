@@ -129,27 +129,18 @@ export default function AboutPage() {
                         <div className="w-48 h-48 sm:w-64 sm:h-64 bg-indigo-200/20 rounded-full blur-3xl -ml-20" />
                     </div>
 
-                    <div className="relative" data-aos="fade-up" data-aos-once="true">
+                    <div className="relative" data-aos="fade-up" data-aos-once="true" data-aos-delay="100">
                         <span
-                            data-aos="fade-up"
-                            data-aos-delay="100"
-                            data-aos-once="true"
                             className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4 border border-purple-100/50"
                         >
                             آشنایی با ما
                         </span>
                         <h1
-                            data-aos="fade-up"
-                            data-aos-delay="150"
-                            data-aos-once="true"
                             className="text-5xl lg:text-6xl font-bold text-gray-800 mb-3 sm:mb-4"
                         >
                             درباره <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">OnlineShop</span>
                         </h1>
                         <p
-                            data-aos="fade-up"
-                            data-aos-delay="250"
-                            data-aos-once="true"
                             className="text-sm sm:text-base md:text-lg text-gray-500 max-w-2xl mx-auto px-4"
                         >
                             داستان، افتخارات و تیمی که پشت موفقیت‌های ما قرار دارند
@@ -213,10 +204,6 @@ export default function AboutPage() {
                         </div>
 
                         <div
-                            data-aos="fade-left"
-                            data-aos-duration="1000"
-                            data-aos-delay="200"
-                            data-aos-once="true"
                             className="lg:col-span-2 bg-linear-to-br from-purple-600 via-indigo-600 to-blue-600 p-8 sm:p-10 md:p-12 flex flex-col items-center justify-center text-white relative overflow-hidden min-h-[200px] sm:min-h-[250px] lg:min-h-0"
                         >
                             <div className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-white/10 rounded-full blur-3xl" />
@@ -322,20 +309,14 @@ export default function AboutPage() {
                 </div>
 
                 {/* تیم ما - طراحی مدرن */}
-                <div className="text-center" data-aos="fade-up" data-aos-once="true">
+                <div className="text-center" data-aos="fade-up" data-aos-once="true" data-aos-delay="100">
                     <div className="mb-8 sm:mb-12">
                         <span
-                            data-aos="fade-down"
-                            data-aos-delay="100"
-                            data-aos-once="true"
                             className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4"
                         >
                             تیم ما
                         </span>
                         <h2
-                            data-aos="fade-up"
-                            data-aos-delay="150"
-                            data-aos-once="true"
                             className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800"
                         >
                             افراد <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">کلیدی</span> پشت OnlineShop

@@ -112,10 +112,6 @@ export default async function ProductDetail({ params }) {
 
                         {/* بخش تصویر */}
                         <div
-                            data-aos="zoom-in"
-                            data-aos-duration="900"
-                            data-aos-delay="150"
-                            data-aos-once="true"
                             className="relative"
                         >
                             <div className="relative aspect-4/3 lg:aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
@@ -149,10 +145,6 @@ export default async function ProductDetail({ params }) {
 
                         {/* بخش اطلاعات */}
                         <div
-                            data-aos="fade-left"
-                            data-aos-duration="900"
-                            data-aos-delay="300"
-                            data-aos-once="true"
                             className="flex flex-col"
                         >
                             {/* برند و دسته‌بندی */}
@@ -277,9 +269,6 @@ export default async function ProductDetail({ params }) {
                 {relatedProducts.length > 0 && (
                     <div className="mt-12 sm:mt-16" data-aos="fade-up" data-aos-once="true">
                         <h2
-                            data-aos="fade-up"
-                            data-aos-delay="100"
-                            data-aos-once="true"
                             className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8"
                         >
                             محصولات مرتبط
@@ -289,43 +278,39 @@ export default async function ProductDetail({ params }) {
                             {relatedProducts.map((item, index) => (
                                 <div
                                     key={item._id || item.id || index}
-                                    data-aos="fade-up"
-                                    data-aos-duration="700"
-                                    data-aos-delay={(index + 1) * 120}
-                                    data-aos-once="true"
                                 >
                                     <Link
                                         href={`/products/${item.slug}`}
                                         className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/80"
                                     >
-                                    <div className="relative aspect-square bg-white overflow-hidden">
-                                        <Image
-                                            src={item.image}
-                                            alt={item.title}
-                                            fill
-                                            className="object-cover scale-95 group-hover:scale-105 transition-transform duration-700"
-                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                                        />
-                                        {item.discount > 0 && (
-                                            <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg">
-                                                {item.discount}%
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="p-3 sm:p-4">
-                                        <h3 className="font-bold text-gray-800 group-hover:text-blue-600 transition text-sm line-clamp-2">
-                                            {item.title}
-                                        </h3>
-                                        <p className="text-sm font-bold text-blue-600 mt-1">
-                                            {formatPrice(
-                                                item.discount > 0
-                                                    ? Math.round(item.price * (1 - item.discount / 100))
-                                                    : item.price
+                                        <div className="relative aspect-square bg-white overflow-hidden">
+                                            <Image
+                                                src={item.image}
+                                                alt={item.title}
+                                                fill
+                                                className="object-cover scale-95 group-hover:scale-105 transition-transform duration-700"
+                                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                            />
+                                            {item.discount > 0 && (
+                                                <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg">
+                                                    {item.discount}%
+                                                </span>
                                             )}
-                                        </p>
-                                    </div>
-                                </Link>
+                                        </div>
+
+                                        <div className="p-3 sm:p-4">
+                                            <h3 className="font-bold text-gray-800 group-hover:text-blue-600 transition text-sm line-clamp-2">
+                                                {item.title}
+                                            </h3>
+                                            <p className="text-sm font-bold text-blue-600 mt-1">
+                                                {formatPrice(
+                                                    item.discount > 0
+                                                        ? Math.round(item.price * (1 - item.discount / 100))
+                                                        : item.price
+                                                )}
+                                            </p>
+                                        </div>
+                                    </Link>
                                 </div>
                             ))}
                         </div>

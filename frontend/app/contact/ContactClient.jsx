@@ -211,35 +211,23 @@ function ContactClient() {
                         <div className="w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl -ml-20" />
                     </div>
 
-                    <div className="relative" data-aos="fade-down" data-aos-once="true">
+                    <div className="relative" data-aos="fade-up" data-aos-once="true" data-aos-delay="100">
                         <span
-                            data-aos="fade-down"
-                            data-aos-delay="100"
-                            data-aos-once="true"
                             className="inline-block text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-5 py-2 rounded-full mb-4 border border-purple-100/50"
                         >
                             ارتباط با ما
                         </span>
                         <h1
-                            data-aos="fade-up"
-                            data-aos-delay="150"
-                            data-aos-once="true"
                             className="text-5xl md:text-6xl font-bold text-gray-800 mb-4"
                         >
                             تماس با <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">ما</span>
                         </h1>
                         <p
-                            data-aos="fade-up"
-                            data-aos-delay="250"
-                            data-aos-once="true"
                             className="text-gray-500 max-w-2xl mx-auto text-base md:text-lg"
                         >
                             ما همیشه آماده شنیدن نظرات و پاسخ به سوالات شما هستیم
                         </p>
                         <div
-                            data-aos="zoom-in"
-                            data-aos-delay="350"
-                            data-aos-once="true"
                             className="w-24 h-1 bg-linear-to-r from-purple-600 to-indigo-600 mx-auto rounded-full mt-4"
                         />
                     </div>
@@ -249,7 +237,7 @@ function ContactClient() {
                     {/* اطلاعات تماس - سمت راست */}
                     <div className="lg:col-span-1 space-y-6">
                         <div
-                            data-aos="fade-left"
+                            data-aos="fade-up"
                             data-aos-duration="900"
                             data-aos-once="true"
                             className="bg-white rounded-3xl shadow-xl p-6 border border-gray-100/50"
@@ -317,7 +305,7 @@ function ContactClient() {
 
                         {/* نقشه ساده */}
                         <div
-                            data-aos="fade-left"
+                            data-aos="fade-up"
                             data-aos-duration="900"
                             data-aos-delay="300"
                             data-aos-once="true"
@@ -493,18 +481,12 @@ function ContactClient() {
                 >
                     <div className="text-center mb-12">
                         <span
-                            data-aos="fade-down"
-                            data-aos-delay="100"
-                            data-aos-once="true"
                             className="inline-block text-sm font-semibold text-purple-600 bg-purple-50/80 px-5 py-2 rounded-full mb-4 border border-purple-100/50"
                         >
                             راهنمای سریع
                         </span>
 
                         <h2
-                            data-aos="fade-up"
-                            data-aos-delay="150"
-                            data-aos-once="true"
                             className="text-4xl md:text-5xl font-bold text-gray-800"
                         >
                             سوالات <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">متداول</span>
@@ -515,9 +497,6 @@ function ContactClient() {
                         {faqData.map((item, index) => (
                             <div
                                 key={item.id}
-                                data-aos="fade-up"
-                                data-aos-delay={Math.min(index * 80, 400)}
-                                data-aos-once="true"
                             >
                                 <Accordion
                                     id={item.id}

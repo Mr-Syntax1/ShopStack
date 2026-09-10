@@ -6,14 +6,15 @@ export default function ProductsGrid({ products }) {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-16">
             {products.map((product, index) => (
                 <div
                     key={product._id || product.id}
                     data-aos="fade-up"
-                    data-aos-duration="700"
+                    data-aos-duration="600"
                     data-aos-delay={(index % 4) * 100}
                     data-aos-once="true"
+                    className="will-change-transform"
                 >
                     <ProductBox
                         product={product}

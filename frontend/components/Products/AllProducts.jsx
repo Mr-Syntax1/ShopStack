@@ -279,19 +279,13 @@ export default function AllProducts({
                         <div className="w-48 h-48 sm:w-64 sm:h-64 bg-indigo-200/20 rounded-full blur-3xl -ml-20" />
                     </div>
 
-                    <div className="relative">
+                    <div className="relative" data-aos="fade-up" data-aos-once="true" data-aos-delay="100">
                         <span
-                            data-aos="fade-down"
-                            data-aos-delay="100"
-                            data-aos-once="true"
                             className="inline-block text-xs sm:text-sm font-semibold text-purple-600 bg-purple-50/80 backdrop-blur-sm px-4 sm:px-5 py-1.5 sm:py-2 rounded-full mb-2 sm:mb-3 border border-purple-100/50"
                         >
                             {selectedCategory !== 'همه' ? `دسته‌بندی ${selectedCategory}` : 'همه محصولات'}
                         </span>
                         <h1
-                            data-aos="fade-up"
-                            data-aos-delay="150"
-                            data-aos-once="true"
                             className="text-5xl lg:text-6xl font-bold text-gray-800 mb-2 sm:mb-3"
                         >
                             {selectedCategory !== 'همه' ? (
@@ -305,18 +299,12 @@ export default function AllProducts({
                             )}
                         </h1>
                         <p
-                            data-aos="fade-up"
-                            data-aos-delay="250"
-                            data-aos-once="true"
                             className="text-sm md:text-base text-gray-500"
                         >
                             <span className="font-semibold text-gray-800">{filteredProducts.length}</span> محصول از {' '}
                             <span className="font-semibold text-gray-800">{allProducts.length}</span> محصول موجود
                         </p>
                         <div
-                            data-aos="zoom-in"
-                            data-aos-delay="350"
-                            data-aos-once="true"
                             className="w-16 sm:w-20 md:w-24 h-1 bg-linear-to-r from-purple-600 to-indigo-600 mx-auto rounded-full mt-3 sm:mt-4"
                         />
                     </div>

@@ -1,5 +1,28 @@
 @import "tailwindcss";
 
+/* انیمیشن ورود صفحه (جایگزین مطمئن AOS برای صفحات async مثل cart) */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.7s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+}
+
+
 /* تعریف فونت وزیر */
 @font-face {
   font-family: 'Vazirmedium';

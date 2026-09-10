@@ -160,7 +160,9 @@ export default function CartClient() {
     // ============================================
     if (items.length === 0) {
         return (
-            <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16">
+            <div
+                className="page-enter min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16"
+            >
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
                     <div
                         className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 sm:p-12 text-center border border-gray-100/50"
@@ -191,7 +193,9 @@ export default function CartClient() {
     //  نمایش سبد خرید
     // ============================================
     return (
-        <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16">
+        <div
+            className="page-enter min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16"
+        >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
 
                 {/* عنوان صفحه */}
