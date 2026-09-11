@@ -29,7 +29,7 @@ const profileSchema = yup.object({
     phone: yup
         .string()
         .required('شماره موبایل الزامی است')
-        .matches(/^(0?9[0-9]{9}|9[0-9]{9})$/, 'شماره موبایل معتبر وارد کنید (۱۰ یا ۱۱ رقم)'),
+        .matches(/^09[0-9]{9}$/, 'شماره موبایل باید 11 رقم و با 09 شروع شود'),
 });
 
 // ==============================
@@ -279,19 +279,16 @@ export default function ProfilePage() {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">شماره موبایل</label>
                                 <div className="relative">
-                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">
-                                        +98
-                                    </span>
                                     <input
                                         type="tel"
                                         {...register('phone')}
                                         disabled={!editing}
-                                        className={`w-full px-4 py-3 pr-14 rounded-xl border outline-none text-sm transition-all ${editing
+                                        className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all ${editing
                                             ? `border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 bg-white ${errors.phone ? 'border-red-500' : ''
                                             }`
                                             : 'border-transparent bg-gray-50/50 text-gray-800'
                                             }`}
-                                        placeholder="9123456789"
+                                        placeholder="09123456789"
                                     />
                                 </div>
                                 {errors.phone && editing && (

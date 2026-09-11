@@ -88,7 +88,15 @@ export async function PATCH(request) {
         // بروزرسانی فیلدها
         if (name) user.name = name;
         if (email) user.email = email.toLowerCase();
-        if (phone) user.phone = phone;
+        if (phone) {
+            if (!/^09[0-9]{9}$/.test(phone)) {
+                return NextResponse.json(
+                    { error: 'شماره موبایل باید 11 رقم و با 09 شروع شود' },
+                    { status: 400 }
+                );
+            }
+            user.phone = phone;
+        }
 
         await user.save();
 

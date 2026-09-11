@@ -31,7 +31,7 @@ const registerSchema = yup.object({
     phone: yup
         .string()
         .required('شماره موبایل الزامی است')
-        .matches(/^(0?9[0-9]{9}|9[0-9]{9})$/, 'شماره موبایل معتبر وارد کنید'),
+        .matches(/^09[0-9]{9}$/, 'شماره موبایل باید 11 رقم و با 09 شروع شود'),
 
     password: yup
         .string()
@@ -195,15 +195,12 @@ export default function RegisterPage() {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">شماره موبایل</label>
                         <div className="relative">
-                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">
-                                +98
-                            </span>
                             <input
                                 type="tel"
                                 {...register('phone')}
-                                className={`w-full px-4 py-3 pr-14 border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500  focus:border-transparent transition-colors placeholder-gray-400 ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full px-4 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500  focus:border-transparent transition-colors placeholder-gray-400 ${errors.phone ? 'border-red-500' : 'border-gray-300'
                                     }`}
-                                placeholder="9123456789"
+                                placeholder="09123456789"
                             />
                         </div>
                         {errors.phone && (

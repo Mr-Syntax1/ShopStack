@@ -20,7 +20,7 @@ export const orderSchema = yup.object({
     phone: yup
         .string()
         .required('شماره تماس الزامی است')
-        .matches(/^(0?9)[0-9]{9}$/, 'شماره تماس باید 11 رقم و با 09 یا 9 شروع شود')
+        .matches(/^09[0-9]{9}$/, 'شماره تماس باید 11 رقم و با 09 شروع شود')
         .trim(),
 
     city: yup

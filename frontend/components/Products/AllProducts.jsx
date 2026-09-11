@@ -311,7 +311,7 @@ export default function AllProducts({
                 </div>
 
                 {/* نوار ابزار */}
-                <div data-aos="fade-up" data-aos-delay="200" data-aos-once="true">
+                <div data-aos="fade-up" data-aos-delay="100" data-aos-once="true">
                     <ProductToolbar
                         searchInput={searchInput}
                         onSearchChange={handleSearch}

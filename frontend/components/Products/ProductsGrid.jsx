@@ -12,7 +12,7 @@ export default function ProductsGrid({ products }) {
                     key={product._id || product.id}
                     data-aos="fade-up"
                     data-aos-duration="500"
-                    data-aos-delay={(index % 4) * 100}
+                    data-aos-delay={(index % 4) * 50}
                     data-aos-once="true"
                     className="will-change-transform"
                 >

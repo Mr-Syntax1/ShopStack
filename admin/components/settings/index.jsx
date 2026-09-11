@@ -25,7 +25,7 @@ const profileSchema = yup.object({
     phone: yup
         .string()
         .required('شماره موبایل الزامی است')
-        .matches(/^(0?9[0-9]{9}|9[0-9]{9})$/, 'شماره موبایل معتبر وارد کنید (۱۰ یا ۱۱ رقم)'),
+        .matches(/^09[0-9]{9}$/, 'شماره موبایل باید 11 رقم و با 09 شروع شود'),
 });
 
 const passwordSchema = yup.object({
@@ -222,14 +222,11 @@ export default function SettingsPage() {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1.5">شماره موبایل</label>
                             <div className="relative">
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">
-                                    +98
-                                </span>
                                 <input
                                     type="tel"
                                     {...registerProfile('phone')}
-                                    className={`w-full px-4 py-3 pr-14 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.phone ? 'border-red-500' : 'border-gray-200'}`}
-                                    placeholder="9123456789"
+                                    className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.phone ? 'border-red-500' : 'border-gray-200'}`}
+                                    placeholder="09123456789"
                                 />
                             </div>
                             {errorsProfile.phone && (

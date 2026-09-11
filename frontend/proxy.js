@@ -3,59 +3,78 @@ import { NextResponse } from 'next/server';
 import { getUserFromToken } from './lib/auth';
 
 export async function proxy(request) {
+
     const { pathname } = request.nextUrl;
     const token = request.cookies.get('token')?.value;
 
     // ==============================
-    // ۱. مسیرهای عمومی (بدون احراز هویت)
+    // 1. مسیرهای عمومی (بدون احراز هویت)
     // ==============================
-    const publicPaths = ['/', '/products', '/products/*', '/auth/login', '/auth/register', '/contact', '/about', '/cart'];
-    const publicApis = ['/api/products', '/api/categories', '/api/dashboard', '/api/products/[slug]', '/api/products/related']; // ← اضافه شد
+    const publicPaths = ['/', '/products', '/auth/login', '/auth/register', '/contact', '/about', '/cart'];
+    const publicApis = ['/api/products', '/api/categories', '/api/dashboard'];
+    const authPublicApis = ['/api/auth/login', '/api/auth/register', '/api/auth/logout'];
 
     const isPublicPath = publicPaths.some(p => pathname === p || pathname.startsWith(`${p}/`));
-    const isPublicApi = publicApis.some(p => pathname.startsWith(p));
-    const isAuthApi = pathname.startsWith('/api/auth');
+    const isPublicApi = publicApis.some(p => pathname === p || pathname.startsWith(`${p}/`));
+    const isAuthApi = authPublicApis.some(p => pathname === p);
+    const isFullyPublic = isPublicPath || isPublicApi || isAuthApi;
+    const isApiRoute = pathname.startsWith('/api/');
+    // اگه API بود → JSON ریدایرکت کن → اگه صفحه بود → بده
 
     // ==============================
-    // ۲. اعتبارسنجی توکن
+    // 2. اعتبارسنجی توکن
     // ==============================
     let user = null;
     if (token) {
         try {
             user = getUserFromToken(token);
+            if (!user) throw new Error('توکن نامعتبر');
         } catch (error) {
             console.error('❌ خطا در اعتبارسنجی توکن:', error.message);
-            const response = NextResponse.redirect(new URL('/auth/login', request.url));
+
+            //  برای APIها → 401 JSON برگردون (نه ریدایرکت HTML)
+            if (isApiRoute) {
+                const response = NextResponse.json(
+                    { error: 'توکن نامعتبر یا منقضی شده', user: null },
+                    { status: 401 }
+                );
+                response.cookies.delete('token');
+                return response;
+            }
+
+            // برای صفحات → ریدایرکت یا ادامه
+            const response = isFullyPublic
+                ? NextResponse.next()
+                : NextResponse.redirect(new URL('/auth/login', request.url));
             response.cookies.delete('token');
             return response;
         }
     }
 
     // ==============================
-    // ۳. اگر توکن نامعتبره و مسیر عمومی نیست → پاک کن و به لاگین بفرست
-    // ==============================
-    if (token && !user && !isPublicPath && !isAuthApi && !isPublicApi) {
-        const response = NextResponse.redirect(new URL('/auth/login', request.url));
-        response.cookies.delete('token');
-        return response;
-    }
-
-    // ==============================
-    // ۴. اگر کاربر لاگین کرده و میخواد بره صفحات لاگین/ثبت‌نام
+    // 3. اگر کاربر لاگین کرده و میخواد بره صفحات لاگین/ثبت‌نام
     // ==============================
     if (user && (pathname === '/auth/login' || pathname.startsWith('/auth/register'))) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
     // ==============================
-    // ۵. اگر کاربر لاگین نکرده و میخواد به مسیر محافظت شده بره
+    // 4. اگر کاربر لاگین نکرده و میخواد به مسیر محافظت شده بره
     // ==============================
-    if (!token && !isPublicPath && !isAuthApi && !isPublicApi) {
+    if (!token && !isFullyPublic) {
+        // برای APIها → 401 JSON
+        if (isApiRoute) {
+            return NextResponse.json(
+                { error: 'احراز هویت نشده', user: null },
+                { status: 401 }
+            );
+        }
+        // برای صفحات → ریدایرکت
         return NextResponse.redirect(new URL('/auth/login', request.url));
     }
 
     // ==============================
-    // ۶. ادامه مسیر
+    // 5. ادامه مسیر
     // ==============================
     return NextResponse.next();
 }

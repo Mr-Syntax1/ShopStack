@@ -17,7 +17,7 @@ const loginSchema = yup.object({
         .test('is-valid-identifier', 'ایمیل یا شماره موبایل معتبر وارد کنید', (value) => {
             if (!value) return false;
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            const phoneRegex = /^(0?9[0-9]{9}|9[0-9]{9})$/;
+            const phoneRegex = /^09[0-9]{9}$/;
             return emailRegex.test(value) || phoneRegex.test(value);
         }),
     password: yup
@@ -54,7 +54,7 @@ export default function LoginPage() {
     useEffect(() => {
         if (identifier) {
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            const phoneRegex = /^(0?9[0-9]{9}|9[0-9]{9})$/;
+            const phoneRegex = /^09[0-9]{9}$/;
 
             if (emailRegex.test(identifier)) {
                 setLoginMethod('email');

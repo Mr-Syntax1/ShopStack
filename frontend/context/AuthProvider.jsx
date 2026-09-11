@@ -38,13 +38,24 @@ export function AuthProvider({ children }) {
         const fetchUser = async () => {
             try {
                 const res = await fetch('/api/auth/me');
-                if (res.ok) {
-                    const data = await res.json();
-                    setUser(data.user);
-                } else {
-                    // اگر توکن معتبر نبود، کاربر رو null کن
+
+                //  چک کن پاسخ JSON باشه
+                const contentType = res.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    // پاسخ HTML یا چیز دیگه → کاربر مهمان
                     setUser(null);
+                    return;
                 }
+
+                if (!res.ok) {
+                    // 401/403 → کاربر مهمان
+                    setUser(null);
+                    return;
+                }
+
+                const data = await res.json();
+                setUser(data.user ?? null);
+
             } catch (error) {
                 console.error('Error fetching user:', error);
                 setUser(null);

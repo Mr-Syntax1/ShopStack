@@ -3,6 +3,10 @@ import bcrypt from 'bcryptjs';
 //	هش کردن رمز عبور (برای ذخیره امن در دیتابیس)
 
 const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET در متغیرهای محیطی تعریف نشده است');
+}
+
 const JWT_EXPIRES_IN = '7d';
 
 // ==============================

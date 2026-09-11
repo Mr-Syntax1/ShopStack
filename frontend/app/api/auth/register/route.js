@@ -19,6 +19,13 @@ export async function POST(req) {
             );
         }
 
+        if (!/^09[0-9]{9}$/.test(phone)) {
+            return NextResponse.json(
+                { error: 'شماره موبایل باید 11 رقم و با 09 شروع شود' },
+                { status: 400 }
+            );
+        }
+
         const existingPhone = await User.findOne({ phone });
         if (existingPhone) {
             return NextResponse.json({ error: 'این شماره موبایل قبلاً ثبت شده است' }, { status: 400 });
