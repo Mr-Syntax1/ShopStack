@@ -161,7 +161,11 @@ export default function CartClient() {
     if (items.length === 0) {
         return (
             <div
-                className="page-enter min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16"
+                className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16"
+                data-aos="fade-up"
+                data-aos-once="true"
+                data-aos-duration="500"
+                data-aos-easing="ease-out-cubic"
             >
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
                     <div
@@ -193,14 +197,17 @@ export default function CartClient() {
     //  نمایش سبد خرید
     // ============================================
     return (
-        <div
-            className="page-enter min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16"
+        <div className="min-h-screen bg-linear-to-br from-blue-50/30 via-white to-indigo-50/30 py-8 sm:py-12 lg:py-16"
+            data-aos="fade-up"
+            data-aos-once="true"
+            data-aos-duration="500"
+            data-aos-easing="ease-out-cubic"
         >
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-16">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-16">
 
                 {/* عنوان صفحه */}
                 <div
-                    className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8"
+                    className="md:flex md:items-center md:justify-between md:flex-row gap-4 mb-8"
                 >
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-indigo-600 shadow-lg shadow-blue-500/25">
@@ -208,12 +215,12 @@ export default function CartClient() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                         </div>
-                        <div>
-                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 pb-3">سبد خرید</h1>
-                            <p className="text-sm text-gray-400">محصولات انتخاب شده را مرور کنید</p>
+                        <div className="flex flex-col">
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 pb-3 flex-row">سبد خرید</h1>
+                            <p className="text-sm text-gray-400 flex-row">محصولات انتخاب شده را مرور کنید</p>
                         </div>
                     </div>
-                    <span className="text-sm bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-gray-100">
+                    <span className="text-sm bg-white/80 max-w-42 mt-6 mb-10 mx-auto md:m-0 text-center backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-gray-100 flex flex-col">
                         {items.length} محصول در سبد
                     </span>
                 </div>
@@ -223,115 +230,99 @@ export default function CartClient() {
                     {/* ============================================ */}
                     {/* ===== ستون چپ: لیست محصولات ===== */}
                     {/* ============================================ */}
-                    <div className="lg:col-span-2 space-y-4">
+                    <div className="lg:col-span-2 space-y-8 sm:space-y-4">
                         {items.map((item) => (
                             <div
                                 key={item._id || item.id}
+                                className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100/50 overflow-hidden"
                             >
-                                <div
-                                    className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100/50 overflow-hidden"
-                                >
-                                    <div className="flex flex-col sm:flex-row gap-4 p-4">
-                                        {/* تصویر */}
-                                        <div className="relative w-full sm:w-28 h-72 sm:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                                            <Image
-                                                src={item.image}
-                                                alt={item.title}
-                                                fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                            />
-                                            {item.discount > 0 && (
-                                                <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                                    {item.discount}%
-                                                </span>
-                                            )}
-                                        </div>
+                                <div className="flex gap-3 sm:gap-4 p-3 sm:p-4">
+                                    {/* تصویر - کوچیک‌تر و مستطیلی */}
+                                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                                        <Image
+                                            src={item.image}
+                                            alt={item.title}
+                                            fill
+                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                        {item.discount > 0 && (
+                                            <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                                                {item.discount}%
+                                            </span>
+                                        )}
+                                    </div>
 
-                                        {/* اطلاعات */}
-                                        <div className="flex-1 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                            <div className="flex-1">
-                                                <Link href={`/products/${item.slug || item.id}`}>
-                                                    <h3 className="font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer text-sm sm:text-base line-clamp-2">
-                                                        {item.title}
-                                                    </h3>
-                                                </Link>
-                                                <p className="text-lg font-bold text-blue-600">
+                                    {/* اطلاعات - فلکس عمودی */}
+                                    <div className="flex-1 flex flex-col justify-between min-w-0">
+
+                                        {/* ردیف اول: عنوان */}
+                                        <Link href={`/products/${item.slug || item.id}`}>
+                                            <h3 className="font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer text-sm sm:text-base line-clamp-2 leading-snug">
+                                                {item.title}
+                                            </h3>
+                                        </Link>
+
+                                        {/* ردیف دوم: قیمت + تعداد + حذف */}
+                                        <div className="flex items-center justify-between gap-2 mt-2 flex-wrap sm:flex-nowrap">
+
+                                            {/* قیمت */}
+                                            <div className="flex flex-col">
+                                                <p className="text-base sm:text-lg font-bold text-blue-600">
                                                     {formatPrice(getDiscountedPrice(item))}
+                                                    <span className="text-[10px] text-gray-400 font-normal mr-1">تومان</span>
                                                 </p>
+                                                {item.discount > 0 && (
+                                                    <p className="text-[10px] sm:text-xs text-gray-400 line-through">
+                                                        {formatPrice(item.price)}
+                                                    </p>
+                                                )}
                                             </div>
 
-                                            {/* تعداد */}
+                                            {/* تعداد + حذف */}
                                             <div className="flex items-center gap-2">
+                                                {/* تعداد */}
+                                                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+                                                    <button
+                                                        onClick={() => {
+                                                            if (item.quantity <= 1) {
+                                                                removeFromCart(item._id || item.id);
+                                                            } else {
+                                                                updateQuantity(item._id || item.id, item.quantity - 1);
+                                                            }
+                                                        }}
+                                                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-white hover:bg-gray-50 text-gray-700 font-bold transition-colors cursor-pointer flex items-center justify-center text-sm"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span className="w-7 sm:w-8 text-center font-bold text-gray-800 text-sm">
+                                                        {item.quantity}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => updateQuantity(item._id || item.id, item.quantity + 1)}
+                                                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-white hover:bg-gray-50 text-gray-700 font-bold transition-colors cursor-pointer flex items-center justify-center text-sm"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+
+                                                {/* دکمه حذف */}
                                                 <button
-                                                    onClick={() => {
-                                                        if (item.quantity <= 1) {
-                                                            removeFromCart(item._id || item.id);
-                                                        } else {
-                                                            updateQuantity(item._id || item.id, item.quantity - 1);
-                                                        }
-                                                    }}
-                                                    className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                                                    onClick={() => removeFromCart(item._id || item.id)}
+                                                    className="w-7 h-7 sm:w-8 sm:h-8 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
+                                                    aria-label="حذف"
                                                 >
-                                                    -
-                                                </button>
-                                                <span className="w-10 text-center font-bold text-gray-800">
-                                                    {item.quantity}
-                                                </span>
-                                                <button
-                                                    onClick={() => updateQuantity(item._id || item.id, item.quantity + 1)}
-                                                    className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
-                                                >
-                                                    +
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
                                                 </button>
                                             </div>
-
-                                            {/* قیمت کل با تخفیف */}
-                                            <div className="text-right min-w-[100px]">
-                                                <p className="text-xs text-gray-400">قیمت کل</p>
-                                                <p className="font-bold text-gray-800">
-                                                    {formatPrice(getItemTotal(item))}
-                                                </p>
-                                            </div>
-
-                                            {/* دکمه حذف */}
-                                            <button
-                                                onClick={() => removeFromCart(item._id || item.id)}
-                                                className="absolute left-3 bottom-3 sm:relative sm:left-0 sm:bottom-0 text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all duration-200 cursor-pointer"
-                                                aria-label="حذف"
-                                            >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
-
-                        {/* دکمه‌های پایین لیست */}
-                        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                            <Link
-                                href="/products"
-                                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 transition-colors cursor-pointer"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                                ادامه خرید
-                            </Link>
-
-                            <button
-                                onClick={() => setShowClearModal(true)}
-                                className="text-sm text-red-400 hover:text-red-600 font-medium transition-colors cursor-pointer px-3 py-1 hover:bg-red-50 rounded-lg flex items-center gap-1"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                                خالی کردن سبد
-                            </button>
-                        </div>
                     </div>
+                    {/* -----===============3432432423423432423423423423423423 */}
 
 
                     {/* ============================================ */}

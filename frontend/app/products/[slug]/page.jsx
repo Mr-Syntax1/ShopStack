@@ -119,12 +119,12 @@ export default async function ProductDetail({ params }) {
                                     src={product.image}
                                     alt={product.title}
                                     fill
-                                    className="object-cover"
+                                    className="object-contain"
                                     priority
                                     sizes="(max-width: 1024px) 100vw, 50vw"
                                 />
                                 {product.discount > 0 && (
-                                    <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg">
+                                    <div className="absolute top-4 right-4 bg-red-500 text-white text-xs md:text-sm font-bold px-4 py-2 rounded-full shadow-lg">
                                         {product.discount}% تخفیف
                                     </div>
                                 )}

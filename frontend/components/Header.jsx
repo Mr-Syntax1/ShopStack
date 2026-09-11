@@ -118,7 +118,7 @@ export default function Header() {
                         <Avatar
                             name={user?.name}
                             href={getProfileLink()}
-                            className="ml-3 md:ml-2"
+                            className="ml-3 md:ml-0"
                             size="md"
                         />
                     )}
