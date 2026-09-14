@@ -69,9 +69,9 @@ export async function DELETE(request, { params }) {
         }
 
         const user = await User.findByIdAndDelete(id);
-        if (!user) {
-            return NextResponse.json({ error: 'کاربر یافت نشد' }, { status: 404 });
-        }
+        // if (!user) {
+        //     return NextResponse.json({ error: 'کاربر یافت نشد' }, { status: 404 });
+        // }
 
         return NextResponse.json({ success: true });
     } catch (error) {

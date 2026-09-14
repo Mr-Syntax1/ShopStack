@@ -1,9 +1,13 @@
 // proxy.js - Middleware برای پنل مدیریت
+import { connectedToDatabase } from '@/lib/mongodb';
 import { NextResponse } from 'next/server';
 
 const AUTH_ROUTES = ['/auth/login'];
 
 export async function proxy(request) {
+
+    await connectedToDatabase();
+
     const pathname = request.nextUrl.pathname;
     const token = request.cookies.get('token')?.value;
 

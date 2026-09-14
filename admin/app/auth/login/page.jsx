@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
                 localStorage.removeItem('adminRememberedEmail');
             }
 
-            toast.success('خوش آمدید ادمین!');
+            toast.success('خوش آمدید آقای مدیر');
 
             // هدایت به داشبورد
             router.push('/dashboard');

@@ -1,8 +1,11 @@
 // proxy.js - Middleware برای فروشگاه
 import { NextResponse } from 'next/server';
 import { getUserFromToken } from './lib/auth';
+import { connectedToDatabase } from './lib/mongodb';
 
 export async function proxy(request) {
+
+    await connectedToDatabase();
 
     const { pathname } = request.nextUrl;
     const token = request.cookies.get('token')?.value;
@@ -12,7 +15,7 @@ export async function proxy(request) {
     // ==============================
     const publicPaths = ['/', '/products', '/auth/login', '/auth/register', '/contact', '/about', '/cart'];
     const publicApis = ['/api/products', '/api/categories', '/api/dashboard'];
-    const authPublicApis = ['/api/auth/login', '/api/auth/register', '/api/auth/logout'];
+    const authPublicApis = ['/api/auth/login', '/api/auth/register', '/api/auth/logout', '/api/auth/check-unique'];
 
     const isPublicPath = publicPaths.some(p => pathname === p || pathname.startsWith(`${p}/`));
     const isPublicApi = publicApis.some(p => pathname === p || pathname.startsWith(`${p}/`));

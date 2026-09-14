@@ -27,28 +27,31 @@ function calculateTotalSales(orders) {
 function calculateDelta(current, previous) {
     if (previous === 0) return current > 0 ? 100 : 0;
     return parseFloat(((current - previous) / previous * 100).toFixed(1));
-}
+}// ================================================================================
 
 // ============================================
 // ۲. توابع محاسبه آمار
 // ============================================
 
 function getTimeRanges(range) {
+
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
     const ranges = {
         '7days': {
             start: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000),
             compareStart: new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000),
-            end: today,
+            // compareStart برای محاسبه تغییرات نسبت به ۷ روز قبل
+            end: tomorrow,
             label: '۷ روز اخیر',
             days: 7,
         },
         '30days': {
             start: new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000),
             compareStart: new Date(today.getTime() - 60 * 24 * 60 * 60 * 1000),
-            end: today,
+            end: tomorrow,
             label: '۳۰ روز اخیر',
             days: 30,
         },
@@ -58,6 +61,7 @@ function getTimeRanges(range) {
 }
 
 function calculateStats(orders, users, range) {
+
     const timeRange = getTimeRanges(range);
     const { start, compareStart, end, label } = timeRange;
 
@@ -80,11 +84,21 @@ function calculateStats(orders, users, range) {
         return d >= compareStart && d < start;
     }).length;
 
+    // نرخ تبدیل بازه فعلی و قبلی
+    const currentConversionRate = users.length > 0
+        ? parseFloat(((currentOrderCount / users.length) * 100).toFixed(1))
+        : 0;
+
+    const previousConversionRate = users.length > 0
+        ? parseFloat(((previousOrderCount / users.length) * 100).toFixed(1))
+        : 0;
+
     return {
         totalSales: calculateTotalSales(orders),
         totalOrders: orders.length,
         totalUsers: users.length,
-        conversionRate: users.length > 0 ? parseFloat(((orders.length / users.length) * 100).toFixed(1)) : 0,
+        conversionRate: currentConversionRate,
+        conversionDelta: calculateDelta(currentConversionRate, previousConversionRate),
         periodSales: currentSales,
         periodOrders: currentOrderCount,
         newCustomers,
@@ -102,6 +116,7 @@ function calculateStats(orders, users, range) {
 // ============================================
 
 function generateRevenueData(orders, range) {
+
     const today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
     const timeRange = getTimeRanges(range);
     const { days } = timeRange;
@@ -139,6 +154,7 @@ function generateRevenueData(orders, range) {
 }
 
 function getOrderStatus(orders) {
+
     const statusMap = {
         delivered: { label: 'تحویل شده', color: '#4f46e5' },
         processing: { label: 'در حال پردازش', color: '#7c74f5' },
@@ -162,6 +178,7 @@ function getOrderStatus(orders) {
 }
 
 function getRecentOrders(orders) {
+
     return orders
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 10)
@@ -179,7 +196,8 @@ function getRecentOrders(orders) {
         }));
 }
 
-function getTopProducts(orders, totalSales) {
+function getTopProducts(orders) {
+
     const productSales = {};
 
     orders.forEach(o => {
@@ -193,18 +211,28 @@ function getTopProducts(orders, totalSales) {
         });
     });
 
-    return Object.values(productSales)
-        .sort((a, b) => b.revenue - a.revenue)
-        .slice(0, 5)
-        .map(p => ({
-            name: p.name,
-            sold: p.sold,
-            revenue: p.revenue,
-            share: Math.round((p.revenue / (totalSales || 1)) * 100),
-        }));
+    // ۵ تای برتر
+    const top5 = Object.values(productSales)
+        .sort((a, b) => b.sold - a.sold)
+        .slice(0, 5);
+
+    // کل فروش همه محصولات فروشگاه
+    const totalSold = Object.values(productSales).reduce((sum, p) => sum + p.sold, 0);
+
+    return top5.map(p => ({
+        name: p.name,
+        sold: p.sold,
+        revenue: p.revenue,
+        // نوار پیشرفت (نسبت به بهترین محصول)
+        share: Math.round((p.sold / (totalSold || 1)) * 100),
+        // درصد از کل فروش فروشگاه (برای نمایش عددی)
+        realShare: Math.round((p.sold / (totalSold || 1)) * 100),
+    }));
 }
 
+
 function getLowStock(products) {
+
     return products
         .filter(p => p.stock < 10)
         .sort((a, b) => a.stock - b.stock)
@@ -217,6 +245,7 @@ function getLowStock(products) {
 }
 //  Live Ticker (تیکر زنده)
 function getLiveEvents(orders) {
+
     return orders
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 5)
@@ -274,13 +303,18 @@ export async function GET(req) {
 
         return NextResponse.json({
             stats: {
-                totalSales: stats.totalSales,
-                totalOrders: stats.totalOrders,
+                //  مقادیر بازه‌ای (برای نمایش)
+                periodSales: stats.periodSales,
+                periodOrders: stats.periodOrders,
                 newCustomers: stats.newCustomers,
                 conversionRate: stats.conversionRate,
+                periodLabel: stats.periodLabel,
+
+                //  deltaها (برای نمایش)
                 salesDelta: stats.salesDelta,
                 ordersDelta: stats.ordersDelta,
                 customersDelta: stats.customersDelta,
+                conversionDelta: stats.conversionDelta,
             },
             greeting: {
                 periodSales: stats.periodSales,
@@ -288,11 +322,17 @@ export async function GET(req) {
                 periodLabel: stats.periodLabel,
             },
             revenueSeries: generateRevenueData(orders, range),
+            // 	داده نمودار فروش (روزانه یا هفتگی)
             orderStatus: getOrderStatus(orders),
+            // تعداد هر وضعیت سفارش (برای نمودار دایره‌ای)
             recentOrders: getRecentOrders(orders),
-            topProducts: getTopProducts(orders, stats.totalSales),
+            // ۱۰ سفارش آخر
+            topProducts: getTopProducts(orders),
+            // ۵ محصول پرفروش
             lowStock: getLowStock(products),
+            // ۵ محصول کم‌موجود
             liveEvents: getLiveEvents(orders),
+            // ۵ رویداد تیکر زنده
         });
 
     } catch (error) {

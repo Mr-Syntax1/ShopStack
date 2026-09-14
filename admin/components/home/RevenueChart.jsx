@@ -27,7 +27,7 @@ function ChartTooltip({ active, payload }) {
   );
 }
 
-export default function RevenueChart({ range = '7days' }) {
+export default function RevenueChart({ range = '7days', refreshKey }) {
   const [revenueSeries, setRevenueSeries] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +44,7 @@ export default function RevenueChart({ range = '7days' }) {
       }
     };
     fetchData();
-  }, [range]);
+  }, [range, refreshKey]);
 
   // محاسبه مجموع و میانگین
   const totalRevenue = revenueSeries.reduce((sum, d) => sum + (d.revenue || 0), 0);

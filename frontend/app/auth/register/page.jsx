@@ -112,7 +112,7 @@ export default function RegisterPage() {
             }
 
         } catch (error) {
-            toast.error(error.message);
+            // toast.error(error.message);
         } finally {
             setLoading(false);
         }

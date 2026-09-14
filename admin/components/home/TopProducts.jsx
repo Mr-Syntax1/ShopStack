@@ -47,7 +47,7 @@ export default function TopProducts() {
           محصولات برتر
         </h2>
         <p className="mt-0.5 text-[12.5px] text-gray-500">
-          بر اساس تعداد فروش
+          بر اساس تعداد فروش — درصد از کل فروش فروشگاه
         </p>
 
         <div className="mt-4 flex flex-col gap-4">
@@ -60,13 +60,20 @@ export default function TopProducts() {
                   </span>
                   {p.name}
                 </span>
-                <span className="shrink-0 pl-2 text-[12.5px] font-semibold text-gray-500">
-                  {p.sold} فروش
+
+                <span className="shrink-0 pl-2 flex items-center gap-2 text-[12.5px]">
+                  <span className="font-semibold text-gray-500">
+                    {p.sold} فروش
+                  </span>
+                  <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-bold text-indigo-600">
+                    {p.realShare}%
+                  </span>
                 </span>
               </div>
+
               <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-indigo-400 transition-all duration-500 group-hover:scale-x-105"
+                  className="h-full rounded-full bg-linear-to-r from-indigo-600 to-indigo-400 transition-all duration-500"
                   style={{ width: `${p.share}%` }}
                 />
               </div>
@@ -105,6 +112,6 @@ export default function TopProducts() {
           ))}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
