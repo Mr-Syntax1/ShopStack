@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="frontend/public/images/logo.png" alt="NovaShop Logo" width="120" />
+  <img src="frontend/public/images/logo.png" alt="ShopStackLogo" width="120" />
 </p>
 
 <h1 align="center">
-  <a href="https://github.com/your-username/NovaShop">NovaShop</a>
+  <a href="https://github.com/your-username/NovaShop">ShopStack</a>
 </h1>
 
 <p align="center">
@@ -144,8 +144,8 @@ JWT_SECRET=your-super-secret-key
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/NovaShop.git
-cd NovaShop/apps
+git clone https://github.com/your-username/ShopStack.git
+cd ShopStack/apps
 
 # Install frontend dependencies
 cd frontend
