@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { formatPrice } from '@/lib/persian';
 import StockBadge from './StockBadge';
 import DeleteButton from '../DeleteButton';
+import { useAdminAccess } from "@/lib/AdminReadOnlyContext";
 
 const API_CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_URL
 
@@ -21,6 +22,7 @@ const ViewIcon = () => (
 );
 
 export default function ProductTable({ products, onDelete }) {
+    const { isReadOnly } = useAdminAccess();
     return (
         <div className="overflow-x-auto">
             <table className="w-full border-collapse">
@@ -123,13 +125,15 @@ export default function ProductTable({ products, onDelete }) {
                             {/* عملیات */}
                             <td className="px-4 py-3">
                                 <div className="flex items-center gap-1">
-                                    <Link
-                                        href={`/dashboard/products/edit/${product.slug}`}
-                                        className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
-                                        title="ویرایش محصول"
-                                    >
-                                        <EditIcon />
-                                    </Link>
+                                    {!isReadOnly && (
+                                        <Link
+                                            href={`/dashboard/products/edit/${product.slug}`}
+                                            className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                                            title="ویرایش محصول"
+                                        >
+                                            <EditIcon />
+                                        </Link>
+                                    )}
                                     <Link
                                         href={`${API_CLIENT_URL}/products/${product.slug}`}
                                         target="_blank"

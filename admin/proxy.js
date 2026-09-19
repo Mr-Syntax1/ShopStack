@@ -2,57 +2,12 @@
 import { NextResponse } from 'next/server';
 
 const AUTH_ROUTES = ['/auth/login'];
+const AUTH_API_ROUTES = ['/api/auth/login', '/api/auth/logout', '/api/auth/register'];
+const MUTATION_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
-export async function proxy(request) {
-
-    const pathname = request.nextUrl.pathname;
-    const token = request.cookies.get('token')?.value;
-
-    const isDashboardRoute = pathname.startsWith('/dashboard');
-    const isAuthRoute = AUTH_ROUTES.some(route => pathname === route || pathname.startsWith(`${route}/`));
-    const isMeApi = pathname.startsWith('/api/auth/me');
-    const isProtectedApi = isMeApi || pathname.startsWith('/api/users') || pathname.startsWith('/api/products') || pathname.startsWith('/api/orders') || pathname.startsWith('/api/categories') || pathname.startsWith('/api/payments') || pathname.startsWith('/api/settings');
-    // اگر در صفحه لاگین است و توکن دارد → به داشبورد بفرست
-    if (isAuthRoute && token) {
-        try {
-            const user = await getUserFromToken(token);
-            if (user?.role === 'admin') {
-                return NextResponse.redirect(new URL('/dashboard', request.url));
-            }
-        } catch { }
-    }
-
-    // اگر مسیر داشبورد است و توکن ندارد → به لاگین بفرست
-    if (isDashboardRoute && !token) {
-        return NextResponse.redirect(new URL('/auth/login', request.url));
-    }
-
-    // اگر مسیر داشبورد است و توکن دارد → بررسی نقش
-    if (isDashboardRoute && token) {
-        try {
-            const user = await getUserFromToken(token);
-            if (!user || user.role !== 'admin') {
-                return NextResponse.redirect(new URL('/auth/login', request.url));
-            }
-            return NextResponse.next();
-        } catch {
-            return NextResponse.redirect(new URL('/auth/login', request.url));
-        }
-    }
-
-    if (pathname === '/') {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-
-    // APIهای محافظت شده
-    if (isProtectedApi && !token) {
-        return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
-    }
-
-    // ادامه مسیر
-    return NextResponse.next();
+function isAdminReadOnly() {
+    return process.env.ADMIN_READ_ONLY === 'true';
 }
-
 
 // ==============================
 // تابع دریافت اطلاعات کاربر از توکن
@@ -75,6 +30,95 @@ async function getUserFromToken(token) {
         console.error('Error getting user from token:', error);
         return null;
     }
+}
+
+// ==============================
+// Middleware اصلی
+// ==============================
+export async function proxy(request) {
+
+    const pathname = request.nextUrl.pathname;
+    const token = request.cookies.get('token')?.value;
+    const method = request.method;
+
+    // ==============================
+    // ۱. محافظت Read-Only
+    // ==============================
+    if (isAdminReadOnly() && pathname.startsWith('/api') && MUTATION_METHODS.includes(method)) {
+        const isAuthApi = AUTH_API_ROUTES.some(route => pathname === route || pathname.startsWith(`${route}/`));
+        if (!isAuthApi) {
+            return NextResponse.json(
+                { error: 'پنل ادمین در حالت فقط خواندنی است. این عملیات مجاز نیست.' },
+                { status: 403 }
+            );
+        }
+    }
+
+    const isDashboardRoute = pathname.startsWith('/dashboard');
+    const isAuthRoute = AUTH_ROUTES.some(route => pathname === route || pathname.startsWith(`${route}/`));
+    const isMeApi = pathname.startsWith('/api/auth/me');
+    const isProtectedApi = isMeApi ||
+        pathname.startsWith('/api/users') ||
+        pathname.startsWith('/api/products') ||
+        pathname.startsWith('/api/orders') ||
+        pathname.startsWith('/api/categories') ||
+        pathname.startsWith('/api/payments') ||
+        pathname.startsWith('/api/settings') ||
+        pathname.startsWith('/api/messages') ||
+        pathname.startsWith('/api/dashboard');
+
+    // ==============================
+    // ۲. اگر در صفحه لاگین است و توکن دارد → به داشبورد بفرست
+    // ==============================
+    if (isAuthRoute && token) {
+        try {
+            const user = await getUserFromToken(token);
+            if (user?.role === 'admin') {
+                return NextResponse.redirect(new URL('/dashboard', request.url));
+            }
+        } catch { }
+    }
+
+    // ==============================
+    // ۳. اگر مسیر داشبورد است و توکن ندارد → به لاگین بفرست
+    // ==============================
+    if (isDashboardRoute && !token) {
+        return NextResponse.redirect(new URL('/auth/login', request.url));
+    }
+
+    // ==============================
+    // ۴. اگر مسیر داشبورد است و توکن دارد → بررسی نقش
+    // ==============================
+    if (isDashboardRoute && token) {
+        try {
+            const user = await getUserFromToken(token);
+            if (!user || user.role !== 'admin') {
+                return NextResponse.redirect(new URL('/auth/login', request.url));
+            }
+            return NextResponse.next();
+        } catch {
+            return NextResponse.redirect(new URL('/auth/login', request.url));
+        }
+    }
+
+    // ==============================
+    // ۵. اگر مسیر اصلی است → به داشبورد بفرست
+    // ==============================
+    if (pathname === '/') {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
+    // ==============================
+    // ۶. APIهای محافظت شده
+    // ==============================
+    if (isProtectedApi && !token) {
+        return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+    }
+
+    // ==============================
+    // ۷. ادامه مسیر
+    // ==============================
+    return NextResponse.next();
 }
 
 // ==============================
