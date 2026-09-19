@@ -6,7 +6,7 @@ export async function POST() {
         const cookieStore = await cookies();
 
         // حذف توکن از کوکی
-        cookieStore.delete('token');
+        cookieStore.delete('admin_token');
 
         return NextResponse.json({
             success: true,
