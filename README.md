@@ -8,7 +8,6 @@
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Blupal](https://img.shields.io/badge/Blupal-Payment_FF6B35?style=for-the-badge)](https://blupal.ir/)
@@ -58,7 +57,6 @@
 - 💰 **Blupal Payment** — Invoice creation, payment links, webhooks, transaction tracking
 - 🔍 **SEO Optimized** — Full metadata, Open Graph, Twitter Cards
 - 🛡️ **Error Handling** — Error boundaries, loading states, toast notifications
-- 🏷️ **Type Safety** — TypeScript throughout both apps
 
 ---
 
@@ -70,7 +68,6 @@
 |-------|------------|---------|
 | 🏗️ **Framework** | [Next.js](https://nextjs.org/) | 16 (App Router) |
 | ⚛️ **UI Library** | [React](https://react.dev/) | 19 |
-| 📘 **Language** | [TypeScript](https://www.typescriptlang.org/) | 5 |
 | 🎨 **Styling** | [Tailwind CSS](https://tailwindcss.com/) | v4 |
 | 🗄️ **Database** | [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/) | Latest |
 | 🔐 **Authentication** | [JWT](https://jwt.io/) + [Bcryptjs](https://www.npmjs.com/package/bcryptjs) | Latest |
