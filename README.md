@@ -4,7 +4,10 @@
 
 ### 🚀 A Modern Full-Stack E-Commerce Platform for the Iranian Market
 
-![ShopStack Logo](https://github.com/Mr-Syntax1/ShopStack/raw/main/frontend/public/images/logo.png)
+<img width="1919" height="866" alt="Screenshot 2026-09-19 235734" src="https://github.com/user-attachments/assets/ae151afa-2e05-462c-8222-0399918c7b4e" />
+<img width="1919" height="941" alt="Screenshot 2026-09-19 235807" src="https://github.com/user-attachments/assets/0c22c58f-7b3c-4300-86b1-47fea2a102d6" />
+<img width="1919" height="936" alt="Screenshot 2026-09-19 235847" src="https://github.com/user-attachments/assets/99660885-22ee-4335-852f-f363d8984ecf" />
+
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
