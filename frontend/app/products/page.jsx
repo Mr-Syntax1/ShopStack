@@ -21,7 +21,6 @@ export default async function ProductsPage({ searchParams }) {
         const res = await fetch(url, {
             cache: 'no-store',
             // افزودن timeout برای جلوگیری از هنگ کردن
-            signal: AbortSignal // 10 ثانیه تایم‌اوت
         });
 
         if (!res.ok) {
