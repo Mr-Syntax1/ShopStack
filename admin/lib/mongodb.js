@@ -25,7 +25,7 @@ export async function connectedToDatabase() {
     if (!cached.promise) {
         const opts = {
             bufferCommands: false,        // اگر دیتابیس در دسترس نباشه، درخواست‌ها رو بافر نکن
-            maxPoolSize: 5,               // تعداد اتصالات همزمان (کمتر = فشار کمتر روی اتصال)
+            maxPoolSize: 10,               // تعداد اتصالات همزمان (کمتر = فشار کمتر روی اتصال)
             minPoolSize: 1,               // حداقل یک اتصال همیشه باز بمونه (برای سرعت)
             serverSelectionTimeoutMS: 15000, // ۱۵ ثانیه برای پیدا کردن سرور (بهتر از ۸ ثانیه)
             maxIdleTimeMS: 30000,  // اتصالات بی‌کار رو ببند
