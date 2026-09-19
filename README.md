@@ -12,11 +12,58 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Blupal](https://img.shields.io/badge/Blupal-Payment_FF6B35?style=for-the-badge)](https://blupal.ir/)
 
-[✨ Features](#-features) • [🚀 Tech Stack](#-tech-stack) • [🏗️ Architecture](#️-architecture) • [📦 Getting Started](#-getting-started) • [🤝 Contributing](#-contributing)
+[✨ Features](#-features) • [🚀 Tech Stack](#-tech-stack) • [🏗️ Architecture](#️-architecture) • [📦 Getting Started](#-getting-started) • [🤝 Contributing](#-contributing) • [🌐 Live Demo](#-live-demo)
 
 ---
 
 </div>
+
+## 🌐 Live Demo
+
+<div align="center">
+
+### 🎯 Try It Now!
+
+| Platform | URL | Credentials |
+|----------|-----|-------------|
+| 🛍️ **Customer Store** | [https://shop-stack-black.vercel.app/](https://shop-stack-black.vercel.app/) | Register your own account |
+| 🎛️ **Admin Dashboard** | [https://shop-stack-rqve.vercel.app/](https://shop-stack-rqve.vercel.app/) | **Email:** `admin.limited@gmail.com`<br/>**Password:** `Admin@1234` |
+
+</div>
+
+---
+
+### 🔐 Admin Demo Access
+
+> **⚠️ Note:** This is a shared demo environment. Data may be reset periodically.
+
+```text
+📧 Email:    admin.limited@gmail.com
+🔑 Password: Admin@1234
+```
+
+**What you can do in Admin Demo:**
+- 📊 View dashboard analytics & charts
+- 📦 Manage products (create, edit, delete)
+- 📋 Track orders & update statuses
+- 👥 View customer accounts
+- ⚙️ Configure system settings
+- 📈 See real-time revenue & order statistics
+
+---
+
+### 🛍️ Customer Store Demo
+
+**Features to explore:**
+- 🏠 Browse beautiful home page with animations
+- 📦 Shop products by category
+- 🛍️ Add to cart & manage quantities
+- 💳 Test checkout flow (Blupal sandbox)
+- 👤 Register/Login with email or phone
+- 📱 Fully responsive mobile experience
+- ✨ Smooth Framer Motion animations
+
+---
 
 ## ✨ Features
 
