@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import ConfirmModal from './ConfirmModal';
+import { useAdminAccess } from "@/lib/AdminReadOnlyContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -22,10 +23,12 @@ export default function DeleteButton({
     isFullPage = false,
     className = '',
 }) {
+    const { isReadOnly } = useAdminAccess();
     const [showModal, setShowModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {
+        if (isReadOnly) return;
         setIsDeleting(true);
         try {
             const res = await fetch(`${API_URL}${deleteUrl}`, {
@@ -56,10 +59,13 @@ export default function DeleteButton({
         <>
             <div className={`admin-btn-bloom ${className}`}>
                 <button
-                    onClick={() => setShowModal(true)}
+                    onClick={() => {
+                        if (isReadOnly) return;
+                        setShowModal(true);
+                    }}
                     className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer flex justify-center text-center items-center gap-1"
-                    title="حذف"
-                    disabled={isDeleting}
+                    title={isReadOnly ? 'فقط خواندنی' : 'حذف'}
+                    disabled={isReadOnly || isDeleting}
                 >
                     <DeleteIcon />
                     <span className='text-sm'>{buttonText}</span>

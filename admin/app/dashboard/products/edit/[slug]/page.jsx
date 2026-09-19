@@ -7,11 +7,14 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import ProductForm from '@/components/products/ProductForm';
 import Loading from '@/components/Loading';
+import ReadOnlyOverlay from '@/components/ReadOnlyOverlay';
+import { useAdminAccess } from '@/lib/AdminReadOnlyContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function EditProduct({ params }) {
     const router = useRouter();
+    const { isReadOnly } = useAdminAccess();
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [product, setProduct] = useState(null);
@@ -67,7 +70,11 @@ export default function EditProduct({ params }) {
     // تابع ویرایش محصول
     // ==============================
     const handleSubmit = async (formData) => {
-        if (!slug) return;
+        if (!slug || isReadOnly) return;
+        if (isReadOnly) {
+            toast.error('این عملیات در حالت فقط خواندنی امکان‌پذیر نیست');
+            return;
+        }
 
         setIsSubmitting(true);
         try {
@@ -109,6 +116,9 @@ export default function EditProduct({ params }) {
     // ==============================
     return (
         <div className="p-4 md:p-6 lg:p-8 mt-10 lg:mt-0">
+            {isReadOnly && (
+                <ReadOnlyOverlay message="ویرایش محصول در حالت فقط خواندنی امکان‌پذیر نیست." />
+            )}
             {/* هدر */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div>
@@ -136,6 +146,7 @@ export default function EditProduct({ params }) {
                     onSubmit={handleSubmit}
                     isLoading={isSubmitting}
                     initialData={initialData}
+                    isEdit={true}
                 />
             </div>
         </div>

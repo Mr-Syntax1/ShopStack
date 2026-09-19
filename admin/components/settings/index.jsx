@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import ReadOnlyOverlay from "@/components/ReadOnlyOverlay";
+import { useAdminAccess } from "@/lib/AdminReadOnlyContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -46,6 +48,7 @@ const passwordSchema = yup.object({
 // کامپوننت اصلی تنظیمات
 // ==============================
 export default function SettingsPage() {
+    const { isReadOnly } = useAdminAccess();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState('profile');
     const [user, setUser] = useState(null);
@@ -121,6 +124,10 @@ export default function SettingsPage() {
     // بروزرسانی پروفایل
     // ==============================
     const onSubmitProfile = async (data) => {
+        if (isReadOnly) {
+            toast.error('این عملیات در حالت فقط خواندنی امکان‌پذیر نیست');
+            return;
+        }
         setSavingProfile(true);
         try {
             const res = await fetch(`${API_URL}/api/settings`, {
@@ -143,6 +150,10 @@ export default function SettingsPage() {
     // تغییر رمز عبور
     // ==============================
     const onSubmitPassword = async (data) => {
+        if (isReadOnly) {
+            toast.error('این عملیات در حالت فقط خواندنی امکان‌پذیر نیست');
+            return;
+        }
         setSavingPassword(true);
         try {
             const res = await fetch(`${API_URL}/api/settings`, {
@@ -182,6 +193,9 @@ export default function SettingsPage() {
         if (activeTab === 'profile') {
             return (
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 p-6 sm:p-8">
+                    {isReadOnly && (
+                        <ReadOnlyOverlay message="تنظیمات پروفایل فقط خواندنی است." />
+                    )}
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h2 className="text-xl font-bold text-gray-800">اطلاعات پروفایل</h2>
@@ -197,7 +211,8 @@ export default function SettingsPage() {
                                 <input
                                     type="text"
                                     {...registerProfile('name')}
-                                    className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.name ? 'border-red-500' : 'border-gray-200'}`}
+                                    disabled={isReadOnly}
+                                    className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.name ? 'border-red-500' : 'border-gray-200'} ${isReadOnly ? 'bg-gray-100 cursor-not-allowed opacity-70' : ''}`}
                                 />
                                 {errorsProfile.name && (
                                     <p className="text-xs text-red-500 mt-1">{errorsProfile.name.message}</p>
@@ -210,7 +225,8 @@ export default function SettingsPage() {
                                 <input
                                     type="email"
                                     {...registerProfile('email')}
-                                    className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.email ? 'border-red-500' : 'border-gray-200'}`}
+                                    disabled={isReadOnly}
+                                    className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.email ? 'border-red-500' : 'border-gray-200'} ${isReadOnly ? 'bg-gray-100 cursor-not-allowed opacity-70' : ''}`}
                                 />
                                 {errorsProfile.email && (
                                     <p className="text-xs text-red-500 mt-1">{errorsProfile.email.message}</p>
@@ -225,7 +241,8 @@ export default function SettingsPage() {
                                 <input
                                     type="tel"
                                     {...registerProfile('phone')}
-                                    className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.phone ? 'border-red-500' : 'border-gray-200'}`}
+                                    disabled={isReadOnly}
+                                    className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsProfile.phone ? 'border-red-500' : 'border-gray-200'} ${isReadOnly ? 'bg-gray-100 cursor-not-allowed opacity-70' : ''}`}
                                     placeholder="09123456789"
                                 />
                             </div>
@@ -249,7 +266,7 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3 pt-2">
                             <button
                                 type="submit"
-                                disabled={savingProfile || !isValidProfile || !isDirtyProfile}
+                                disabled={savingProfile || !isValidProfile || !isDirtyProfile || isReadOnly}
                                 className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             >
                                 {savingProfile ? (
@@ -264,7 +281,7 @@ export default function SettingsPage() {
                                     'ذخیره تغییرات'
                                 )}
                             </button>
-                            {isDirtyProfile && (
+                            {isDirtyProfile && !isReadOnly && (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -286,6 +303,9 @@ export default function SettingsPage() {
         if (activeTab === 'password') {
             return (
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 p-6 sm:p-8">
+                    {isReadOnly && (
+                        <ReadOnlyOverlay message="تغییر رمز عبور فقط خواندنی است." />
+                    )}
                     <div className="mb-6">
                         <h2 className="text-xl font-bold text-gray-800">تغییر رمز عبور</h2>
                         <p className="text-sm text-gray-400 mt-1">رمز عبور خود را به صورت دوره‌ای تغییر دهید</p>
@@ -298,7 +318,8 @@ export default function SettingsPage() {
                             <input
                                 type="password"
                                 {...registerPassword('currentPassword')}
-                                className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsPassword.currentPassword ? 'border-red-500' : 'border-gray-200'}`}
+                                disabled={isReadOnly}
+                                className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsPassword.currentPassword ? 'border-red-500' : 'border-gray-200'} ${isReadOnly ? 'bg-gray-100 cursor-not-allowed opacity-70' : ''}`}
                                 placeholder="رمز عبور فعلی را وارد کنید"
                             />
                             {errorsPassword.currentPassword && (
@@ -312,7 +333,8 @@ export default function SettingsPage() {
                             <input
                                 type="password"
                                 {...registerPassword('newPassword')}
-                                className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsPassword.newPassword ? 'border-red-500' : 'border-gray-200'}`}
+                                disabled={isReadOnly}
+                                className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsPassword.newPassword ? 'border-red-500' : 'border-gray-200'} ${isReadOnly ? 'bg-gray-100 cursor-not-allowed opacity-70' : ''}`}
                                 placeholder="رمز عبور جدید را وارد کنید"
                             />
                             {errorsPassword.newPassword && (
@@ -326,7 +348,8 @@ export default function SettingsPage() {
                             <input
                                 type="password"
                                 {...registerPassword('confirmPassword')}
-                                className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsPassword.confirmPassword ? 'border-red-500' : 'border-gray-200'}`}
+                                disabled={isReadOnly}
+                                className={`w-full px-4 py-3 rounded-xl border outline-none text-sm transition-all bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${errorsPassword.confirmPassword ? 'border-red-500' : 'border-gray-200'} ${isReadOnly ? 'bg-gray-100 cursor-not-allowed opacity-70' : ''}`}
                                 placeholder="رمز عبور جدید را مجدداً وارد کنید"
                             />
                             {errorsPassword.confirmPassword && (
@@ -338,7 +361,7 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3 pt-2">
                             <button
                                 type="submit"
-                                disabled={savingPassword || !isValidPassword}
+                                disabled={savingPassword || !isValidPassword || isReadOnly}
                                 className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             >
                                 {savingPassword ? (

@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toPersianDigits, formatDate, initials } from '@/lib/persian';
 import CustomerSkeleton from './CustomerSkeleton';
 import DeleteButton from '../DeleteButton';
+import ReadOnlyOverlay from "@/components/ReadOnlyOverlay";
+import { useAdminAccess } from "@/lib/AdminReadOnlyContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -55,6 +57,7 @@ const StatCard = ({ icon, label, value, sub, colorClass }) => (
 );
 
 export default function CustomersPage() {
+    const { isReadOnly } = useAdminAccess();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -91,6 +94,10 @@ export default function CustomersPage() {
     }, [fetchUsers]);
 
     const updateUserRole = useCallback(async (userId, newRole) => {
+        if (isReadOnly) {
+            alert('این عملیات در حالت فقط خواندنی امکان‌پذیر نیست');
+            return;
+        }
         setChangingRoleId(userId);
         try {
             const res = await fetch(`${API_URL}/api/users/${userId}`, {
@@ -109,7 +116,7 @@ export default function CustomersPage() {
         } finally {
             setChangingRoleId(null);
         }
-    }, []);
+    }, [isReadOnly]);
 
     // حذف واقعی توسط کامپوننت DeleteButton انجام می‌شود (deleteUrl).
     // اینجا فقط لیست را پس از موفقیت حذف به‌روزرسانی می‌کنیم
@@ -328,8 +335,8 @@ export default function CustomersPage() {
                                                         <select
                                                             value={user.role}
                                                             onChange={(e) => updateUserRole(user._id, e.target.value)}
-                                                            disabled={isChanging}
-                                                            className={`appearance-none rounded-full px-3 py-1.5 text-[12.5px] font-semibold cursor-pointer outline-none transition-colors ${roleConf.bg} ${roleConf.text} ${isChanging ? 'opacity-70 cursor-wait' : 'hover:opacity-80'}`}
+                                                            disabled={isChanging || isReadOnly}
+                                                            className={`appearance-none rounded-full px-3 py-1.5 text-[12.5px] font-semibold cursor-pointer outline-none transition-colors ${roleConf.bg} ${roleConf.text} ${isChanging ? 'opacity-70 cursor-wait' : 'hover:opacity-80'} ${isReadOnly ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                         >
                                                             <option value="user">کاربر</option>
                                                             <option value="admin">ادمین</option>

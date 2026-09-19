@@ -7,12 +7,15 @@ import FragmentRow from './FragmentRow';
 import { STATUS } from '@/lib/statusData';
 import StatsGrid from './StatCard';
 import Pagination from '../Pagination';
+import ReadOnlyOverlay from "@/components/ReadOnlyOverlay";
+import { useAdminAccess } from "@/lib/AdminReadOnlyContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const STATUS_KEYS = Object.keys(STATUS);
 
 export default function OrdersPage() {
+    const { isReadOnly } = useAdminAccess();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -49,6 +52,10 @@ export default function OrdersPage() {
     }, [fetchOrders]);
 
     const updateOrderStatus = useCallback(async (orderId, newStatus) => {
+        if (isReadOnly) {
+            alert('این عملیات در حالت فقط خواندنی امکان‌پذیر نیست');
+            return;
+        }
         try {
             const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
                 method: 'PATCH',
@@ -71,7 +78,7 @@ export default function OrdersPage() {
             console.error('Error updating order status:', err);
             alert('خطا در تغییر وضعیت سفارش');
         }
-    }, []);
+    }, [isReadOnly]);
 
     // حذف واقعی توسط کامپوننت DeleteButton انجام می‌شود (deleteUrl).
     // اینجا فقط لیست را پس از موفقیت حذف به‌روزرسانی می‌کنیم
@@ -82,6 +89,10 @@ export default function OrdersPage() {
 
     // همگام‌سازی دستی وضعیت پرداخت با بلوپال (وقتی وبهوک نرسیده باشد)
     const syncPayment = useCallback(async (orderId) => {
+        if (isReadOnly) {
+            alert('این عملیات در حالت فقط خواندنی امکان‌پذیر نیست');
+            return;
+        }
         try {
             const res = await fetch(`${API_URL}/api/payments/sync/${orderId}`, {
                 method: 'POST',
@@ -97,7 +108,7 @@ export default function OrdersPage() {
             console.error('Error syncing payment:', err);
             alert('خطا در ارتباط با سرور');
         }
-    }, [fetchOrders]);
+    }, [isReadOnly, fetchOrders]);
 
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase();

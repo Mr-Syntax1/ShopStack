@@ -4,11 +4,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { STATUS } from '@/lib/statusData';
+import { useAdminAccess } from "@/lib/AdminReadOnlyContext";
 
 
 const STATUS_KEYS = Object.keys(STATUS);
 
 export default function StatusDropdown({ currentStatus, orderId, onStatusChange }) {
+    const { isReadOnly } = useAdminAccess();
     const [isOpen, setIsOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const dropdownRef = useRef(null);
@@ -24,6 +26,7 @@ export default function StatusDropdown({ currentStatus, orderId, onStatusChange 
     }, []);
 
     const handleStatusChange = async (newStatus) => {
+        if (isReadOnly) return;
         setIsUpdating(true);
         await onStatusChange(orderId, newStatus);
         setIsUpdating(false);
@@ -35,9 +38,12 @@ export default function StatusDropdown({ currentStatus, orderId, onStatusChange 
     return (
         <div className="relative" ref={dropdownRef}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
-                disabled={isUpdating}
-                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-semibold transition-all ${currentStatusInfo.classes} hover:ring-2 hover:ring-offset-1 disabled:opacity-50`}
+                onClick={() => {
+                    if (isReadOnly) return;
+                    setIsOpen(!isOpen);
+                }}
+                disabled={isUpdating || isReadOnly}
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-semibold transition-all ${currentStatusInfo.classes} hover:ring-2 hover:ring-offset-1 disabled:opacity-50 ${isReadOnly ? 'cursor-not-allowed opacity-60' : ''}`}
             >
                 <span className={`h-1.5 w-1.5 rounded-full ${currentStatusInfo.dot}`} />
                 {currentStatusInfo.label}
@@ -46,7 +52,7 @@ export default function StatusDropdown({ currentStatus, orderId, onStatusChange 
                 </svg>
             </button>
 
-            {isOpen && (
+            {isOpen && !isReadOnly && (
                 <div className="absolute right-0 mt-1 min-w-[140px] rounded-xl border border-gray-100 bg-white py-1 shadow-lg z-10">
                     {STATUS_KEYS.map((key) => (
                         <button

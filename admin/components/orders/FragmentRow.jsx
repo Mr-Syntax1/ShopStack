@@ -8,6 +8,7 @@ import { formatDate, formatDateTime, formatPrice, initials, toPersianDigits } fr
 import StatusDropdown from './StatusDropdown';
 import InfoRow from './InfoRow';
 import DeleteButton from '../DeleteButton';
+import { useAdminAccess } from "@/lib/AdminReadOnlyContext";
 
 function finalPrice(item) {
     const base = item.price || 0;
@@ -55,6 +56,7 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
     const user = order.user || {};
     const [showActions, setShowActions] = useState(false);
     const actionRef = useRef(null);
+    const { isReadOnly } = useAdminAccess();
 
     const avatarGradient = getAvatarGradient(user.name);
 
@@ -219,7 +221,7 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                             </div>
 
                             {/* بخش وضعیت پرداخت بلوپال (در صورت وجود فاکتور) */}
-                            {order.payment?.invoiceId && (
+                            {order.payment?.invoiceId && !isReadOnly && (
                                 <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
                                     <p className="mb-2.5 text-[12px] font-semibold uppercase tracking-wide text-gray-400">وضعیت پرداخت (بلوپال)</p>
                                     <div className="space-y-2.5 text-[13px]">
@@ -238,6 +240,13 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                                         {order.payment.payerBankName && <InfoRow label="بانک" value={order.payment.payerBankName} />}
                                         {order.payment.paidAt && <InfoRow label="زمان پرداخت" value={formatDateTime(order.payment.paidAt)} />}
                                     </div>
+                                </div>
+                            )}
+                            {isReadOnly && order.payment?.invoiceId && (
+                                <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 p-4 text-center">
+                                    <p className="text-sm text-amber-700">
+                                        ⚠️ جزئیات پرداخت (بلوپال) در حالت فقط خواندنی قابل مشاهده نیست.
+                                    </p>
                                 </div>
                             )}
 
