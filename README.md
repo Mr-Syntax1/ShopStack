@@ -278,29 +278,6 @@ cd apps/frontend
 vercel deploy
 ```
 
-### 🐳 Docker
-
-<details>
-<summary><b>Frontend Dockerfile</b></summary>
-
-```dockerfile
-# frontend/Dockerfile
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
 </details>
 
 ---
@@ -322,12 +299,6 @@ git push origin feature/amazing-feature
 
 # 5️⃣ Open a Pull Request
 ```
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](../LICENSE) file for details.
 
 ---
 
