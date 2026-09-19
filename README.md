@@ -35,7 +35,7 @@
 
 ### 🔐 Admin Demo Access
 
-> **⚠️ Note:** This is a shared demo environment. Data may be reset periodically.
+> **⚠️ Note:** This is a **read-only demo** environment. You can view all sections except payment information, but **cannot modify any data**. Changes are not persisted.
 
 ```text
 📧 Email:    admin.limited@gmail.com
