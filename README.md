@@ -212,21 +212,20 @@ npm start
 | `admin/` | 🎛️ Admin dashboard with management tools | 3001 |
 
 ---
-
 ## 🔑 Key Concepts
 
 ### 🔐 Authentication Flow
 
 ```mermaid
 graph LR
-    A[User Login/Register] --> B[/api/auth/login or /api/auth/register]
-    B --> C[JWT Token in Cookies]
-    C --> D[/api/auth/me]
-    D --> E[AuthProvider Context]
-    E --> F[proxy.js Middleware]
-    F --> G{User Type}
-    G -->|Admin| H[/dashboard]
-    G -->|Customer| I[/products]
+    A["User Login/Register"] --> B["/api/auth/login"]
+    B --> C["JWT Token in Cookies"]
+    C --> D["/api/auth/me"]
+    D --> E["AuthProvider Context"]
+    E --> F["proxy.js Middleware"]
+    F --> G{"User Type"}
+    G -->|Admin| H["/dashboard"]
+    G -->|Customer| I["/products"]
 ```
 
 1. 📝 User registers/logs in via `/api/auth/login` or `/api/auth/register`
@@ -242,13 +241,13 @@ graph LR
 
 ```mermaid
 graph LR
-    A[Add to Cart] --> B[localStorage via CartContext]
-    B --> C[Quantity, Discount, Price Tracking]
-    C --> D[Checkout Form Validation]
-    D --> E[/api/payments/create]
-    E --> F[Blupal Payment Link]
-    F --> G[Redirect to Blupal]
-    G --> H[Success → Clear Cart]
+    A["Add to Cart"] --> B["localStorage via CartContext"]
+    B --> C["Quantity, Discount, Price Tracking"]
+    C --> D["Checkout Form Validation"]
+    D --> E["/api/payments/create"]
+    E --> F["Blupal Payment Link"]
+    F --> G["Redirect to Blupal"]
+    G --> H["Success → Clear Cart"]
 ```
 
 1. 🛒 Cart stored in `localStorage` via `CartContext`
