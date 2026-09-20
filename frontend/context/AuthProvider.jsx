@@ -5,8 +5,6 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-const API_ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL
-
 // ==============================
 // ایجاد Context
 // ==============================
@@ -95,18 +93,23 @@ export function AuthProvider({ children }) {
             if (!res.ok) {
                 throw new Error(data.error || 'خطا در ورود');
             }
-            // ذخیره اطلاعات کاربر
+
+            // ==============================
+            // اگر ادمینه → redirectTo از API میاد (SSO)
+            // ==============================
+            if (data.redirectTo) {
+                toast.success(data.message || 'به پنل مدیریت هدایت می‌شوید...');
+                window.location.assign(data.redirectTo);
+                return { success: true };
+            }
+
+            // ==============================
+            // کاربر عادی
+            // ==============================
             setUser(data.user);
 
             toast.success('خوش آمدید!');
-
-            // هدایت بر اساس نقش
-            if (data.user?.role === 'admin') {
-                window.location.assign(`${API_ADMIN_URL}/dashboard`);
-                return { success: true };
-            } else {
-                router.push('/products');
-            }
+            router.push('/products');
 
             return { success: true };
 
