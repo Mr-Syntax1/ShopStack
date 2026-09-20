@@ -353,7 +353,7 @@ git push origin feature/amazing-feature
 
 <div align="center">
 
-### Made with ❤️ by the **NovaShop** Team
+### Made with ❤️ by the **GreenRose**
 
 [![GitHub Stars](https://img.shields.io/github/stars/Mr-Syntax1/ShopStack?style=social)](https://github.com/Mr-Syntax1/ShopStack/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Mr-Syntax1/ShopStack?style=social)](https://github.com/Mr-Syntax1/ShopStack/fork)
