@@ -54,3 +54,27 @@ export function getUserFromToken(token) {
     if (!decoded) return null;
     return decoded;
 }
+
+// ==============================
+// ساخت Admin Token برای SSO (عمر کوتاه: ۵ دقیقه)
+// ==============================
+export function generateAdminToken(userId, email) {
+    return jwt.sign(
+        { userId, email, type: 'admin_sso' },
+        JWT_SECRET,
+        { expiresIn: '5m' }
+    );
+}
+
+// ==============================
+// تایید Admin Token برای SSO
+// ==============================
+export function verifyAdminToken(token) {
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded.type !== 'admin_sso') return null;
+        return decoded;
+    } catch (error) {
+        return null;
+    }
+}

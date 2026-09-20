@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectedToDatabase } from '@/lib/mongodb';
 import User from '@/models/User';
-import { comparePassword, generateToken } from '@/lib/auth';
+import { comparePassword, generateToken, generateAdminToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
 export async function POST(req) {
@@ -51,12 +51,14 @@ export async function POST(req) {
         }
 
         // ==============================
-        // بررسی اگر ادمین است - ریدایرکت به پنل مدیریت
+        // بررسی اگر ادمین است - ریدایرکت به پنل مدیریت با SSO
         // ==============================
         if (user.role === 'admin') {
+            const adminToken = generateAdminToken(user._id, user.email);
+            const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL + '/api/auth/sso';
             return NextResponse.json({
                 success: true,
-                redirectTo: process.env.NEXT_PUBLIC_ADMIN_URL + '/dashboard',
+                redirectTo: `${adminUrl}?token=${adminToken}`,
                 message: 'ادمین هستید، به پنل مدیریت هدایت می‌شوید'
             });
         }
