@@ -51,7 +51,18 @@ export async function POST(req) {
         }
 
         // ==============================
-        // ساخت Token
+        // بررسی اگر ادمین است - ریدایرکت به پنل مدیریت
+        // ==============================
+        if (user.role === 'admin') {
+            return NextResponse.json({
+                success: true,
+                redirectTo: process.env.NEXT_PUBLIC_ADMIN_URL + '/dashboard',
+                message: 'ادمین هستید، به پنل مدیریت هدایت می‌شوید'
+            });
+        }
+
+        // ==============================
+        // ساخت Token (فقط برای کاربران عادی)
         // ==============================
         const token = generateToken(user._id, user.email, user.role);
 
