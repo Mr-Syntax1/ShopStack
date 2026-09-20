@@ -42,6 +42,16 @@ export async function GET() {
             );
         }
 
+        // ==============================
+        // دفاع در عمق: ادمین در فروشگاه مجاز نیست
+        // ==============================
+        if (user.role === 'admin') {
+            return NextResponse.json(
+                { error: 'ادمین در فروشگاه مجاز نیست' },
+                { status: 403 }
+            );
+        }
+
         return NextResponse.json({
             success: true,
             user,
