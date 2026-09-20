@@ -27,8 +27,18 @@ export async function GET(_req, { params }) {
         if (payment.status === 'PENDING') {
             try {
                 const remote = await getInvoice(payment.invoiceId);
+                const remoteCard = remote.card_number ?? remote.cardNumber ?? null;
+                // اگر بلوپال شماره کارت مقصد را برگردانده، حتی اگر status تغییر نکرده، آن را ذخیره کن (رفع باگ نمایش خالی)
+                if (remoteCard && !payment.cardNumber) {
+                    payment = await Payment.findOneAndUpdate(
+                        { invoiceId: payment.invoiceId },
+                        { cardNumber: String(remoteCard) },
+                        { returnDocument: 'after' }
+                    ).lean();
+                }
                 if (remote.status !== payment.status) {
                     const update = { status: remote.status, finalAmount: remote.final_amount };
+                    if (remoteCard) update.cardNumber = String(remoteCard);
                     if (remote.status === 'PAID') {
                         update.paidAt = new Date();
                         update.payer = {
@@ -40,6 +50,13 @@ export async function GET(_req, { params }) {
                     payment = await Payment.findOneAndUpdate(
                         { invoiceId: payment.invoiceId },
                         update,
+                        { returnDocument: 'after' }
+                    ).lean();
+                } else if (remoteCard && remoteCard !== payment.cardNumber) {
+                    // status یکسان ولی cardNumber جدید است
+                    payment = await Payment.findOneAndUpdate(
+                        { invoiceId: payment.invoiceId },
+                        { cardNumber: String(remoteCard) },
                         { returnDocument: 'after' }
                     ).lean();
                 }
@@ -57,6 +74,7 @@ export async function GET(_req, { params }) {
             amount: payment.amount,
             finalAmount: payment.finalAmount,
             paymentLink: payment.paymentLink,
+            cardNumber: payment.cardNumber || null,
             payer: payment.status === 'PAID' ? payment.payer : null,
             paidAt: payment.paidAt || null,
         }, { status: 200 });

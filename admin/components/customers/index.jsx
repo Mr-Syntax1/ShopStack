@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { toPersianDigits, formatPrice, formatDate, initials } from '@/lib/persian';
+import { toPersianDigits, formatDate, initials } from '@/lib/persian';
 import CustomerSkeleton from './CustomerSkeleton';
 import DeleteButton from '../DeleteButton';
 
@@ -40,7 +40,7 @@ function getAvatarGradient(name) {
 }
 
 const StatCard = ({ icon, label, value, sub, colorClass }) => (
-    <div className="rounded-2xl border border-gray-100/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm">
+    <div className="rounded-2xl border border-gray-100/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
         <div className="flex items-center justify-between">
             <div>
                 <p className="text-[12.5px] font-medium text-gray-500">{label}</p>
@@ -82,7 +82,12 @@ export default function CustomersPage() {
     }, []);
 
     useEffect(() => {
-        fetchUsers();
+        // اجرای فچ را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        let active = true;
+        queueMicrotask(() => {
+            if (active) fetchUsers();
+        });
+        return () => { active = false; };
     }, [fetchUsers]);
 
     const updateUserRole = useCallback(async (userId, newRole) => {
@@ -106,20 +111,11 @@ export default function CustomersPage() {
         }
     }, []);
 
-    const deleteUser = useCallback(async (userId) => {
-        try {
-            const res = await fetch(`${API_URL}/api/users/${userId}`, {
-                method: 'DELETE',
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'خطا در حذف کاربر');
-            }
-            setUsers(prev => prev.filter(u => u._id !== userId));
-        } catch (err) {
-            console.error('Error deleting user:', err);
-            alert(err.message || 'خطا در حذف کاربر');
-        }
+    // حذف واقعی توسط کامپوننت DeleteButton انجام می‌شود (deleteUrl).
+    // اینجا فقط لیست را پس از موفقیت حذف به‌روزرسانی می‌کنیم
+    // تا درخواست DELETE تکراری ارسال نشود (که قبلاً باعث ارور ۴۰۴ می‌شد).
+    const deleteUser = useCallback((userId) => {
+        setUsers(prev => prev.filter(u => u._id !== userId));
     }, []);
 
     const stats = useMemo(() => {
@@ -181,7 +177,7 @@ export default function CustomersPage() {
                     label="کل کاربران"
                     value={toPersianDigits(stats.total)}
                     sub={`${toPersianDigits(stats.admins)} ادمین`}
-                    colorClass="bg-indigo-50 text-indigo-600"
+                    colorClass="bg-indigo-50 text-indigo-600 "
                     icon={
                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -372,33 +368,87 @@ export default function CustomersPage() {
 
                     {/* صفحه‌بندی */}
                     {!loading && totalPages > 1 && (
-                        <div className="flex items-center justify-between gap-3 border-t border-gray-100/70 px-4 py-3 sm:px-5">
-                            <p className="text-[12.5px] text-gray-500">
-                                نمایش {toPersianDigits((safePage - 1) * pageSize + 1)} تا {toPersianDigits(Math.min(safePage * pageSize, filtered.length))} از {toPersianDigits(filtered.length)}
+                        <div className="flex flex-col gap-3 border-t border-gray-100/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                            {/* اطلاعات */}
+                            <p className="text-[12px] text-gray-500">
+                                <span className="hidden sm:inline">
+                                    نمایش {toPersianDigits((safePage - 1) * pageSize + 1)}–{toPersianDigits(Math.min(safePage * pageSize, filtered.length))} از {toPersianDigits(filtered.length)} کاربر
+                                </span>
+                                <span className="sm:hidden">
+                                    {toPersianDigits(safePage)} / {toPersianDigits(totalPages)}
+                                </span>
                             </p>
-                            <div className="flex items-center gap-1.5">
+
+                            {/* دکمه‌ها */}
+                            <div className="flex items-center justify-center gap-1.5">
+                                {/* قبلی */}
                                 <button
                                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                                     disabled={safePage === 1}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
                                 >
-                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
                                 </button>
-                                {Array.from({ length: totalPages }).map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setPage(i + 1)}
-                                        className={`inline-flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-[13px] font-semibold transition-colors ${safePage === i + 1 ? 'bg-indigo-600 text-white' : 'text-gray-600 ring-1 ring-gray-200/80 hover:bg-gray-50'}`}
-                                    >
-                                        {toPersianDigits(i + 1)}
-                                    </button>
-                                ))}
+
+                                {/* شماره صفحات (ریسپانسیو) */}
+                                {(() => {
+                                    const pages = [];
+                                    const showMax = 5;   // حداکثر ۵ دکمه
+
+                                    if (totalPages <= showMax) {
+                                        // اگه کمه، همه رو نشون بده
+                                        for (let i = 1; i <= totalPages; i++) pages.push(i);
+                                    } else {
+                                        // همیشه صفحه اول
+                                        pages.push(1);
+
+                                        // صفحات دور و بر صفحه فعلی
+                                        let start = Math.max(2, safePage - 1);
+                                        let end = Math.min(totalPages - 1, safePage + 1);
+
+                                        if (safePage <= 3) {
+                                            end = 4;
+                                        } else if (safePage >= totalPages - 2) {
+                                            start = totalPages - 3;
+                                        }
+
+                                        if (start > 2) pages.push('...');
+                                        for (let i = start; i <= end; i++) pages.push(i);
+                                        if (end < totalPages - 1) pages.push('...');
+
+                                        // همیشه صفحه آخر
+                                        pages.push(totalPages);
+                                    }
+
+                                    return pages.map((p, idx) => (
+                                        p === '...' ? (
+                                            <span key={`dots-${idx}`} className="px-1 text-gray-400 text-[12px]">…</span>
+                                        ) : (
+                                            <button
+                                                key={p}
+                                                onClick={() => setPage(p)}
+                                                className={`inline-flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-[13px] font-semibold transition-colors cursor-pointer ${safePage === p
+                                                    ? 'bg-indigo-600 text-white'
+                                                    : 'text-gray-600 ring-1 ring-gray-200/80 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                {toPersianDigits(p)}
+                                            </button>
+                                        )
+                                    ));
+                                })()}
+
+                                {/* بعدی */}
                                 <button
                                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                     disabled={safePage === totalPages}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
                                 >
-                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>

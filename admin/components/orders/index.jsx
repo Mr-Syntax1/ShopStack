@@ -6,6 +6,7 @@ import OrderSkeleton from './OrderSkeleton';
 import FragmentRow from './FragmentRow';
 import { STATUS } from '@/lib/statusData';
 import StatsGrid from './StatCard';
+import Pagination from '../Pagination';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -39,7 +40,12 @@ export default function OrdersPage() {
     }, []);
 
     useEffect(() => {
-        fetchOrders();
+        // اجرای فچ را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        let active = true;
+        queueMicrotask(() => {
+            if (active) fetchOrders();
+        });
+        return () => { active = false; };
     }, [fetchOrders]);
 
     const updateOrderStatus = useCallback(async (orderId, newStatus) => {
@@ -67,21 +73,11 @@ export default function OrdersPage() {
         }
     }, []);
 
-    const deleteOrder = useCallback(async (orderId) => {
-        try {
-            const res = await fetch(`${API_URL}/api/orders/${orderId}`, {
-                method: 'DELETE',
-            });
-
-            if (!res.ok) throw new Error('خطا در حذف سفارش');
-
-            setOrders(prevOrders => prevOrders.filter(order => order._id !== orderId));
-            if (expandedId === orderId) setExpandedId(null);
-
-        } catch (err) {
-            console.error('Error deleting order:', err);
-            alert('خطا در حذف سفارش');
-        }
+    // حذف واقعی توسط کامپوننت DeleteButton انجام می‌شود (deleteUrl).
+    // اینجا فقط لیست را پس از موفقیت حذف به‌روزرسانی می‌کنیم
+    const deleteOrder = useCallback((orderId) => {
+        setOrders(prevOrders => prevOrders.filter(order => order._id !== orderId));
+        if (expandedId === orderId) setExpandedId(null);
     }, [expandedId]);
 
     // همگام‌سازی دستی وضعیت پرداخت با بلوپال (وقتی وبهوک نرسیده باشد)
@@ -272,37 +268,14 @@ export default function OrdersPage() {
 
                     {/* صفحه‌بندی */}
                     {!loading && totalPages > 1 && (
-                        <div className="flex items-center justify-between gap-3 border-t border-gray-100/70 px-4 py-3 sm:px-5">
-                            <p className="text-[12.5px] text-gray-500">
-                                نمایش {toPersianDigits((safePage - 1) * pageSize + 1)} تا {toPersianDigits(Math.min(safePage * pageSize, filtered.length))} از {toPersianDigits(filtered.length)}
-                            </p>
-                            <div className="flex items-center gap-1.5">
-                                <button
-                                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                                    disabled={safePage === 1}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                                >
-                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-
-                                </button>
-                                {Array.from({ length: totalPages }).map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setPage(i + 1)}
-                                        className={`inline-flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-[13px] font-semibold transition-colors ${safePage === i + 1 ? 'bg-indigo-600 text-white' : 'text-gray-600 ring-1 ring-gray-200/80 hover:bg-gray-50'}`}
-                                    >
-                                        {toPersianDigits(i + 1)}
-                                    </button>
-                                ))}
-                                <button
-                                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                                    disabled={safePage === totalPages}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 ring-1 ring-gray-200/80 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                                >
-                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                                </button>
-                            </div>
-                        </div>
+                        <Pagination
+                            currentPage={safePage}
+                            totalPages={totalPages}
+                            totalItems={filtered.length}
+                            itemsPerPage={pageSize}
+                            itemsLabel="سفارش"
+                            onPageChange={(newPage) => setPage(newPage)}
+                        />
                     )}
                 </div>
             )}

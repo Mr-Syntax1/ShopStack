@@ -30,12 +30,18 @@ function authHeaders() {
 
 async function parseBlupalResponse(res) {
     let data = null;
-    try { data = await res.json(); } catch { data = null; }
+    try {
+        data = await res.json(); // از بلو پال میگیریم
+    } catch {
+        data = null;
+    }
 
+    // اگر پاسخ success:false داشت یا وضعیت HTTP ناموفق بود، خطا بده
     if (!res.ok || (data && data.success === false)) {
         const message = data?.message || data?.error || `خطای بلوپال (HTTP ${res.status})`;
         const err = new Error(message);
         err.code = data?.error || `http_${res.status}`;
+        err.status = res.status;
         throw err;
     }
     return data;

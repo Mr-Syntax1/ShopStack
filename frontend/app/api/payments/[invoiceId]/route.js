@@ -72,6 +72,10 @@ export async function GET(_req, { params }) {
             mode: remote.mode,
         };
 
+        // شماره کارت مقصد از بلوپال (در صورت وجود) - رفع باگ نمایش خالی
+        const remoteCardNumber = remote.card_number ?? remote.cardNumber ?? null;
+        if (remoteCardNumber) update.cardNumber = String(remoteCardNumber);
+
         if (remote.status === 'PAID') {
             update.paidAt = new Date();
             update.payer = {
@@ -88,8 +92,6 @@ export async function GET(_req, { params }) {
             { returnDocument: 'after' }
         ).lean();
 
-
-        //.lean() یعنی به صورت شیء ساده برگردون (نه شیء سنگین Mongoose)
 
         // همگام‌سازی وضعیت سفارش با پرداخت: وقتی فاکتور PAID شد، سفارش را هم به‌روز کن
         // (اینجوری مدل پرداخت با مدل سفارش «تماس» می‌گیرد و وضعیت ادمین درست می‌شه)
@@ -132,6 +134,7 @@ export async function GET(_req, { params }) {
             finalAmount: remote.final_amount,
             mode: remote.mode,
             paymentLink: updatedPayment?.paymentLink || null,
+            cardNumber: updatedPayment?.cardNumber || remote.card_number || remote.cardNumber || null,
             payer: remote.status === 'PAID'
                 ? { name: remote.payer_name, card: remote.payer_card, bankName: remote.payer_bank_name }
                 : null,

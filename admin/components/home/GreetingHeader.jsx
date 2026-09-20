@@ -31,7 +31,7 @@ export default function GreetingHeader({ range, onRangeChange, onRefresh }) {
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const fetchData = useCallback(async (selectedRange = range) => {
+  const fetchData = useCallback(async (selectedRange = range, forceRefresh = false) => {
     try {
       const userRes = await fetch('/api/auth/me', { credentials: 'include' });
 
@@ -40,7 +40,7 @@ export default function GreetingHeader({ range, onRangeChange, onRefresh }) {
         setAdminName(userData.user?.name || "مدیر");
       }
 
-      const data = await getDashboardData(selectedRange);
+      const data = await getDashboardData(selectedRange, forceRefresh);
       setGreetingData(data?.greeting || {
         periodSales: 0,
         salesDelta: 0,
@@ -66,7 +66,7 @@ export default function GreetingHeader({ range, onRangeChange, onRefresh }) {
 
     setIsRefreshing(true);
     try {
-      await fetchData(range);
+      await fetchData(range, true);
       if (onRefresh) onRefresh();
     } finally {
       setTimeout(() => setIsRefreshing(false), 500);
@@ -74,7 +74,12 @@ export default function GreetingHeader({ range, onRangeChange, onRefresh }) {
   };
 
   useEffect(() => {
-    fetchData(range);
+    // اجرای فچ را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+    let active = true;
+    queueMicrotask(() => {
+      if (active) fetchData(range);
+    });
+    return () => { active = false; };
   }, [range, fetchData]);
 
   const today = new Date();
@@ -108,7 +113,7 @@ export default function GreetingHeader({ range, onRangeChange, onRefresh }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>
         <p className="text-[13px] font-medium text-gray-400">
           {persianDate}

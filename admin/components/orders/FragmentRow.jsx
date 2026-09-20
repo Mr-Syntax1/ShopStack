@@ -34,10 +34,30 @@ function paymentBadgeClass(status) {
     }
 }
 
+const AVATAR_GRADIENTS = [
+    'from-indigo-500 to-purple-600',
+    'from-emerald-500 to-teal-600',
+    'from-amber-500 to-orange-600',
+    'from-rose-500 to-pink-600',
+    'from-cyan-500 to-blue-600',
+    'from-violet-500 to-fuchsia-600',
+];
+
+function getAvatarGradient(name) {
+    let hash = 0;
+    for (let i = 0; i < (name || '').length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+}
+
 export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle, onStatusChange, onDelete, onPaymentSync }) {
     const user = order.user || {};
     const [showActions, setShowActions] = useState(false);
     const actionRef = useRef(null);
+
+    const avatarGradient = getAvatarGradient(user.name);
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -57,7 +77,7 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
             >
                 <td className="px-4 py-3.5 sm:px-5">
                     <div className="flex items-center gap-3">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-[12px] font-bold text-indigo-700">
+                        <span className={`not-only:flex bg-linear-to-br ${avatarGradient} h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-[12px] font-bold text-white`}>
                             {initials(user.name)}
                         </span>
                         <div className="min-w-0">
@@ -211,7 +231,10 @@ export default function FragmentRow({ order, isOpen, badge, itemCount, onToggle,
                                         </div>
                                         <InfoRow label="شناسه فاکتور" value={toPersianDigits(order.payment.invoiceId)} num />
                                         <InfoRow label="محیط" value={order.payment.mode === 'live' ? 'واقعی' : order.payment.mode === 'sandbox' ? 'آزمایشی' : '—'} />
+                                        <InfoRow label="شماره کارت مقصد" value={order.payment.cardNumber ? toPersianDigits(order.payment.cardNumber) : '—'} num />
+                                        {order.payment.transactionId && <InfoRow label="شناسه تراکنش" value={toPersianDigits(order.payment.transactionId)} num />}
                                         {order.payment.payerName && <InfoRow label="پرداخت‌کننده" value={order.payment.payerName} />}
+                                        {order.payment.payerCard && <InfoRow label="کارت پرداخت‌کننده" value={toPersianDigits(order.payment.payerCard)} num />}
                                         {order.payment.payerBankName && <InfoRow label="بانک" value={order.payment.payerBankName} />}
                                         {order.payment.paidAt && <InfoRow label="زمان پرداخت" value={formatDateTime(order.payment.paidAt)} />}
                                     </div>

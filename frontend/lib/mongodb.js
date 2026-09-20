@@ -29,6 +29,7 @@ export async function connectedToDatabase() {
             minPoolSize: 1,               // حداقل یک اتصال همیشه باز بمونه (برای سرعت)
             serverSelectionTimeoutMS: 15000, // ۱۵ ثانیه برای پیدا کردن سرور (بهتر از ۸ ثانیه)
             socketTimeoutMS: 60000,       // ۶۰ ثانیه برای هر درخواست (بهتر از ۴۵ ثانیه)
+            maxIdleTimeMS: 30000,  // اتصالات بی‌کار رو ببند
             connectTimeoutMS: 15000,      // ۱۵ ثانیه برای برقراری اتصال اولیه
             heartbeatFrequencyMS: 10000,  // هر ۱۰ ثانیه وضعیت اتصال رو چک کن
             retryWrites: true,            // اگر نوشتن ناموفق بود، دوباره تلاش کن

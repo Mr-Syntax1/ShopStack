@@ -21,8 +21,8 @@ export default function ProductList({ products }) {
                     <div
                         key={product._id}
                         data-aos="fade-up"
-                        data-aos-duration="800"
-                        data-aos-delay={(index % 4) * 120}
+                        data-aos-duration="700"
+                        data-aos-delay={(index % 4) * 100}
                         data-aos-once="true"
                     >
                         <ProductBox

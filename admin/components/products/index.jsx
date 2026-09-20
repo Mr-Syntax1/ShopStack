@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import debounce from 'lodash/debounce';
 import ProductHeader from './ProductHeader';
@@ -119,7 +119,12 @@ export default function ProductsPage() {
     }, [filters, products.length]);
 
     useEffect(() => {
-        fetchProducts();
+        // اجرای فچ را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        let active = true;
+        queueMicrotask(() => {
+            if (active) fetchProducts();
+        });
+        return () => { active = false; };
     }, [fetchProducts]);
 
     // به‌روزرسانی URL با فیلترها
@@ -140,7 +145,7 @@ export default function ProductsPage() {
     // ===========================================================
 
     // جستجو با دیبونس
-    const debouncedSearch = useCallback(
+    const debouncedSearch = useMemo(() =>
         debounce((value) => {
             updateFilters({
                 search: value,

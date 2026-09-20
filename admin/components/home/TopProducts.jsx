@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getDashboardData } from "@/lib/dashboard-api";
 
-export default function TopProducts() {
+export default function TopProducts({ range = '7days', refreshKey = 0 }) {
   const [topProducts, setTopProducts] = useState([]);
   const [lowStock, setLowStock] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ export default function TopProducts() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDashboardData();
+        const data = await getDashboardData(range, refreshKey > 0);
         setTopProducts(data?.topProducts || []);
         setLowStock(data?.lowStock || []);
       } catch (error) {
@@ -21,7 +21,7 @@ export default function TopProducts() {
       }
     };
     fetchData();
-  }, []);
+  }, [range, refreshKey]);
 
   if (loading) {
     return (

@@ -75,8 +75,6 @@ export default async function ProductDetail({ params }) {
 
                 {/* مسیر (Breadcrumb) */}
                 <nav
-                    data-aos="fade-down"
-                    data-aos-once="true"
                     className="flex items-center gap-2 text-sm text-gray-500 mb-6 sm:mb-8"
                 >
                     <Link href="/" className="hover:text-blue-600 transition-colors">خانه</Link>
@@ -104,7 +102,7 @@ export default async function ProductDetail({ params }) {
                 {/* کارت اصلی محصول */}
                 <div
                     data-aos="fade-up"
-                    data-aos-duration="900"
+                    data-aos-duration="700"
                     data-aos-once="true"
                     className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100/80"
                 >
@@ -267,7 +265,7 @@ export default async function ProductDetail({ params }) {
 
                 {/* محصولات مرتبط */}
                 {relatedProducts.length > 0 && (
-                    <div className="mt-12 sm:mt-16" data-aos="fade-up" data-aos-once="true">
+                    <div className="mt-12 sm:mt-16" data-aos="fade-up" data-aos-once="true" data-aos-duration="600">
                         <h2
                             className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8"
                         >

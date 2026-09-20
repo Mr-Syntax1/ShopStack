@@ -29,7 +29,8 @@ const ProductSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        index: true
     },
     subCategory: {
         type: String,

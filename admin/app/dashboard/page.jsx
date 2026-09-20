@@ -31,7 +31,7 @@ export default function DashboardHome() {
       />
 
       {/* تیکر زنده */}
-      <LiveTicker />
+      <LiveTicker range={activeRange} refreshKey={refreshKey} />
 
       {/* کارت‌های آمار */}
       <StatsGrid range={activeRange} refreshKey={refreshKey} />

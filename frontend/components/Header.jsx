@@ -20,7 +20,8 @@ export default function Header() {
 
     // برای اطمینان از اجرا در کلاینت
     useEffect(() => {
-        setMounted(true);
+        // اجرا را به microtask عقب می‌اندازیم تا بدنه افکت مستقیماً setState صدا نزند
+        queueMicrotask(() => setMounted(true));
     }, []);
 
     // قفل کردن اسکرول و مدیریت Escape

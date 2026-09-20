@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, total }) => {
   return null;
 };
 
-export default function OrderStatusDonut() {
+export default function OrderStatusDonut({ range = '7days', refreshKey = 0 }) {
   const [orderStatus, setOrderStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -33,7 +33,7 @@ export default function OrderStatusDonut() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDashboardData();
+        const data = await getDashboardData(range, refreshKey > 0);
         setOrderStatus(data?.orderStatus || []);
       } catch (error) {
         console.error('Error fetching order status:', error);
@@ -42,7 +42,7 @@ export default function OrderStatusDonut() {
       }
     };
     fetchData();
-  }, []);
+  }, [range, refreshKey]);
 
   const total = orderStatus.reduce((sum, s) => sum + (s.value || 0), 0);
 
@@ -51,6 +51,10 @@ export default function OrderStatusDonut() {
     ...s,
     color: s.color || "#4f46e5",
   }));
+
+  // درصد تحویل‌شده رو بر اساس نام پیدا کن (نه ایندکس، چون ترتیب آرایه ممکنه فرق کنه)
+  const delivered = statusData.find((s) => s.name === "تحویل شده");
+  const deliveredPercent = total > 0 && delivered ? Math.round((delivered.value / total) * 100) : 0;
 
   if (loading) {
     return (
@@ -67,9 +71,9 @@ export default function OrderStatusDonut() {
       <h2 className="font-bold text-[15px] text-gray-800">
         وضعیت سفارشات
       </h2>
-      <p className="mt-0.5 text-[12.5px] text-gray-500">
-        {total.toLocaleString("fa-IR")} سفارش این ماه
-      </p>
+        <p className="mt-0.5 text-[12.5px] text-gray-500">
+          {total.toLocaleString("fa-IR")} سفارش
+        </p>
 
       <div className="relative mx-auto mt-2 h-44 w-44">
         <ResponsiveContainer width="100%" height="100%">
@@ -108,7 +112,7 @@ export default function OrderStatusDonut() {
         {/* مرکز دایره */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-bold text-[22px] text-gray-800">
-            {statusData.length > 0 ? Math.round((statusData[0]?.value || 0) / total * 100) : 0}%
+            {deliveredPercent}%
           </span>
           <span className="text-[11px] text-gray-400">تحویل شده</span>
         </div>

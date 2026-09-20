@@ -35,7 +35,7 @@ export default function RevenueChart({ range = '7days', refreshKey }) {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await getDashboardData(range);
+        const data = await getDashboardData(range, refreshKey > 0);
         setRevenueSeries(data?.revenueSeries || []);
       } catch (error) {
         console.error('Error fetching revenue:', error);
