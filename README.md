@@ -315,18 +315,6 @@ graph LR
 - ⚠️ **Visual Warning Banner** — When in read-only mode
 - 🔐 **Role-Based Routing** — Regular users → storefront, admins → dashboard
 
----
-
-## 🌐 Deployment
-
-### △ Vercel (Recommended)
-
-```bash
-# From project root
-cd apps/frontend
-vercel deploy
-```
-
 </details>
 
 ---
