@@ -315,18 +315,6 @@ graph LR
 - ⚠️ **Visual Warning Banner** — When in read-only mode
 - 🔐 **Role-Based Routing** — Regular users → storefront, admins → dashboard
 
----
-
-## 🌐 Deployment
-
-### △ Vercel (Recommended)
-
-```bash
-# From project root
-cd apps/frontend
-vercel deploy
-```
-
 </details>
 
 ---
@@ -353,7 +341,7 @@ git push origin feature/amazing-feature
 
 <div align="center">
 
-### Made with ❤️ by the **NovaShop** Team
+### Made with ❤️ by the **GreenRose**
 
 [![GitHub Stars](https://img.shields.io/github/stars/Mr-Syntax1/ShopStack?style=social)](https://github.com/Mr-Syntax1/ShopStack/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Mr-Syntax1/ShopStack?style=social)](https://github.com/Mr-Syntax1/ShopStack/fork)
