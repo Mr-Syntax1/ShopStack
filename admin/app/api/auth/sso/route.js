@@ -10,17 +10,15 @@ export async function GET(req) {
         const token = searchParams.get('token');
 
         if (!token) {
-            return NextResponse.redirect(
-                new URL('/auth/login?error=no_token', req.url)
-            );
+            const loginUrl = new URL('/auth/login?error=no_token', req.url);
+            return NextResponse.redirect(loginUrl);
         }
 
         // تایید توکن SSO
         const decoded = verifyToken(token);
         if (!decoded || decoded.type !== 'admin_sso') {
-            return NextResponse.redirect(
-                new URL('/auth/login?error=invalid_token', req.url)
-            );
+            const loginUrl = new URL('/auth/login?error=invalid_token', req.url);
+            return NextResponse.redirect(loginUrl);
         }
 
         // اتصال به دیتابیس و پیدا کردن کاربر
@@ -28,9 +26,8 @@ export async function GET(req) {
         const user = await User.findById(decoded.userId).select('-password');
 
         if (!user || user.role !== 'admin') {
-            return NextResponse.redirect(
-                new URL('/auth/login?error=not_admin', req.url)
-            );
+            const loginUrl = new URL('/auth/login?error=not_admin', req.url);
+            return NextResponse.redirect(loginUrl);
         }
 
         // ساخت توکن کامل ادمین (برای جلسه ادمین)
@@ -41,8 +38,9 @@ export async function GET(req) {
         );
 
         // ست کردن cookie در ادمین و ریدایرکت به داشبورد
+        const adminBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const response = NextResponse.redirect(
-            new URL('/dashboard', req.url)
+            new URL('/dashboard', adminBaseUrl)
         );
         response.cookies.set('admin_token', adminToken, {
             httpOnly: true,
@@ -56,8 +54,7 @@ export async function GET(req) {
 
     } catch (error) {
         console.error('SSO error:', error);
-        return NextResponse.redirect(
-            new URL('/auth/login?error=server_error', req.url)
-        );
+        const loginUrl = new URL('/auth/login?error=server_error', req.url);
+        return NextResponse.redirect(loginUrl);
     }
 }

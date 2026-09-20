@@ -55,10 +55,10 @@ export async function POST(req) {
         // ==============================
         if (user.role === 'admin') {
             const adminToken = generateAdminToken(user._id, user.email);
-            const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL + '/api/auth/sso';
+            const adminBaseUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3001';
             return NextResponse.json({
                 success: true,
-                redirectTo: `${adminUrl}?token=${adminToken}`,
+                redirectTo: `${adminBaseUrl}/api/auth/sso?token=${adminToken}`,
                 message: 'ادمین هستید، به پنل مدیریت هدایت می‌شوید'
             });
         }
