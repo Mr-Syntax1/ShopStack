@@ -4,14 +4,27 @@ import { NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
+// بررسی حالت فقط خواندنی
+function isReadOnlyMode() {
+    return process.env.ADMIN_READ_ONLY === 'true';
+}
+
 // تغییر نقش کاربر
 export async function PUT(request, { params }) {
     try {
+        // چک کردن حالت فقط خواندنی
+        if (isReadOnlyMode()) {
+            return NextResponse.json(
+                { error: 'این عملیات در حالت فقط خواندنی امکان‌پذیر نیست' },
+                { status: 403 }
+            );
+        }
+
         await connectedToDatabase();
 
         // بررسی ادمین بودن
         const cookieStore = await cookies();
-        const token = cookieStore.get('token')?.value;
+        const token = cookieStore.get('admin_token')?.value;
         const decoded = verifyToken(token);
 
         if (!decoded || decoded.role !== 'admin') {
@@ -48,10 +61,18 @@ export async function PUT(request, { params }) {
 // حذف کاربر
 export async function DELETE(request, { params }) {
     try {
+        // چک کردن حالت فقط خواندنی
+        if (isReadOnlyMode()) {
+            return NextResponse.json(
+                { error: 'این عملیات در حالت فقط خواندنی امکان‌پذیر نیست' },
+                { status: 403 }
+            );
+        }
+
         await connectedToDatabase();
 
         const cookieStore = await cookies();
-        const token = cookieStore.get('token')?.value;
+        const token = cookieStore.get('admin_token')?.value;
         const decoded = verifyToken(token);
 
         if (!decoded || decoded.role !== 'admin') {
@@ -69,9 +90,6 @@ export async function DELETE(request, { params }) {
         }
 
         const user = await User.findByIdAndDelete(id);
-        // if (!user) {
-        //     return NextResponse.json({ error: 'کاربر یافت نشد' }, { status: 404 });
-        // }
 
         return NextResponse.json({ success: true });
     } catch (error) {

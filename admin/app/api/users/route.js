@@ -10,7 +10,7 @@ export async function GET(request) {
 
         // بررسی ادمین بودن
         const cookieStore = await cookies();
-        const token = cookieStore.get('token')?.value;
+        const token = cookieStore.get('admin_token')?.value;
         const decoded = verifyToken(token);
 
         if (!decoded || decoded.role !== 'admin') {
