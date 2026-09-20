@@ -38,7 +38,7 @@ async function getUserFromToken(token) {
 export async function proxy(request) {
 
     const pathname = request.nextUrl.pathname;
-    const token = request.cookies.get('token')?.value;
+    const token = request.cookies.get('admin_token')?.value;
     const method = request.method;
 
     // ==============================
