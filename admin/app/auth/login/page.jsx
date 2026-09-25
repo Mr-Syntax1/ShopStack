@@ -124,7 +124,7 @@ export default function AdminLoginPage() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-indigo-50 to-violet-100 p-4 min-w-4xl">
+         <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-indigo-50 to-violet-100 p-4 w-xl md:w-4xl overflow-hidden">
             <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
                 <div className="text-center mb-8">
                     <div className="w-14 h-14 rounded-2xl bg-indigo-600 mx-auto flex items-center justify-center">
