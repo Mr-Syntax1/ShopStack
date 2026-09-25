@@ -3,7 +3,7 @@
 // =============================================================
 
 // ادرس پایه
-const BLU_BASE_URL = process.env.BLU_BASE_URL || 'https://blupal.net/api';
+const BLU_BASE_URL = process.env.BLU_BASE_URL || 'https://blupal.top/api';
 
 const BLU_API_KEY = process.env.BLU_API_KEY;
 
